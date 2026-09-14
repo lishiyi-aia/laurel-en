@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AI product acquisition and channel operations: user research, campaigns, creative assets, creator partnerships, activation and performance reviews.">
+  <title>AI Product Acquisition & Channel Operations | Laurel Li</title>
+  <style>
+    :root {
+      --navy: #18242c; --navy-2: #21343d; --blue: #175bd4; --cyan: #087e79;
+      --pink: #b63668; --green: #277c54; --orange: #d96c32; --gold: #f0c552;
+      --ink: #18242c; --muted: #5e6978; --line: #dce2e8; --soft: #f4f6f8; --paper: #fff;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+    body { margin: 0; color: var(--ink); background: #fff; font: 16px/1.7 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; letter-spacing: 0; }
+    h1, h2, h3, h4, p, figure { margin: 0; }
+    h1, h2, h3, h4 { letter-spacing: 0; text-wrap: balance; }
+    p { overflow-wrap: anywhere; }
+    a { color: inherit; text-underline-offset: 4px; }
+    img { display: block; width: 100%; height: auto; }
+    [hidden] { display: none !important; }
+    button { font: inherit; cursor: pointer; touch-action: manipulation; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    :focus-visible { outline: 3px solid var(--orange); outline-offset: 5px; }
+    .mono { font-family: "SFMono-Regular", Consolas, monospace; font-variant-numeric: tabular-nums; }
+    .skip-link { position: fixed; left: 12px; top: 8px; z-index: 100; transform: translateY(-160%); padding: 8px 12px; background: #fff; }
+    .skip-link:focus { transform: none; }
+    .report, .hero-inner, .metric-strip { width: min(1180px, calc(100% - 64px)); margin-inline: auto; }
+    .site-nav { position: sticky; top: 0; z-index: 50; min-height: 64px; padding: 0 max(32px, calc((100% - 1180px) / 2)); display: flex; align-items: center; justify-content: space-between; gap: 24px; color: #fff; background: #18242cf7; border-bottom: 1px solid #ffffff25; backdrop-filter: blur(12px); }
+    .nav-brand { display: inline-flex; gap: 10px; align-items: center; text-decoration: none; white-space: nowrap; font-size: 14px; font-weight: 750; }
+    .brand-mark { display: grid; place-items: center; border: 1px solid #ffffff70; width: 28px; height: 28px; border-radius: 50%; font-size: 11px; }
+    .nav-links { display: flex; align-items: center; gap: 22px; min-width: 0; overflow: auto; scrollbar-width: none; }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links a { flex-shrink: 0; min-height: 44px; display: inline-flex; align-items: center; border-bottom: 2px solid transparent; text-decoration: none; color: #cad3d9; font-size: 12px; }
+    .nav-links a:hover, .nav-links a.active { color: #fff; border-bottom-color: var(--gold); }
+    .nav-links .nav-action { color: #f0d48b; }
+    .hero { position: relative; isolation: isolate; overflow: hidden; min-height: 470px; display: flex; align-items: center; color: #fff; background: #18242c; }
+    .hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, #18242c 0%, #18242cee 46%, #18242c40 100%), url("event-materials/03-awareness.jpg") right 40% / auto 160% no-repeat; }
+    .hero-inner { padding-block: 62px; }
+    .eyebrow { color: #f0d48b; font-size: 12px; font-weight: 750; margin-bottom: 22px; }
+    h1 { max-width: 950px; font-size: 60px; font-weight: 850; line-height: 1.2; }
+    .hero-copy { max-width: 740px; margin-top: 24px; font-size: 18px; color: #e1e7eb; line-height: 1.85; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 28px; font-size: 12px; color: #ced8df; }
+    .hero-meta span { border-left: 2px solid #f0c552; padding-left: 10px; }
+    .snapshot { border-bottom: 1px solid var(--line); }
+    .metric-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .metric { min-width: 0; padding: 27px 22px; border-right: 1px solid var(--line); }
+    .metric:first-child { padding-left: 0; }
+    .metric:last-child { border: 0; }
+    .metric-label { display: block; font-size: 10px; color: var(--muted); font-weight: 700; }
+    .metric strong { display: flex; align-items: center; min-height: 58px; font-size: 25px; line-height: 1.3; }
+    .metric strong.mono { font-size: 46px; color: var(--blue); }
+    .metric p { font-size: 11px; color: var(--muted); }
+    .band { background: var(--paper); border-bottom: 1px solid var(--line); }
+    .band.soft { background: var(--soft); }
+    .band.dark { background: var(--navy); color: #fff; }
+    .section { padding: 76px 0; scroll-margin-top: 16px; }
+    .section-head { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 64px; margin-bottom: 38px; align-items: start; }
+    .kicker { color: var(--blue); font-size: 11px; font-weight: 750; margin-bottom: 14px; }
+    h2 { font-size: 36px; line-height: 1.3; font-weight: 800; }
+    h3 { font-size: 21px; line-height: 1.45; }
+    h4 { font-size: 16px; line-height: 1.5; }
+    .section-lead { font-size: 16px; color: var(--muted); line-height: 1.9; padding-top: 2px; }
+    .dark .kicker { color: #77d9c9; }
+    .dark .section-lead { color: #ccd7dd; }
+    .work-route { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 0; list-style: none; margin: 0; gap: 28px; }
+    .work-route li { position: relative; padding: 24px 0 0; border-top: 3px solid var(--step-color); }
+    .work-route li:not(:last-child)::after { content: "→"; position: absolute; right: -24px; top: -17px; background: #fff; padding-inline: 5px; color: var(--muted); font-size: 20px; }
+    .route-number { display: block; margin-bottom: 14px; font: 48px/1 "SFMono-Regular", Consolas, monospace; color: var(--step-color); }
+    .work-route h3 { margin-bottom: 12px; }
+    .work-route p { min-height: 60px; color: var(--muted); font-size: 13px; }
+    .route-output { display: block; margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--step-color); font-size: 12px; font-weight: 650; }
+    .test-toolbar { display: flex; justify-content: space-between; gap: 16px; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+    .test-tabs { display: flex; width: 324px; padding: 4px; border: 1px solid #cbd4dc; border-radius: 6px; background: #fff; }
+    .test-tabs button { flex: 1; min-width: 0; min-height: 40px; padding: 7px; border: 0; border-radius: 3px; background: transparent; color: var(--muted); font-size: 13px; white-space: nowrap; }
+    .test-tabs button[aria-selected="true"] { color: #fff; background: var(--navy); }
+    .test-tabs button:hover:not([aria-selected="true"]) { background: var(--soft); }
+    .evidence-label { color: #76542b; font-size: 12px; }
+    #test-panel { outline-offset: 7px; }
+    .test-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+    .test-version { --test-accent: var(--blue); overflow: hidden; padding: 26px; border: 1px solid var(--line); border-top: 4px solid var(--test-accent); background: #fff; border-radius: 6px; min-width: 0; }
+    .version-b { --test-accent: var(--cyan); }
+    .test-version header { display: flex; align-items: center; gap: 16px; }
+    .version-letter { color: var(--test-accent); font: 54px/1 "SFMono-Regular", Consolas, monospace; }
+    .version-caption { font-size: 11px; color: var(--muted); }
+    .test-version h3 { font-size: 19px; }
+    .test-creative { min-height: 194px; margin-top: 24px; padding: 22px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .creative-label { display: block; font-size: 10px; color: var(--muted); margin-bottom: 22px; }
+    .test-creative > p { font-size: 26px; line-height: 1.5; max-width: 470px; font-weight: 700; color: var(--test-accent); text-wrap: balance; }
+    .version-note { min-height: 42px; margin-top: 18px; color: var(--muted); font-size: 12px; }
+    .cover-example { height: 140px; object-fit: contain; object-position: left; margin-top: 16px; }
+    .cover-mode .test-creative { min-height: 360px; }
+    .comparison-criteria { display: grid; grid-template-columns: .8fr 1.05fr 1.15fr; margin-top: 22px; gap: 28px; }
+    .comparison-criteria > div { padding-top: 15px; border-top: 1px solid #cdd5dd; min-width: 0; }
+    .comparison-criteria span { display: block; color: var(--muted); font-size: 11px; margin-bottom: 6px; }
+    .comparison-criteria strong { display: block; font-size: 13px; font-weight: 600; }
+    .provenance { font-size: 11px; color: var(--muted); margin-top: 24px; }
+    .channel-map { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.4fr) minmax(0, .8fr); align-items: center; gap: 52px; padding: 32px 0; }
+    .map-label { display: block; font-size: 11px; margin-bottom: 15px; }
+    .channel-source, .channel-destination { border-block: 3px solid var(--blue); padding: 28px 0; }
+    .channel-source p, .channel-destination p, .review-center p { margin-top: 12px; font-size: 12px; color: var(--muted); }
+    .channel-source .map-label { color: var(--blue); }
+    .channel-destination { border-color: var(--cyan); }
+    .channel-destination .map-label { color: var(--cyan); }
+    .channel-lanes { display: grid; gap: 14px; position: relative; }
+    .channel-lanes::before, .channel-lanes::after { content: ""; position: absolute; top: 24px; bottom: 24px; width: 25px; border: 1px solid #b4c3d0; }
+    .channel-lanes::before { left: -26px; border-right: 0; }
+    .channel-lanes::after { right: -26px; border-left: 0; }
+    .channel-lane { --lane-color: var(--blue); padding: 19px 22px; border-left: 4px solid var(--lane-color); background: var(--soft); }
+    .channel-lane:nth-child(2) { --lane-color: var(--pink); }
+    .channel-lane:nth-child(3) { --lane-color: var(--cyan); }
+    .channel-lane strong { display: block; font-size: 16px; color: var(--lane-color); }
+    .channel-lane span { display: block; font-size: 12px; color: var(--muted); margin-top: 5px; }
+    .subsection-heading { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 10px 24px; margin: 48px 0 24px; }
+    .subsection-heading span { font-size: 11px; color: var(--muted); }
+    .creator-route { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; padding: 0; margin: 0; list-style: none; }
+    .creator-route li { display: flex; gap: 12px; border-top: 1px solid var(--line); padding-top: 22px; }
+    .creator-route li > span { color: var(--blue); font: 13px/24px "SFMono-Regular", Consolas, monospace; }
+    .creator-route p { color: var(--muted); font-size: 12px; margin-top: 9px; }
+    .field-evidence { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+    .event-visual { background: #e5e9ed; overflow: hidden; }
+    .event-visual img { width: 100%; height: 420px; object-fit: contain; }
+    .event-evidence figcaption, .campaign-material figcaption { display: grid; grid-template-columns: 26px 1fr; gap: 10px; margin-top: 15px; padding-top: 14px; border-top: 1px solid #cdd5dd; }
+    figcaption b { color: var(--blue); font-size: 11px; }
+    figcaption strong { display: block; font-size: 14px; }
+    figcaption span { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .journey-materials { margin-top: 48px; padding-top: 32px; border-top: 1px solid #cdd5dd; scroll-margin-top: 120px; }
+    .materials-credit { margin-top: 12px; color: #111; font-size: 14px; font-weight: 700; }
+    .materials-intro { max-width: 820px; margin-top: 12px; color: var(--muted); font-size: 14px; }
+    .material-group { margin-top: 32px; }
+    .material-group + .material-group { margin-top: 38px; padding-top: 28px; border-top: 1px solid #cdd5dd; }
+    .material-group-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 22px; }
+    .material-group-head > span { color: var(--cyan); font: 12px/1.5 "SFMono-Regular", Consolas, monospace; }
+    .material-group-head h4 { font-size: 18px; }
+    .journey-material-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; }
+    .campaign-material { min-width: 0; }
+    .campaign-material-visual { width: 100%; max-width: 210px; height: 260px; margin-inline: auto; }
+    .campaign-material-visual img { height: 100%; object-fit: contain; }
+    .campaign-material figcaption { grid-template-columns: 22px minmax(0, 1fr); gap: 8px; }
+    .campaign-material figcaption span { font-size: 13px; line-height: 1.75; }
+    .event-visual a, .campaign-material-visual a { display: block; height: 100%; }
+    .event-visual a:hover, .campaign-material-visual a:hover { outline: 3px solid var(--cyan); outline-offset: -3px; }
+    .campaign-material-visual a { cursor: zoom-in; }
+    .material-lightbox { width: min(880px, calc(100% - 32px)); max-height: calc(100dvh - 32px); padding: 0; border: 0; border-radius: 6px; background: #fff; color: var(--ink); overflow: hidden; }
+    .material-lightbox::backdrop { background: #101a24c7; }
+    .material-lightbox header { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; padding: 10px 16px 10px 24px; border-bottom: 1px solid var(--line); }
+    .material-lightbox h2 { font-size: 16px; line-height: 1.5; }
+    .material-close { flex: 0 0 44px; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 4px; background: var(--soft); color: var(--ink); font-size: 28px; line-height: 1; }
+    .material-close:hover { background: #e5e9ed; }
+    .material-lightbox-body { max-height: calc(100dvh - 112px); overflow: auto; padding: 16px; }
+    .material-lightbox-body img { width: auto; max-width: 100%; max-height: calc(100dvh - 144px); margin-inline: auto; object-fit: contain; }
+    .review-map { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1fr); align-items: center; gap: 52px; padding: 32px 0; }
+    .review-inputs, .review-outputs { display: grid; gap: 16px; }
+    .review-inputs > div, .review-outputs > div { position: relative; padding: 18px; background: var(--soft); border-left: 3px solid var(--blue); }
+    .review-inputs > div::after { content: "→"; position: absolute; right: -35px; top: 50%; transform: translateY(-50%); color: #80909d; }
+    .review-outputs > div { border-left-color: var(--cyan); }
+    .review-outputs > div::before { content: "→"; position: absolute; left: -36px; top: 50%; transform: translateY(-50%); color: #80909d; }
+    .review-inputs span, .review-outputs span { font-size: 14px; font-weight: 650; }
+    .review-inputs p, .review-outputs p { margin-top: 6px; font-size: 12px; color: var(--muted); }
+    .review-center { background: var(--navy); color: #fff; padding: 35px 28px; }
+    .review-center .map-label { color: #f0d48b; }
+    .review-center h3 { font-size: 23px; }
+    .review-center p { color: #d2dce2; }
+    .measurement-flow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px; }
+    .measurement-flow > div { position: relative; padding: 20px 0; border-block: 1px solid var(--line); }
+    .measurement-flow > div:not(:last-child)::after { content: "→"; position: absolute; right: -21px; top: 43%; color: var(--blue); }
+    .measurement-number { display: block; color: var(--blue); font-size: 12px; margin-bottom: 12px; }
+    .measurement-flow p { margin-top: 8px; font-size: 12px; color: var(--muted); }
+    .feedback-rows > div { display: grid; grid-template-columns: 1fr 1.5fr 80px; gap: 26px; padding: 19px 0; border-top: 1px solid var(--line); align-items: baseline; }
+    .feedback-rows > div:last-child { border-bottom: 1px solid var(--line); }
+    .feedback-rows span { font-size: 14px; font-weight: 650; }
+    .feedback-rows p { color: var(--muted); font-size: 13px; }
+    .feedback-rows strong { font-size: 12px; color: var(--cyan); font-weight: 650; text-align: right; }
+    .dashboard-shot { display: block; background: #fff; border: 1px solid #ffffff40; border-radius: 6px; overflow: hidden; }
+    .dashboard-shot img { max-height: 640px; object-fit: contain; }
+    .demo-footer { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-top: 22px; flex-wrap: wrap; }
+    .demo-footer > span { font-size: 12px; color: #c5d2d8; }
+    .primary-link { display: inline-flex; align-items: center; gap: 16px; min-height: 44px; padding: 9px 16px; border: 1px solid #8bccc2; border-radius: 4px; color: #fff; text-decoration: none; font-size: 13px; }
+    .primary-link:hover { color: var(--navy); background: #8bccc2; }
+    .outcome-summary { display: grid; grid-template-columns: 1fr 1.4fr; gap: 60px; padding: 32px 0; border-block: 1px solid var(--line); }
+    .outcome-count strong { display: block; font-size: 112px; color: var(--blue); line-height: 1.2; }
+    .outcome-count strong span { color: var(--cyan); }
+    .outcome-count p { font-size: 13px; color: var(--muted); margin-top: 12px; }
+    .outcome-list { padding: 0; margin: 0; list-style: none; }
+    .outcome-list li { display: grid; grid-template-columns: 110px 1fr; gap: 20px; padding: 17px 0; border-bottom: 1px solid var(--line); }
+    .outcome-list li:last-child { border: 0; }
+    .outcome-list span { font-size: 14px; font-weight: 650; }
+    .outcome-list p { font-size: 13px; color: var(--muted); }
+    .disclosure { margin-top: 30px; font-size: 12px; color: var(--muted); max-width: 950px; }
+    .back-link { display: inline-flex; gap: 20px; align-items: center; margin-top: 26px; min-height: 44px; font-size: 13px; color: var(--blue); }
+    .footer { padding-block: 26px; font-size: 11px; color: var(--muted); }
+
+    @media (max-width: 1000px) {
+      h1 { font-size: 48px; } h2 { font-size: 32px; }
+      .section-head { gap: 36px; }
+      .nav-links { gap: 16px; }
+      .metric { padding-inline: 16px; } .metric strong { font-size: 20px; }
+      .channel-map, .review-map { gap: 35px; }
+      .channel-lanes::before { width: 17px; left: -18px; }
+      .channel-lanes::after { width: 17px; right: -18px; }
+      .review-inputs > div::after { right: -24px; } .review-outputs > div::before { left: -26px; }
+      .review-center { padding: 28px 20px; } .review-center h3 { font-size: 19px; }
+      .event-visual img { height: 300px; }
+      .journey-material-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+      .test-creative > p { font-size: 23px; } .test-creative { min-height: 215px; }
+      .outcome-summary { gap: 32px; } .outcome-count strong { font-size: 86px; }
+    }
+    @media (max-width: 720px) {
+      html { scroll-padding-top: 108px; }
+      .report, .hero-inner, .metric-strip { width: calc(100% - 36px); }
+      .site-nav { flex-direction: column; align-items: stretch; gap: 0; padding: 12px 18px 0; }
+      .nav-brand { font-size: 12px; } .brand-mark { width: 24px; height: 24px; }
+      .nav-links { width: 100%; gap: 22px; } .nav-links a { min-height: 44px; font-size: 11px; }
+      .hero { min-height: 430px; } .hero-inner { padding-block: 40px; }
+      .hero::before { opacity: .8; background-position: center, 85% 40%; }
+      h1 { font-size: 34px; line-height: 1.3; } .hero-copy { font-size: 15px; margin-top: 20px; }
+      .eyebrow { font-size: 10px; margin-bottom: 16px; }
+      .hero-meta { gap: 8px 16px; margin-top: 22px; font-size: 10px; }
+      .metric-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metric, .metric:first-child { padding: 20px 14px; }
+      .metric:nth-child(2) { border-right: 0; }
+      .metric:nth-child(n+3) { border-top: 1px solid var(--line); }
+      .metric:nth-child(3) { padding-left: 14px; }
+      .metric-label { font-size: 9px; } .metric strong { font-size: 21px; min-height: 51px; }
+      .metric strong.mono { font-size: 39px; } .metric p { font-size: 10px; }
+      .section { padding-block: 50px; }
+      .section-head { grid-template-columns: 1fr; gap: 18px; margin-bottom: 28px; }
+      .section-lead { font-size: 14px; } h2 { font-size: 29px; } h3 { font-size: 19px; }
+      .kicker { font-size: 10px; margin-bottom: 10px; }
+      .work-route { grid-template-columns: 1fr; gap: 0; }
+      .work-route li { padding: 24px 0 24px 60px; border-top: 0; border-left: 2px solid var(--step-color); margin-left: 12px; }
+      .work-route li:not(:last-child)::after { content: "↓"; top: auto; right: auto; left: -11px; bottom: -12px; z-index: 1; }
+      .route-number { position: absolute; left: 17px; top: 28px; font-size: 22px; }
+      .work-route p { min-height: 0; font-size: 13px; } .work-route p br { display: none; }
+      .work-route h3 { margin-bottom: 6px; } .route-output { margin-top: 12px; padding-top: 8px; }
+      .test-tabs { width: 100%; } .test-toolbar { gap: 10px; }
+      .test-pair { gap: 14px; } .test-version { padding: 15px 12px; }
+      .test-version header { gap: 9px; } .version-letter { font-size: 34px; }
+      .test-version h3 { font-size: 14px; } .version-caption { font-size: 10px; }
+      .test-creative { min-height: 235px; padding-block: 16px; margin-top: 16px; }
+      .creative-label { font-size: 9px; margin-bottom: 15px; }
+      .test-creative > p { font-size: 18px; } .version-note { min-height: 57px; font-size: 11px; margin-top: 12px; }
+      .cover-mode .test-creative { min-height: 350px; } .cover-example { height: 135px; }
+      .comparison-criteria { grid-template-columns: 1fr; gap: 13px; margin-top: 18px; }
+      .comparison-criteria > div { display: grid; grid-template-columns: 76px 1fr; gap: 12px; padding-top: 12px; }
+      .comparison-criteria strong { font-size: 12px; }
+      .provenance { font-size: 10px; margin-top: 18px; }
+      .channel-map { grid-template-columns: 1fr; gap: 22px; padding: 0; }
+      .channel-source, .channel-destination { padding: 20px 0; }
+      .channel-source h3 br, .channel-source p br, .channel-destination h3 br, .channel-destination p br { display: none; }
+      .channel-source { border-bottom: 0; } .channel-destination { border-top: 0; }
+      .channel-lanes { margin-left: 18px; } .channel-lanes::before { width: 18px; left: -19px; }
+      .channel-lanes::after { display: none; }
+      .creator-route { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+      .creator-route h4 { font-size: 14px; } .creator-route p { font-size: 11px; }
+      .subsection-heading { margin-top: 34px; }
+      .field-evidence { grid-template-columns: 1fr; gap: 28px; }
+      .event-visual img { height: auto; max-height: 490px; object-fit: contain; }
+      .journey-material-grid { gap: 24px 14px; }
+      .journey-materials { margin-top: 36px; padding-top: 26px; }
+      .material-group-head { gap: 9px; margin-bottom: 18px; }
+      .material-group-head h4 { font-size: 16px; }
+      .campaign-material-visual { max-width: 180px; height: 214px; }
+      .campaign-material figcaption { display: block; margin-top: 12px; padding-top: 12px; }
+      .campaign-material figcaption b { display: none; }
+      .campaign-material figcaption span { font-size: 12px; }
+      .material-lightbox header { padding-left: 16px; }
+      figcaption strong { font-size: 13px; } figcaption span { font-size: 11px; }
+      .review-map { grid-template-columns: 1fr; gap: 30px; padding: 0; }
+      .review-inputs { gap: 10px; }
+      .review-inputs > div::after, .review-outputs > div::before { display: none; }
+      .review-center { position: relative; padding: 25px; }
+      .review-center::before, .review-center::after { position: absolute; content: "↓"; color: var(--cyan); left: calc(50% - 6px); }
+      .review-center::before { top: -30px; } .review-center::after { bottom: -30px; }
+      .review-center h3 { font-size: 23px; }
+      .review-outputs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+      .review-outputs > div { padding: 15px 12px; }
+      .measurement-flow { grid-template-columns: 1fr; gap: 16px; }
+      .measurement-flow > div { padding-left: 48px; }
+      .measurement-number { position: absolute; left: 6px; top: 22px; }
+      .measurement-flow > div:not(:last-child)::after { content: "↓"; right: auto; left: 10px; top: auto; bottom: -21px; background: #fff; z-index: 1; }
+      .feedback-rows > div { grid-template-columns: minmax(0, 1fr) 54px; gap: 6px 14px; }
+      .feedback-rows p { grid-column: 1; grid-row: 2; font-size: 12px; }
+      .feedback-rows strong { grid-column: 2; grid-row: 1 / 3; align-self: center; }
+      .demo-footer > span { font-size: 11px; }
+      .outcome-summary { grid-template-columns: 1fr; gap: 26px; }
+      .outcome-count strong { font-size: 92px; } .outcome-list li { grid-template-columns: 90px 1fr; gap: 14px; }
+      .outcome-list p { font-size: 12px; } .outcome-list span { font-size: 13px; }
+      .disclosure { font-size: 11px; }
+    }
+    @media (max-width: 360px) {
+      h1 { font-size: 30px; }
+      .test-pair { grid-template-columns: 1fr; }
+      .test-creative { min-height: 155px; }
+      .version-note { min-height: 0; }
+      .cover-mode .test-creative { min-height: 295px; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+  <link rel="stylesheet" href="case-study-analysis.css">
+  <link rel="stylesheet" href="case-study-workspace.css">
+  <link rel="stylesheet" href="../english-case.css">
+</head>
+<body>
+  <a class="skip-link" href="#overview">Skip to project content</a>
+  <nav class="site-nav" aria-label="Project navigation">
+    <a class="nav-brand" href="../../"><span class="brand-mark">LL</span><span>Portfolio</span></a>
+    <div class="nav-links">
+      <a href="#overview">Overview</a>
+      <a href="#campaigns">Campaigns</a>
+      <a href="#channels">Channels</a>
+      <a href="#content-test">Content tests</a>
+      <a href="#research">Review</a>
+      <a href="#results">Results</a>
+      <a class="nav-action" href="operations_dashboard.html">Analysis tool</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">PROJECT 01 / AI PRODUCT GROWTH</p>
+      <h1>YouNews</h1>
+      <p class="project-subtitle">User Acquisition & Channel Operations</p>
+      <p class="hero-copy">I independently designed selected online acquisition campaigns, created posters and distributed content. I also supported creator partnerships and tracked registration and first use.</p>
+      <div class="hero-meta"><span>Beijing Sohu New Media Information Co., Ltd.</span><span>AI Product Growth Operations Intern</span><span>2026.05–2026.07</span></div>
+    </div>
+  </header>
+
+  <div class="snapshot" aria-label="Project overview">
+    <div class="metric-strip">
+      <div class="metric"><span class="metric-label">CONTENT</span><strong class="mono">100+</strong><p>WeChat, Xiaohongshu and community content</p></div>
+      <div class="metric"><span class="metric-label">CAMPAIGNS</span><strong>Campaign planning</strong><p>Selected online campaigns, creative assets and distribution</p></div>
+      <div class="metric"><span class="metric-label">CREATORS</span><strong>Screening & follow-up</strong><p>Finance and AI creators, from screening to publishing</p></div>
+      <div class="metric"><span class="metric-label">REVIEW</span><strong>Data & feedback</strong><p>Content performance, registration and first-topic creation</p></div>
+    </div>
+  </div>
+
+  <main>
+    <div class="band">
+      <section class="section report" id="overview">
+        <div class="section-head">
+          <div><p class="kicker">01 / PROJECT BRIEF</p><h2>Project context &<br>my contribution</h2></div>
+          <p class="section-lead">YouNews brings together news aggregation, topic tracking, keyword monitoring and AI summaries. I used feedback and pricing surveys to understand user needs, planned content for different stages of use, and supported acquisition through campaigns, distribution and creators. Registration and first-topic creation helped inform the next round of content.</p>
+        </div>
+        <div class="need-explorer">
+          <div class="need-copy">
+            <div class="need-tabs" role="tablist" aria-label="Stages of use">
+              <button type="button" role="tab" id="need-discover" aria-controls="need-detail" aria-selected="true" data-need="0">Discover</button>
+              <button type="button" role="tab" id="need-try" aria-controls="need-detail" aria-selected="false" tabindex="-1" data-need="1">Consider</button>
+              <button type="button" role="tab" id="need-use" aria-controls="need-detail" aria-selected="false" tabindex="-1" data-need="2">Start using</button>
+            </div>
+            <div id="need-detail" role="tabpanel" aria-labelledby="need-discover" tabindex="0">
+              <p class="need-label">User questions, summarised from my approach</p>
+              <h3 class="need-question">Too much information. What is worth following?</h3>
+              <dl class="need-decisions">
+                <div><dt>Reasoning</dt><dd data-need-reason>Start with scattered information and repetitive searches so people can see whether the product is relevant to them.</dd></div>
+                <div><dt>Content approach</dt><dd data-need-action>Use the information-overload campaign to introduce news tracking, then explain the features.</dd></div>
+                <div><dt>Next step</dt><dd data-need-next>Explore the product and try it.</dd></div>
+              </dl>
+            </div>
+          </div>
+          <figure class="need-evidence"><img src="event-materials/03-awareness.jpg" alt="Information-overload campaign poster"><figcaption><span>Supporting creative / Designed by me</span><strong>Information overload campaign</strong></figcaption></figure>
+        </div>
+        <p class="need-source">Research included user feedback and needs and pricing surveys. These examples summarise the approach; they are not direct user quotes.</p>
+      </section>
+    </div>
+
+    <div class="band soft">
+      <section class="section report" id="campaigns">
+        <div class="section-head">
+          <div><p class="kicker">02 / CAMPAIGNS & MATERIALS</p><h2>Online campaigns<br>& creative assets</h2></div>
+          <p class="section-lead">For product launches and trial campaigns, I independently designed selected activities, prepared promotional content and handled relevant channel distribution. The focus was on clear product value, participation and next steps.</p>
+        </div>
+        <div class="campaign-briefs" aria-label="Online acquisition and promotion">
+          <article class="campaign-brief">
+            <span class="brief-label">ONLINE / Selected campaigns designed independently</span><h3>From product launch to first use</h3>
+            <dl><div><dt>Campaign design</dt><dd>Use user needs to define the theme, participation steps and key messages for the poster.</dd></div><div><dt>Creative & distribution</dt><dd>Create launch, feature, trial and community materials, then publish and distribute them through relevant channels.</dd></div><div><dt>Follow-up</dt><dd>Collect questions through feature guides, community discussions and trial surveys. Use first-use feedback to improve subsequent content.</dd></div></dl>
+          </article>
+        </div>
+        <p class="campaign-note"><strong>Planning insight</strong>A poster should make the next step clear. Product introductions need to connect to instructions, support and feedback.</p>
+        <div class="journey-materials" id="materials">
+          <h3>Launch and user engagement materials</h3>
+          <p class="materials-credit">Copy and visual design by Laurel Li. Original Chinese-language campaign materials, with English explanations below.</p>
+          <p class="materials-intro">Two groups follow the user journey: explain the product, then encourage trial, answer questions and collect feedback.</p>
+          <div class="material-group">
+            <div class="material-group-head"><span>01</span><h4>Product launch: explain the features</h4></div>
+            <div class="journey-material-grid">
+              <figure class="campaign-material"><div class="campaign-material-visual"><a href="event-materials/07-product-launch.png" target="_blank" rel="noopener noreferrer" aria-label="View original YouNews launch poster"><img src="event-materials/07-product-launch.png" alt="YouNews launch poster" loading="lazy"></a></div><figcaption><b>01</b><div><strong>YouNews launch</strong><span>Introduce the product as a personal information-tracking assistant and explain its core features.</span></div></figcaption></figure>
+              <figure class="campaign-material"><div class="campaign-material-visual"><a href="event-materials/08-topic-creation.png" target="_blank" rel="noopener noreferrer" aria-label="View original topic-creation poster"><img src="event-materials/08-topic-creation.png" alt="Topic-creation poster" loading="lazy"></a></div><figcaption><b>02</b><div><strong>Create a topic</strong><span>Show where to enter a topic and start tracking it.</span></div></figcaption></figure>
+              <figure class="campaign-material"><div class="campaign-material-visual"><a href="event-materials/09-topic-explanation.png" target="_blank" rel="noopener noreferrer" aria-label="View original topic-explanation poster"><img src="event-materials/09-topic-explanation.png" alt="Topic-explanation poster" loading="lazy"></a></div><figcaption><b>03</b><div><strong>Understand a topic</strong><span>Compare the overview, plain-language explanation and in-depth analysis for different reading needs.</span></div></figcaption></figure>
+              <figure class="campaign-material"><div class="campaign-material-visual"><a href="event-materials/10-daily-digest.png" target="_blank" rel="noopener noreferrer" aria-label="View original daily-digest poster"><img src="event-materials/10-daily-digest.png" alt="Daily-digest poster" loading="lazy"></a></div><figcaption><b>04</b><div><strong>Personal daily digest</strong><span>Show how followed topics become a daily update, giving the product a place in everyday reading.</span></div></figcaption></figure>
+            </div>
+          </div>
+          <div class="material-group">
+            <div class="material-group-head"><span>02</span><h4>Trial campaigns: from interest to feedback</h4></div>
+            <div class="journey-material-grid">
+              <figure class="campaign-material"><div class="campaign-material-visual"><a href="event-materials/03-awareness.jpg" target="_blank" rel="noopener noreferrer" aria-label="View original information-overload poster"><img src="event-materials/03-awareness.jpg" alt="Information-overload campaign poster" loading="lazy"></a></div><figcaption><b>01</b><div><strong>Information overload campaign</strong><span>Start with scattered information and repeated searches to help people recognise a relevant use case.</span></div></figcaption></figure>
+              <figure class="campaign-material"><div class="campaign-material-visual"><a href="event-materials/04-activation.jpg" target="_blank" rel="noopener noreferrer" aria-label="View original new-user offer poster"><img src="event-materials/04-activation.jpg" alt="New-user offer poster" loading="lazy"></a></div><figcaption><b>02</b><div><strong>New-user trial offer</strong><span>Explain trial features, benefits and participation steps to give interested users a reason to try.</span></div></figcaption></figure>
+              <figure class="campaign-material"><div class="campaign-material-visual"><a href="event-materials/05-community.jpg" target="_blank" rel="noopener noreferrer" aria-label="View original YouNews community poster"><img src="event-materials/05-community.jpg" alt="YouNews community poster" loading="lazy"></a></div><figcaption><b>03</b><div><strong>Join the YouNews community</strong><span>Introduce the space for questions, feature trials and practical support.</span></div></figcaption></figure>
+              <figure class="campaign-material"><div class="campaign-material-visual"><a href="event-materials/06-survey.jpg" target="_blank" rel="noopener noreferrer" aria-label="View original product-experience survey poster"><img src="event-materials/06-survey.jpg" alt="Product-experience survey poster" loading="lazy"></a></div><figcaption><b>04</b><div><strong>Product experience survey</strong><span>Explain eligibility, survey steps and incentive rules, inviting users to share problems and suggestions.</span></div></figcaption></figure>
+            </div>
+          </div>
+          <p class="case-takeaway"><strong>Content insight</strong>Product introductions explain the value. Feature guides show how to start. Campaign and community content explain how to participate and where to get help.</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="band">
+      <section class="section report" id="channels">
+        <div class="section-head">
+          <div><p class="kicker">03 / CHANNELS & CREATORS</p><h2>Creator partnerships &<br>channel operations</h2></div>
+          <p class="section-lead">I independently published and distributed relevant content on WeChat, Xiaohongshu and in communities, adapting headlines and copy to each channel. I also supported finance and AI creator screening, content preparation and publishing follow-up.</p>
+        </div>
+        <div class="channel-map" aria-label="Channels and content">
+          <div class="channel-source"><span class="map-label">Content preparation</span><h3>Product features<br>& user questions</h3><p>Feature guides, use cases<br>and relevant user questions</p></div>
+          <div class="channel-lanes">
+            <div class="channel-lane"><strong>WeChat</strong><span>Product introductions, tutorials and industry use cases</span></div>
+            <div class="channel-lane"><strong>Xiaohongshu</strong><span>Use-case-led content for people who need to track information</span></div>
+            <div class="channel-lane"><strong>Communities</strong><span>Content distribution, practical support and feedback</span></div>
+          </div>
+          <div class="channel-destination"><span class="map-label">After publishing</span><h3>Content performance<br>& user feedback</h3><p>Views, engagement and<br>trackable visits and registrations</p></div>
+        </div>
+        <div class="subsection-heading"><h3>My role in creator partnerships</h3><span>Screening > Preparation > Performance review</span></div>
+        <ol class="creator-route creator-route-compact">
+          <li><span>01</span><div><h4>Screen creators</h4><p>Review audience profiles, content themes and recent engagement to assess product fit.</p></div></li>
+          <li><span>02</span><div><h4>Prepare the collaboration</h4><p>Organise quotes and publishing schedules, share product information and assets, and follow up on publishing.</p></div></li>
+          <li><span>03</span><div><h4>Record performance</h4><p>Review views, engagement and trackable visits and registrations to inform future creator selection.</p></div></li>
+        </ol>
+        <p class="case-takeaway"><strong>My approach</strong>Follower count was not the only criterion. I focused on whether the audience needed ongoing news tracking and whether the creator could explain a useful, specific use case.</p>
+      </section>
+    </div>
+
+    <div class="band soft">
+      <section class="section report" id="content-test">
+        <div class="section-head">
+          <div><p class="kicker">04 / CONTENT COMPARISON</p><h2>Content comparison</h2></div>
+          <p class="section-lead">Compare headlines, covers and copy, then use views and engagement to inform future content. The aim is to understand what communicates well, not just find the highest number.</p>
+        </div>
+        <div class="test-toolbar">
+          <div class="test-tabs" role="tablist" aria-label="Content comparison dimension">
+            <button type="button" role="tab" id="tab-title" aria-controls="test-panel" aria-selected="true" data-test="title">Headlines</button>
+            <button type="button" role="tab" id="tab-cover" aria-controls="test-panel" aria-selected="false" tabindex="-1" data-test="cover">Covers</button>
+            <button type="button" role="tab" id="tab-copy" aria-controls="test-panel" aria-selected="false" tabindex="-1" data-test="copy">Copy</button>
+          </div>
+          <span class="evidence-label">Reconstructed examples, not historical campaign screenshots</span>
+        </div>
+        <div id="test-panel" role="tabpanel" aria-labelledby="tab-title" tabindex="0">
+          <div class="test-pair">
+            <article class="test-version version-a">
+              <header><span class="version-letter" aria-hidden="true">A</span><div><span class="version-caption">Version A</span><h3 id="version-a-name">Feature-led</h3></div></header>
+              <div class="test-creative"><span class="creative-label">YouNews / Illustrative copy</span><p id="version-a-copy">Follow topics, monitor keywords and organise news with AI summaries</p><img class="cover-example" src="event-materials/03-awareness.jpg" alt="Existing campaign asset used to illustrate cover layout" hidden></div>
+              <p class="version-note" id="version-a-note">Lead with features to explain what the product does.</p>
+            </article>
+            <article class="test-version version-b">
+              <header><span class="version-letter" aria-hidden="true">B</span><div><span class="version-caption">Version B</span><h3 id="version-b-name">Use-case-led</h3></div></header>
+              <div class="test-creative"><span class="creative-label">YouNews / Illustrative copy</span><p id="version-b-copy">Searching for industry updates every day? Track what matters in one topic</p><img class="cover-example" src="event-materials/03-awareness.jpg" alt="Existing campaign asset used to illustrate cover layout" hidden></div>
+              <p class="version-note" id="version-b-note">Start with the situation, then explain how the product helps.</p>
+            </article>
+          </div>
+          <div class="comparison-criteria">
+            <div><span>Variable</span><strong id="test-variable">Headline angle</strong></div>
+            <div><span>Other conditions</span><strong id="test-controls">Keep the cover, body copy and observation window as consistent as possible</strong></div>
+            <div><span>Measures</span><strong id="test-metric">Views and engagement; CTR when impressions and clicks are available</strong></div>
+          </div>
+        </div>
+        <p class="provenance">These reconstructed examples show the comparison approach, not historical winners or measured uplifts. Posts published at different times provide observational comparisons only.</p>
+      </section>
+    </div>
+
+    <div class="band">
+      <section class="section report" id="research">
+        <div class="section-head">
+          <div><p class="kicker">05 / RESEARCH & REVIEW</p><h2>Performance review</h2></div>
+          <p class="section-lead">I built a lightweight dashboard with AI assistance to review content alongside trackable product data: interest, registration and first use. User feedback helped identify what to change next.</p>
+        </div>
+        <ol class="review-journey" aria-label="Review path from channel reach to first use">
+          <li><span>01</span><h3>Content reach</h3><p>Views, engagement and feedback</p></li>
+          <li><span>02</span><h3>Product visits</h3><p>Trackable visits</p></li>
+          <li><span>03</span><h3>Registration</h3><p>Change in new registrations</p></li>
+          <li><span>04</span><h3>First topic created</h3><p>First use after registration</p></li>
+        </ol>
+        <div class="subsection-heading"><h3>Registration and first-use changes</h3><span>Two-point comparison, not a daily trend</span></div>
+        <p class="chart-context">Relative index, baseline = 100. Converted from the reported uplifts; not raw user counts or conversion rates.</p>
+        <div class="result-charts">
+          <figure class="result-chart" style="--chart-color:var(--cyan)">
+            <figcaption><h4>New registrations</h4><p>50% above the previous week during the campaign period</p></figcaption>
+            <div class="comparison-plot" role="img" aria-label="Registration index: previous week 100, campaign period 150, up 50%. A before-and-after comparison, not a daily trend.">
+              <div class="plot-scale" aria-hidden="true"><span style="bottom:0%">0</span><span style="bottom:25%">40</span><span style="bottom:50%">80</span><span style="bottom:75%">120</span><span style="bottom:100%">160</span></div>
+              <div class="plot-data" aria-hidden="true">
+                <i class="plot-gridline" style="bottom:25%"></i><i class="plot-gridline" style="bottom:50%"></i><i class="plot-gridline" style="bottom:75%"></i><i class="plot-gridline" style="bottom:100%"></i>
+                <svg viewBox="0 0 100 160" preserveAspectRatio="none"><line x1="12" y1="60" x2="88" y2="10" vector-effect="non-scaling-stroke" /></svg>
+                <span class="plot-point baseline" style="left:12%;bottom:62.5%"><b>100</b></span><span class="plot-point" style="left:88%;bottom:93.75%"><b>150</b></span>
+                <span class="plot-period" style="left:12%">Prior week</span><span class="plot-period" style="left:88%">Campaign period</span>
+              </div>
+            </div>
+          </figure>
+          <figure class="result-chart" style="--chart-color:var(--pink)">
+            <figcaption><h4>First-topic creation rate</h4><p>Approximately 15% relative growth, not 15 percentage points</p></figcaption>
+            <div class="comparison-plot" role="img" aria-label="First-topic creation rate index: baseline 100, comparison period approximately 115. The specific comparison window was not supplied.">
+              <div class="plot-scale" aria-hidden="true"><span style="bottom:0%">0</span><span style="bottom:25%">40</span><span style="bottom:50%">80</span><span style="bottom:75%">120</span><span style="bottom:100%">160</span></div>
+              <div class="plot-data" aria-hidden="true">
+                <i class="plot-gridline" style="bottom:25%"></i><i class="plot-gridline" style="bottom:50%"></i><i class="plot-gridline" style="bottom:75%"></i><i class="plot-gridline" style="bottom:100%"></i>
+                <svg viewBox="0 0 100 160" preserveAspectRatio="none"><line x1="12" y1="60" x2="88" y2="45" vector-effect="non-scaling-stroke" /></svg>
+                <span class="plot-point baseline" style="left:12%;bottom:62.5%"><b>100</b></span><span class="plot-point" style="left:88%;bottom:71.875%"><b>~115</b></span>
+                <span class="plot-period" style="left:12%">Baseline</span><span class="plot-period" style="left:88%">Comparison</span>
+              </div>
+            </div>
+          </figure>
+        </div>
+        <p class="chart-source">Source: my internship summary. The comparison window for first-topic creation was not specified. Overall changes are not attributed to an individual creator or post.</p>
+        <div class="subsection-heading"><h3>Use feedback to improve the next round</h3><span>Content and product actions</span></div>
+        <div class="feedback-rows">
+          <div><span>Channel and audience fit</span><p>Review topics, distribution and budget using content performance and trackable conversions</p><strong>Channels</strong></div>
+          <div><span>Unclear value or instructions</span><p>Update posters, use cases, tutorials and FAQs</p><strong>Content</strong></div>
+          <div><span>Feature or usability issues</span><p>Record specific problems for the product team</p><strong>Product</strong></div>
+        </div>
+        <p class="case-takeaway"><strong>Reflection</strong>Attention is only the start. I look at registration and first-topic creation together to understand whether people actually begin using the product.</p>
+      </section>
+    </div>
+
+    <div class="band dark">
+      <section class="section report" id="sop">
+        <div class="section-head">
+          <div><p class="kicker">06 / ANALYSIS DEMO</p><h2>Operations analysis tool</h2></div>
+          <p class="section-lead">An interactive demonstration using synthetic user journeys, survey feedback and daily metrics. It shows how I review data, organise issues and develop recommendations.</p>
+        </div>
+        <a class="dashboard-shot" href="operations_dashboard.html" aria-label="Open the operations analysis tool with synthetic data"><img src="../../works/covers/sohu-dashboard.png" alt="Operations analysis demo with synthetic data" loading="lazy"></a>
+        <div class="demo-footer"><span>Synthetic data demonstration, not project results</span><a class="primary-link" href="operations_dashboard.html">Open analysis tool <span aria-hidden="true">↗</span></a></div>
+      </section>
+    </div>
+
+    <div class="band">
+      <section class="section report" id="results">
+        <div class="section-head">
+          <div><p class="kicker">07 / PROJECT OUTCOME</p><h2>Project results</h2></div>
+          <p class="section-lead">I independently designed selected online campaigns, created posters and handled relevant distribution, while supporting creator partnerships. The dashboard and user feedback informed later content and promotion. Results below summarise the internship period.</p>
+        </div>
+        <div class="project-outcomes" aria-label="Internship project summary">
+          <div><strong class="outcome-value mono">100<span>+</span></strong><h3>Content pieces produced</h3><p>WeChat, Xiaohongshu and community content, including introductions, tutorials, industry use cases and FAQs.</p></div>
+          <div><strong class="outcome-value mono">+50<span>%</span></strong><h3>Registration growth</h3><p>Campaign-period registrations rose 50% versus the previous week.</p></div>
+          <div><strong class="outcome-value mono"><small>~</small>+15<span>%</span></strong><h3>Relative growth in first-topic creation rate</h3><p>Tracking first use after registration.</p></div>
+        </div>
+        <p class="outcome-context">These are overall period results, not gains attributed to one creator, post or campaign.</p>
+        <p class="disclosure outcome-disclosure"><strong>About this case</strong>Results are drawn from my internship summary. Internal user records, creator identities and commercial quotes are not disclosed. Illustrative content and tool demonstrations are separate from reported results.</p>
+        <a class="back-link" href="../../">Back to portfolio <span aria-hidden="true">↗</span></a>
+      </section>
+    </div>
+  </main>
+  <footer class="footer report">AI Product Acquisition & Channel Operations / May - July 2026</footer>
+
+  <dialog class="material-lightbox" aria-labelledby="material-lightbox-title">
+    <header><h2 id="material-lightbox-title">Campaign creative</h2><button class="material-close" type="button" aria-label="Close poster" title="Close poster" autofocus><span aria-hidden="true">×</span></button></header>
+    <div class="material-lightbox-body"><img alt=""></div>
+  </dialog>
+
+  <script>
+    const materialLightbox = document.querySelector('.material-lightbox');
+    if (typeof materialLightbox.showModal === 'function') {
+      const lightboxImage = materialLightbox.querySelector('img');
+      const lightboxTitle = document.getElementById('material-lightbox-title');
+      let previousOverflow = '';
+      document.querySelectorAll('.campaign-material-visual a').forEach((link) => {
+        link.addEventListener('click', (event) => {
+          if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          event.preventDefault();
+          const thumbnail = link.querySelector('img');
+          lightboxImage.src = link.href;
+          lightboxImage.alt = thumbnail.alt;
+          lightboxTitle.textContent = link.closest('figure').querySelector('figcaption strong').textContent;
+          previousOverflow = document.documentElement.style.overflow;
+          document.documentElement.style.overflow = 'hidden';
+          materialLightbox.showModal();
+        });
+      });
+      materialLightbox.querySelector('.material-close').addEventListener('click', () => materialLightbox.close());
+      materialLightbox.addEventListener('click', (event) => {
+        if (event.target !== materialLightbox) return;
+        const bounds = materialLightbox.getBoundingClientRect();
+        if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) materialLightbox.close();
+      });
+      materialLightbox.addEventListener('close', () => {
+        document.documentElement.style.overflow = previousOverflow;
+      });
+    }
+
+    const testExamples = {
+      title: {
+        names: ['Feature-led', 'Use-case-led'],
+        copies: ['Follow topics, monitor keywords and organise news with AI summaries', 'Searching for industry updates every day? Track what matters in one topic'],
+        notes: ['Lead with features to explain what the product does.', 'Start with the situation, then explain how the product helps.'],
+        variable: 'Headline angle',
+        controls: 'Keep the cover, body copy and observation window as consistent as possible',
+        metric: 'Views and engagement; CTR when impressions and clicks are available'
+      },
+      cover: {
+        names: ['Features first', 'User problem first'],
+        copies: ['Topic tracking / Keyword monitoring / AI summaries', 'Too much news and too many searches. How do you keep track?'],
+        notes: ['Use the same asset, leading with feature names.', 'Use the same asset, leading with the user problem.'],
+        variable: 'Cover message hierarchy',
+        controls: 'Keep the headline, body copy and observation window as consistent as possible',
+        metric: 'CTR when impressions and clicks are available, alongside views'
+      },
+      copy: {
+        names: ['Feature description', 'Step-by-step explanation'],
+        copies: ['Create a topic, set keywords, collect relevant news and read AI summaries.', 'Choose an industry > Add keywords > Create a topic > Read relevant news.'],
+        notes: ['Organise the explanation around product capabilities.', 'Organise the explanation around first-use steps.'],
+        variable: 'Body copy structure',
+        controls: 'Keep the headline, cover and observation window as consistent as possible',
+        metric: 'Views, saves and questions in comments about understanding or use'
+      }
+    };
+    const tabs = [...document.querySelectorAll('[data-test]')];
+    const panel = document.getElementById('test-panel');
+    function selectTest(tab) {
+      const example = testExamples[tab.dataset.test];
+      tabs.forEach((item) => {
+        const selected = item === tab;
+        item.setAttribute('aria-selected', String(selected));
+        item.tabIndex = selected ? 0 : -1;
+      });
+      panel.setAttribute('aria-labelledby', tab.id);
+      panel.classList.toggle('cover-mode', tab.dataset.test === 'cover');
+      ['a', 'b'].forEach((letter, index) => {
+        document.getElementById('version-' + letter + '-name').textContent = example.names[index];
+        document.getElementById('version-' + letter + '-copy').textContent = example.copies[index];
+        document.getElementById('version-' + letter + '-note').textContent = example.notes[index];
+      });
+      document.getElementById('test-variable').textContent = example.variable;
+      document.getElementById('test-controls').textContent = example.controls;
+      document.getElementById('test-metric').textContent = example.metric;
+      panel.querySelectorAll('.cover-example').forEach((img) => { img.hidden = tab.dataset.test !== 'cover'; });
+    }
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => selectTest(tab));
+      tab.addEventListener('keydown', (event) => {
+        let next;
+        if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+        if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
+        if (event.key === 'Home') next = 0;
+        if (event.key === 'End') next = tabs.length - 1;
+        if (next === undefined) return;
+        event.preventDefault();
+        selectTest(tabs[next]);
+        tabs[next].focus();
+      });
+    });
+
+    if ('IntersectionObserver' in window) {
+      const links = [...document.querySelectorAll('.nav-links a[href^="#"]')];
+      const navigation = new IntersectionObserver((entries) => {
+        const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!visible) return;
+        links.forEach((link) => {
+          const active = link.getAttribute('href') === '#' + visible.target.id;
+          link.classList.toggle('active', active);
+          if (active) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        });
+      }, { rootMargin: '-12% 0px -45% 0px', threshold: [0, 0.1, 0.4] });
+      document.querySelectorAll('main section[id]').forEach((section) => navigation.observe(section));
+    }
+  </script>
+  <script src="lucide.min.js"></script>
+  <script src="case-study-workspace.js"></script>
+</body>
+</html>

@@ -1,0 +1,2539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouNews | User Journey Analysis</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0F172A',
+            accent: '#94A3B8',
+            ink: '#0F172A',
+            bodyText: '#334155',
+            muted: '#64748B',
+            line: '#E2E8F0',
+            soft: '#F8FAFC',
+            neutralSoft: '#F8FAFC',
+            neutralLine: '#E5E7EB',
+            altSoft: '#F8FAFC',
+            altLine: '#E5E7EB',
+            altText: '#334155',
+            success: '#10B981',
+            orange: '#F97316'
+          },
+          boxShadow: {
+            app: '0 24px 80px rgba(15, 23, 42, 0.12)',
+            card: '0 1px 2px rgba(15, 23, 42, 0.04), 0 10px 28px rgba(15, 23, 42, 0.06)',
+            soft: '0 1px 3px rgba(15, 23, 42, 0.08)'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root {
+      --primary: #0F172A;
+      --accent: #94A3B8;
+      --ink: #0F172A;
+      --body: #334155;
+      --muted: #64748B;
+      --line: #E2E8F0;
+      --soft: #F8FAFC;
+      --neutral-soft: #F8FAFC;
+      --neutral-line: #E5E7EB;
+      --alt-soft: #F8FAFC;
+      --alt-line: #E5E7EB;
+      --alt-text: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      overflow-y: auto;
+      background: var(--soft);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-y: auto;
+      margin: 0;
+      background: var(--soft);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+    }
+
+    @media (min-width: 1024px) {
+      .app-shell {
+        height: 100vh;
+        padding: 24px;
+      }
+    }
+
+    .app-window {
+      min-height: 100vh;
+      background: #FFFFFF;
+      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.12);
+    }
+
+    @media (min-width: 1024px) {
+      .app-window {
+        height: calc(100vh - 48px);
+        max-width: 1280px;
+        margin: 0 auto;
+        border-radius: 24px;
+      }
+    }
+
+    .sidebar {
+      background: #F8FAFC;
+    }
+
+    @media (min-width: 1024px) {
+      .sidebar {
+        position: sticky;
+        top: 0;
+        height: calc(100vh - 48px);
+        flex: 0 0 220px;
+      }
+    }
+
+    .main-content {
+      background: #FFFFFF;
+    }
+
+    @media (min-width: 1024px) {
+      .main-content {
+        height: calc(100vh - 48px);
+        overflow-y: auto;
+      }
+    }
+
+    .nav-list {
+      scrollbar-width: thin;
+      scrollbar-color: #CBD5E1 transparent;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 650;
+      white-space: nowrap;
+      transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.78);
+      color: #0F172A;
+    }
+
+    .nav-item-active {
+      background: #0F172A;
+      color: #FFFFFF;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.16);
+    }
+
+    .nav-item-active:hover {
+      background: #0F172A;
+      color: #FFFFFF;
+    }
+
+    .nav-icon {
+      display: inline-flex;
+      width: 24px;
+      height: 24px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.76);
+      color: #334155;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .nav-item-active .nav-icon {
+      background: rgba(255, 255, 255, 0.18);
+      color: #FFFFFF;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #FFFFFF;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 10px 28px rgba(15, 23, 42, 0.06);
+    }
+
+    .module {
+      scroll-margin-top: 18px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      line-height: 28px;
+      font-weight: 750;
+      color: #0F172A;
+    }
+
+    .section-subtitle {
+      margin-top: 4px;
+      color: #64748B;
+      font-size: 14px;
+      line-height: 22px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #FFFFFF;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    @media (min-width: 1280px) {
+      .metric-grid {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+    }
+
+    .metric-card {
+      min-width: 220px;
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .metric-title {
+      white-space: normal;
+      word-break: keep-all;
+      overflow-wrap: normal;
+      line-height: 1.4;
+    }
+
+    .metric-formula {
+      width: fit-content;
+      max-width: 100%;
+      white-space: normal;
+      word-break: keep-all;
+      line-height: 1.45;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 16px;
+      white-space: nowrap;
+    }
+
+    .nav-item-disabled {
+      opacity: 0.42;
+      filter: grayscale(0.2);
+    }
+
+    .nav-item-disabled:hover {
+      background: transparent;
+      color: #334155;
+    }
+
+    .mode-toast {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 40;
+      max-width: 360px;
+      border: 1px solid var(--neutral-line);
+      border-radius: 14px;
+      background: #FFFFFF;
+      box-shadow: 0 18px 48px rgba(15, 23, 42, 0.14);
+    }
+
+    .bar-track {
+      background: #E2E8F0;
+      border-radius: 999px;
+      overflow: clip;
+    }
+
+    .table-wrap {
+      scrollbar-width: thin;
+      scrollbar-color: #CBD5E1 transparent;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 999px;
+    }
+
+    tbody tr {
+      transition: background-color 140ms ease;
+    }
+
+    tbody tr:hover {
+      background: #F8FAFC;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell bg-soft lg:p-6">
+    <div class="app-window border border-line bg-white shadow-app lg:flex">
+      <aside class="sidebar border-b border-line p-4 lg:rounded-l-[24px] lg:border-b-0 lg:border-r">
+        <div class="flex items-center gap-3 px-1 lg:mb-6">
+          <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-sm font-bold text-white">AI</div>
+          <div class="min-w-0">
+            <p class="truncate text-sm font-bold text-ink">YouNews</p>
+            <p class="text-xs font-medium text-muted">User Ops Console</p>
+          </div>
+        </div>
+
+        <nav id="sidebarNav" class="nav-list mt-4 flex gap-1 overflow-x-auto pb-1 text-sm lg:mt-0 lg:grid lg:max-h-[calc(100vh-230px)] lg:overflow-y-auto lg:pb-0">
+          <a href="#overview" data-target="overview" class="nav-item nav-item-active"><span class="nav-icon">O</span><span>Overview</span></a>
+          <a href="#funnel" data-target="funnel" class="nav-item"><span class="nav-icon">F</span><span>Journey funnel</span></a>
+          <a href="#activation" data-target="activation" class="nav-item"><span class="nav-icon">A</span><span>Activation</span></a>
+          <a href="#segments" data-target="segments" class="nav-item"><span class="nav-icon">S</span><span>User segments</span></a>
+          <a href="#cross-analysis" data-target="cross-analysis" class="nav-item"><span class="nav-icon">X</span><span>Cross analysis</span></a>
+          <a href="#data-security" data-target="data-security" class="nav-item"><span class="nav-icon">L</span><span>Data privacy</span></a>
+          <a href="#data-quality" data-target="data-quality" class="nav-item"><span class="nav-icon">K</span><span>Data quality</span></a>
+          <a href="#event-data" data-target="event-data" class="nav-item"><span class="nav-icon">E</span><span>Event data</span></a>
+          <a href="#daily-metrics" data-target="daily-metrics" class="nav-item"><span class="nav-icon">D</span><span>Daily metrics</span></a>
+          <a href="#survey-feedback" data-target="survey-feedback" class="nav-item"><span class="nav-icon">Q</span><span>Survey feedback</span></a>
+          <a href="#issues" data-target="issues" class="nav-item"><span class="nav-icon">I</span><span>Issue analysis</span></a>
+          <a href="#suggestions" data-target="suggestions" class="nav-item"><span class="nav-icon">G</span><span>Recommendations</span></a>
+          <a href="#data-preview" data-target="data-preview" class="nav-item"><span class="nav-icon">P</span><span>Data preview</span></a>
+        </nav>
+
+        <div class="mt-5 hidden rounded-2xl border border-neutralLine bg-white/70 p-3 lg:block">
+          <p class="text-xs font-bold text-bodyText">Data privacy</p>
+          <p class="mt-2 text-xs leading-5 text-muted">The preview hides personal fields such as phone numbers, IP addresses, user agents and names, keeping only fields needed for analysis.</p>
+        </div>
+      </aside>
+
+      <main id="mainContent" class="main-content min-w-0 flex-1 lg:rounded-r-[24px]">
+        <header id="overview" class="module border-b border-line px-5 py-5 sm:px-6 lg:px-8">
+          <div class="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+            <div class="max-w-4xl">
+              <div class="mb-3 flex flex-wrap items-center gap-2">
+                <span class="badge border border-neutralLine bg-neutralSoft text-primary">Consumer product analytics</span>
+                <span class="badge border border-altLine bg-altSoft text-altText">Local processing</span>
+                <span id="modeBadge" class="badge border border-line bg-white text-muted">Mode: User journeys</span>
+                <span id="modeCompleteness" class="badge border border-line bg-white text-muted">Complete fields</span>
+              </div>
+              <h1 class="text-2xl font-bold tracking-tight text-ink sm:text-3xl">YouNews | User Journey Analysis</h1>
+              <p class="mt-3 text-sm leading-6 text-bodyText">
+                Explore the path from registration to first use in an AI news-tracking product. Compare user groups, feature needs and willingness to pay, then review possible content and product actions. Built-in datasets are synthetic examples, not company records or measured project results.
+              </p>
+              <div class="mt-4 rounded-xl border border-orange/20 bg-orange/10 p-4">
+                <p class="text-sm font-bold text-ink">Authorisation and privacy</p>
+                <p class="mt-2 text-xs leading-5 text-bodyText">Only upload data you are authorised to use. Remove phone numbers, emails, IP addresses, device identifiers and real user IDs first. Files are parsed in this browser, not uploaded to a server or sent to an external API.</p>
+              </div>
+            </div>
+
+            <div class="rounded-2xl border border-dashed border-neutralLine bg-neutralSoft p-3 xl:w-[390px]">
+              <div class="flex flex-wrap items-center gap-2">
+                <input id="fileInput" type="file" accept=".csv,.txt,.xlsx,.xls,text/csv,text/plain" class="sr-only" />
+                <label for="fileInput" class="inline-flex cursor-pointer items-center justify-center rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#1E293B]">Upload file</label>
+                <button id="resetData" type="button" class="inline-flex items-center justify-center rounded-lg border border-line bg-white px-3 py-2 text-sm font-semibold text-bodyText transition hover:border-primary hover:text-primary">Restore demo data</button>
+              </div>
+              <p class="mt-2 text-xs leading-5 text-muted">CSV / TXT / XLSX. The tool identifies user journeys, events, surveys and daily metrics.</p>
+              <p id="dataStatus" class="mt-3 rounded-lg border border-line bg-white px-3 py-2 text-xs leading-5 text-muted">Using 20 synthetic user-journey records.</p>
+            </div>
+          </div>
+
+          <div class="mt-5 grid gap-4 xl:grid-cols-[1.3fr_1fr]">
+            <div class="rounded-xl border border-line bg-slate-50 p-4">
+              <p class="text-sm font-bold text-ink">About the data</p>
+              <p class="mt-2 text-xs leading-5 text-muted">
+                The built-in datasets are synthetic and contain no real user or company records. They demonstrate journey analysis, segmentation, feature use, issue classification and willingness to pay.
+              </p>
+              <p class="mt-2 text-xs leading-5 text-muted">
+                For uploaded data, the preview hides recognised personal fields and shows the available analytical fields.
+              </p>
+            </div>
+            <div id="fieldReport" class="rounded-xl border border-line bg-white p-4 text-xs leading-5 text-muted"></div>
+          </div>
+
+          <div class="mt-5 rounded-xl border border-neutralLine bg-neutralSoft p-3">
+            <div class="mb-2 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+              <p class="text-sm font-bold text-ink">Dataset</p>
+              <p class="text-xs leading-5 text-muted">Switch between synthetic datasets to explore the available analysis for each structure.</p>
+            </div>
+            <div id="modeSwitch" class="flex flex-wrap gap-2"></div>
+          </div>
+        </header>
+
+        <div class="space-y-6 px-5 py-6 sm:px-6 lg:px-8">
+          <div id="modeHint" class="mode-toast hidden px-4 py-3 text-sm leading-6 text-bodyText"></div>
+
+          <section class="module metric-grid" id="metricCards"></section>
+
+          <section id="data-security" class="module panel p-5">
+            <div class="mb-5">
+              <h2 class="section-title">Privacy checks</h2>
+              <p class="section-subtitle">Recognised personal fields are hidden by default. Required identifiers are replaced with anonymous IDs.</p>
+            </div>
+            <div id="securityContent"></div>
+          </section>
+
+          <section id="data-quality" class="module panel p-5">
+            <div class="mb-5">
+              <h2 class="section-title">Data quality checks</h2>
+              <p class="section-subtitle">Review row and field counts, missing values, duplicate users and available analyses.</p>
+            </div>
+            <div id="qualityContent"></div>
+          </section>
+
+          <section class="module panel p-4" id="status-tabs">
+            <div class="mb-3 flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <h2 class="section-title">User status</h2>
+                <p class="section-subtitle">Switch user groups to update the applicable analyses.</p>
+              </div>
+              <span id="tabStatus" class="badge border border-neutralLine bg-neutralSoft text-primary"></span>
+            </div>
+            <div id="statusTabs" class="flex flex-wrap gap-2"></div>
+          </section>
+
+          <section class="module panel p-5" id="filters">
+            <div class="mb-4 flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <h2 class="section-title">Segment filters</h2>
+                <p class="section-subtitle">Filter and group records to compare activation, return behaviour, willingness to pay and issue types.</p>
+              </div>
+              <button id="resetFilters" type="button" class="inline-flex w-fit items-center justify-center rounded-lg border border-neutralLine bg-white px-3 py-2 text-sm font-semibold text-primary transition hover:bg-neutralSoft">Reset filters</button>
+            </div>
+            <div id="filterControls" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-5"></div>
+            <p id="filterStatus" class="mt-4 rounded-lg border border-neutralLine bg-neutralSoft px-3 py-2 text-xs leading-5 text-muted"></p>
+            <p id="filterInsight" class="mt-3 rounded-lg border border-line bg-white px-3 py-2 text-sm leading-6 text-bodyText"></p>
+          </section>
+
+          <section id="funnel" class="module panel p-5">
+            <div class="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <h2 class="section-title">Core journey funnel</h2>
+                <p class="section-subtitle">Register > Read introduction > Create topic > View AI summary > Complete first core experience</p>
+              </div>
+              <span id="dropoffBadge" class="badge bg-primary text-white"></span>
+            </div>
+            <div id="funnelContent"></div>
+          </section>
+
+          <section id="activation" class="module panel p-5">
+            <div class="mb-5">
+              <h2 class="section-title">Activation and return behaviour</h2>
+              <p class="section-subtitle">Check whether users begin using the core features.</p>
+            </div>
+            <div id="activationContent"></div>
+          </section>
+
+          <section id="segments" class="module panel p-5">
+            <div class="mb-5">
+              <h2 class="section-title">User segments</h2>
+              <p class="section-subtitle">Compare activation, return behaviour, willingness to pay, feature needs and issues by user_type.</p>
+            </div>
+            <div id="segmentsContent"></div>
+          </section>
+
+          <section id="cross-analysis" class="module panel p-5">
+            <div class="mb-5 flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+              <div>
+                <h2 class="section-title">Cross analysis and significance</h2>
+                <p class="section-subtitle">Explore group differences with cross tables, row percentages, chi-square tests and effect sizes. These associations do not establish causation.</p>
+              </div>
+              <div id="crossControls" class="grid gap-3 sm:grid-cols-2"></div>
+            </div>
+            <div id="crossContent"></div>
+          </section>
+
+          <section id="event-data" class="module panel p-5">
+            <div class="mb-5">
+              <h2 class="section-title">Event analysis</h2>
+              <p class="section-subtitle">Review app opens, returning users and daily activity from PostHog-style event data.</p>
+            </div>
+            <div id="eventContent"></div>
+          </section>
+
+          <section id="daily-metrics" class="module panel p-5">
+            <div class="mb-5">
+              <h2 class="section-title">Daily metric analysis</h2>
+              <p class="section-subtitle">Review DAU, reactivation sources, retention, topic use and push efficiency.</p>
+            </div>
+            <div id="dailyContent"></div>
+          </section>
+
+          <section id="survey-feedback" class="module panel p-5">
+            <div class="mb-5">
+              <h2 class="section-title">Survey analysis</h2>
+              <p class="section-subtitle">Review user profiles, usage, experience ratings, pain points, perceived value and willingness to pay.</p>
+            </div>
+            <div id="surveyContent"></div>
+          </section>
+
+          <section id="issues" class="module grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+            <div class="panel p-5">
+              <div class="mb-5">
+                <h2 class="section-title">Issue analysis</h2>
+                <p class="section-subtitle">Group recorded issues and open feedback by type, affected journey stage and possible next action.</p>
+              </div>
+              <div id="issuesContent"></div>
+            </div>
+            <div class="panel p-5">
+              <div class="mb-5">
+                <h2 class="section-title">Journey diagnosis</h2>
+                <p class="section-subtitle">Locate drop-off stages before the first core experience. Suggested causes require further validation.</p>
+              </div>
+              <div id="pathTreeContent"></div>
+            </div>
+          </section>
+
+          <section class="module grid gap-6 xl:grid-cols-2" id="issue-category">
+            <div class="rounded-2xl border border-neutralLine bg-neutralSoft p-5 shadow-card">
+              <div class="mb-5 flex items-start justify-between gap-3">
+                <div>
+                  <h2 class="section-title">Content and operations actions</h2>
+                  <p class="section-subtitle">Address gaps with content, tutorials, FAQs, prompt examples and user education.</p>
+                </div>
+                <span id="opsIssueBadge" class="badge bg-white text-primary"></span>
+              </div>
+              <div id="opsIssueContent" class="space-y-3"></div>
+            </div>
+            <div class="rounded-2xl border border-altLine bg-altSoft p-5 shadow-card">
+              <div class="mb-5 flex items-start justify-between gap-3">
+                <div>
+                  <h2 class="section-title">Product issues to review</h2>
+                  <p class="section-subtitle">Document possible improvements to entry points, onboarding, content organisation and reminder settings.</p>
+                </div>
+                <span id="productIssueBadge" class="badge bg-white text-altText"></span>
+              </div>
+              <div id="productIssueContent" class="space-y-3"></div>
+            </div>
+          </section>
+
+          <section id="suggestions" class="module panel p-5">
+            <div class="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <h2 class="section-title">Recommendations</h2>
+                <p class="section-subtitle">Rule-based suggestions from the current dataset and analysis, for review rather than automatic decisions.</p>
+              </div>
+              <span id="suggestionModeBadge" class="badge border border-neutralLine bg-neutralSoft text-primary"></span>
+            </div>
+            <div id="suggestionsContent"></div>
+          </section>
+
+          <section id="data-preview" class="module panel p-5">
+            <div class="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <h2 class="section-title">Data preview</h2>
+                <p class="section-subtitle">Preview filtered analytical fields. Recognised personal information is hidden.</p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <span id="previewCount" class="badge border border-line bg-slate-50 text-muted"></span>
+                <button id="togglePreviewFields" type="button" class="rounded-lg border border-line bg-white px-3 py-2 text-sm font-semibold text-bodyText transition hover:border-primary hover:text-primary">Show all fields</button>
+              </div>
+            </div>
+            <div id="previewContent"></div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const pathRequiredFields = ['user_id', 'registered', 'browsed_intro', 'created_topic', 'viewed_ai_summary', 'completed_core_action'];
+    const pathOptionalFields = ['user_type', 'source_channel', 'enabled_reminder', 'active_days', 'topic_count', 'faq_viewed', 'prompt_viewed', 'returned_7d', 'use_scene', 'function_need', 'pay_willingness', 'price_acceptance', 'feedback', 'issue_type'];
+    const pathAllFields = [...pathRequiredFields, ...pathOptionalFields];
+    const pathBooleanOptionalFields = ['enabled_reminder', 'faq_viewed', 'prompt_viewed', 'returned_7d'];
+    const pathNumberOptionalFields = ['active_days', 'topic_count'];
+    const pathFilterFields = ['user_type', 'source_channel', 'pay_willingness', 'issue_type', 'use_scene'];
+    const pathCrossDimensions = ['user_type', 'use_scene', 'function_need', 'issue_type', 'pay_willingness', 'price_acceptance', 'source_channel', 'completed_core_action'];
+    const fieldLabels = {
+      user_type: 'User type',
+      source_channel: 'Source channel',
+      pay_willingness: 'Willingness to pay',
+      issue_type: 'Issue type',
+      use_scene: 'Use case',
+      function_need: 'Feature need',
+      price_acceptance: 'Price acceptance',
+      completed_core_action: 'First core experience'
+    };
+    const statusTabs = [
+      { key: 'all', label: 'All users' },
+      { key: 'completed', label: 'Core experience complete' },
+      { key: 'incomplete', label: 'Core experience incomplete' },
+      { key: 'highPay', label: 'High willingness to pay' },
+      { key: 'pendingIssue', label: 'Unclassified issues' }
+    ];
+    const opsIssueTypes = ['Feature understanding', 'Unclear use case', 'Prompt guidance needed', 'Price concerns', 'Unclear content value'];
+    const productIssueTypes = ['Hidden entry point', 'Complex flow', 'Unclear content categories', 'Hidden reminder settings', 'Long first-use journey'];
+    const sensitiveFieldKeywords = [
+      'Phone number', 'mobile', 'phone', 'Email address', 'email', 'Display name', 'name', 'IP', 'UA',
+      'user_id', 'user_agent', 'device_id', 'distinct_id', 'Person.id', 'Person.distinct_id',
+      'Referrer', 'openid', 'unionid'
+    ];
+    const identifierFieldPatterns = [/^user_id$/i, /^用户id$/i, /^用户标识$/i, /distinct.?id/i, /^person\.id$/i, /^person\.distinct_id$/i, /openid/i, /unionid/i, /device.?id/i];
+    const privateFieldPatterns = [
+      /^user_id$/i, /手机号/i, /mobile/i, /phone/i, /邮箱/i, /email/i, /昵称/i, /(^|[_\s.])name($|[_\s.])/i,
+      /^ip$/i, /(^|[_\s.])ip($|[_\s.])/i, /^ua$/i, /user.?agent/i, /device.?id/i,
+      /distinct.?id/i, /^person\.id$/i, /^person\.distinct_id$/i, /referrer/i, /openid/i,
+      /unionid/i, /自定义字段/i, /^用户标识$/i
+    ];
+
+    const pathIssueMeta = {
+      'Feature understanding': { node: 'Read introduction > Create topic', suggestion: 'Add onboarding guidance, feature explanations and use cases' },
+      'Unclear use case': { node: 'Register > Read introduction', suggestion: 'Add use-case templates for different user groups' },
+      'Prompt guidance needed': { node: 'View AI summary > Complete core experience', suggestion: 'Add prompt examples, reusable templates and input hints' },
+      'Hidden entry point': { node: 'Read introduction > Create topic', suggestion: 'Ask the product team to review entry points and button labels' },
+      'Complex flow': { node: 'Create topic > View AI summary', suggestion: 'Ask the product team to simplify first-topic creation' },
+      'Price concerns': { node: 'Complete core experience > Consider payment', suggestion: 'Clarify trial access, value and membership benefits' },
+      'Unclear content categories': { node: 'View AI summary > Complete core experience', suggestion: 'Improve content categories and saved-item organisation' },
+      'Hidden reminder settings': { node: 'Complete core experience > Keep tracking', suggestion: 'Improve access to reminder settings and guidance' },
+      'Long first-use journey': { node: 'Register > Complete core experience', suggestion: 'Shorten onboarding and offer default topic templates' },
+      'Unclear content value': { node: 'Read introduction > Create topic', suggestion: 'Clarify content value, membership benefits and practical outcomes' },
+      'Unclassified issue': { node: 'Not supplied', suggestion: 'Add issue_type for more detailed analysis' }
+    };
+
+    const samplePathData = [
+      { user_id: 'AIA001', user_type: 'AI enthusiast', source_channel: 'Xiaohongshu', registered: 1, browsed_intro: 1, created_topic: 1, viewed_ai_summary: 1, completed_core_action: 1, enabled_reminder: 1, active_days: 12, topic_count: 3, faq_viewed: 1, prompt_viewed: 1, returned_7d: 1, use_scene: 'Daily AI news reading', function_need: 'AI news aggregation', pay_willingness: 'High', price_acceptance: 'CNY 19.9/month', feedback: 'I want to find AI updates quickly. Summaries save time.', issue_type: 'Unclear content value' },
+      { user_id: 'AIA002', user_type: 'Technology professional', source_channel: 'WeChat', registered: 1, browsed_intro: 1, created_topic: 0, viewed_ai_summary: 0, completed_core_action: 0, enabled_reminder: 0, active_days: 2, topic_count: 0, faq_viewed: 0, prompt_viewed: 1, returned_7d: 0, use_scene: 'Create a tracking topic', function_need: 'Topic tracking', pay_willingness: 'Medium', price_acceptance: 'CNY 9.9/month', feedback: 'I do not know how to create an AI industry topic or which keywords to track.', issue_type: 'Feature understanding' },
+      { user_id: 'AIA003', user_type: 'Investment researcher', source_channel: 'Referral', registered: 1, browsed_intro: 1, created_topic: 1, viewed_ai_summary: 1, completed_core_action: 1, enabled_reminder: 1, active_days: 18, topic_count: 5, faq_viewed: 1, prompt_viewed: 0, returned_7d: 1, use_scene: 'Track investment information', function_need: 'Keyword monitoring', pay_willingness: 'High', price_acceptance: 'CNY 29.9/month', feedback: 'I would like to track companies, technologies and supply-chain segments separately.', issue_type: 'Unclear content categories' },
+      { user_id: 'AIA004', user_type: 'Technology creator', source_channel: 'Short-video platform', registered: 1, browsed_intro: 1, created_topic: 1, viewed_ai_summary: 0, completed_core_action: 0, enabled_reminder: 0, active_days: 3, topic_count: 1, faq_viewed: 0, prompt_viewed: 1, returned_7d: 0, use_scene: 'Find content ideas', function_need: 'AI summaries', pay_willingness: 'Medium', price_acceptance: 'CNY 19.9/month', feedback: 'I would like topic templates for creators, but the results are hard to find.', issue_type: 'Hidden entry point' },
+      { user_id: 'AIA005', user_type: 'University student', source_channel: 'Organic search', registered: 1, browsed_intro: 1, created_topic: 0, viewed_ai_summary: 0, completed_core_action: 0, enabled_reminder: 0, active_days: 1, topic_count: 0, faq_viewed: 1, prompt_viewed: 1, returned_7d: 0, use_scene: 'Learn about the AI industry', function_need: 'Prompt examples', pay_willingness: 'Low', price_acceptance: 'Not paying yet', feedback: 'I need more prompt examples and am unsure whether it is worth paying.', issue_type: 'Prompt guidance needed' },
+      { user_id: 'AIA006', user_type: 'Frequent news reader', source_channel: 'App Store search', registered: 1, browsed_intro: 1, created_topic: 1, viewed_ai_summary: 1, completed_core_action: 0, enabled_reminder: 0, active_days: 4, topic_count: 2, faq_viewed: 0, prompt_viewed: 0, returned_7d: 1, use_scene: 'Save and organise news', function_need: 'Saved items', pay_willingness: 'Medium', price_acceptance: 'CNY 9.9/month', feedback: 'Saving is useful, but organising topics and the first-use journey feel complicated.', issue_type: 'Complex flow' },
+      { user_id: 'AIA007', user_type: 'Semiconductor follower', source_channel: 'Community sharing', registered: 1, browsed_intro: 1, created_topic: 1, viewed_ai_summary: 1, completed_core_action: 1, enabled_reminder: 1, active_days: 16, topic_count: 4, faq_viewed: 1, prompt_viewed: 1, returned_7d: 1, use_scene: 'Follow semiconductor developments', function_need: 'Industry tracking', pay_willingness: 'High', price_acceptance: 'CNY 29.9/month', feedback: 'I want semiconductor tracking templates because I am unsure which keywords to use.', issue_type: 'Unclear use case' },
+      { user_id: 'AIA008', user_type: 'AI enthusiast', source_channel: 'WeChat', registered: 1, browsed_intro: 0, created_topic: 0, viewed_ai_summary: 0, completed_core_action: 0, enabled_reminder: 0, active_days: 0, topic_count: 0, faq_viewed: 0, prompt_viewed: 0, returned_7d: 0, use_scene: 'Daily AI news reading', function_need: 'News alerts', pay_willingness: 'Low', price_acceptance: 'Not paying yet', feedback: 'There is a lot of information. I cannot tell how it differs from a regular news subscription.', issue_type: 'Unclear content value' },
+      { user_id: 'AIA009', user_type: 'Technology professional', source_channel: 'Xiaohongshu', registered: 1, browsed_intro: 1, created_topic: 1, viewed_ai_summary: 1, completed_core_action: 1, enabled_reminder: 0, active_days: 9, topic_count: 2, faq_viewed: 1, prompt_viewed: 1, returned_7d: 1, use_scene: 'Create a tracking topic', function_need: 'Topic tracking', pay_willingness: 'High', price_acceptance: 'CNY 19.9/month', feedback: 'AI summaries are useful. Suggested keywords would help when creating a topic.', issue_type: 'Long first-use journey' },
+      { user_id: 'AIA010', user_type: 'Technology creator', source_channel: 'Community sharing', registered: 1, browsed_intro: 1, created_topic: 1, viewed_ai_summary: 1, completed_core_action: 1, enabled_reminder: 1, active_days: 11, topic_count: 4, faq_viewed: 1, prompt_viewed: 1, returned_7d: 1, use_scene: 'Find content ideas', function_need: 'AI summaries', pay_willingness: 'High', price_acceptance: 'CNY 29.9/month', feedback: 'It helps with content ideas. I would like to save prompt templates.', issue_type: 'Prompt guidance needed' },
+      { user_id: 'AIA011', user_type: 'Investment researcher', source_channel: 'Organic search', registered: 1, browsed_intro: 1, created_topic: 1, viewed_ai_summary: 0, completed_core_action: 0, enabled_reminder: 0, active_days: 2, topic_count: 1, faq_viewed: 0, prompt_viewed: 0, returned_7d: 0, use_scene: 'Track investment information', function_need: 'Keyword monitoring', pay_willingness: 'Medium', price_acceptance: 'CNY 19.9/month', feedback: 'After creating a topic, I cannot find the AI results.', issue_type: 'Hidden entry point' },
+      { user_id: 'AIA012', user_type: 'University student', source_channel: 'Referral', registered: 1, browsed_intro: 1, created_topic: 1, viewed_ai_summary: 1, completed_core_action: 0, enabled_reminder: 0, active_days: 3, topic_count: 1, faq_viewed: 1, prompt_viewed: 1, returned_7d: 0, use_scene: 'Learn about the AI industry', function_need: 'AI news aggregation', pay_willingness: 'Low', price_acceptance: 'Not paying yet', feedback: 'The content is useful, but I would like a trial before paying.', issue_type: 'Price concerns' },
+      { user_id: 'AIA013', user_type: 'Frequent news reader', source_channel: 'App Store search', registered: 1, browsed_intro: 1, created_topic: 1, viewed_ai_summary: 1, completed_core_action: 1, enabled_reminder: 1, active_days: 20, topic_count: 6, faq_viewed: 0, prompt_viewed: 0, returned_7d: 1, use_scene: 'Daily AI news reading', function_need: 'News alerts', pay_willingness: 'High', price_acceptance: 'CNY 19.9/month', feedback: 'Reminders are useful, but the settings could be easier to find.', issue_type: 'Hidden reminder settings' },
+      { user_id: 'AIA014', user_type: 'Semiconductor follower', source_channel: 'WeChat', registered: 1, browsed_intro: 1, created_topic: 1, viewed_ai_summary: 1, completed_core_action: 1, enabled_reminder: 1, active_days: 15, topic_count: 4, faq_viewed: 1, prompt_viewed: 0, returned_7d: 1, use_scene: 'Follow semiconductor developments', function_need: 'Keyword monitoring', pay_willingness: 'High', price_acceptance: 'CNY 29.9/month', feedback: 'I want to track upstream, midstream and downstream segments separately.', issue_type: 'Unclear content categories' },
+      { user_id: 'AIA015', user_type: 'AI enthusiast', source_channel: 'Short-video platform', registered: 1, browsed_intro: 1, created_topic: 0, viewed_ai_summary: 0, completed_core_action: 0, enabled_reminder: 0, active_days: 1, topic_count: 0, faq_viewed: 0, prompt_viewed: 0, returned_7d: 0, use_scene: 'Daily AI news reading', function_need: 'AI news aggregation', pay_willingness: 'Medium', price_acceptance: 'CNY 9.9/month', feedback: 'The introduction did not explain the value of creating a topic.', issue_type: 'Feature understanding' },
+      { user_id: 'AIA016', user_type: 'Technology professional', source_channel: 'Community sharing', registered: 1, browsed_intro: 1, created_topic: 1, viewed_ai_summary: 1, completed_core_action: 1, enabled_reminder: 1, active_days: 10, topic_count: 3, faq_viewed: 1, prompt_viewed: 1, returned_7d: 1, use_scene: 'Create a tracking topic', function_need: 'Topic tracking', pay_willingness: 'High', price_acceptance: 'CNY 19.9/month', feedback: 'I track competitors and industry changes and would pay for reliable alerts.', issue_type: 'Unclassified issue' },
+      { user_id: 'AIA017', user_type: 'Technology creator', source_channel: 'Xiaohongshu', registered: 1, browsed_intro: 1, created_topic: 1, viewed_ai_summary: 1, completed_core_action: 0, enabled_reminder: 0, active_days: 5, topic_count: 2, faq_viewed: 1, prompt_viewed: 1, returned_7d: 0, use_scene: 'Find content ideas', function_need: 'Prompt examples', pay_willingness: 'Medium', price_acceptance: 'CNY 9.9/month', feedback: 'I need prompt examples to adapt summaries to my own writing.', issue_type: 'Prompt guidance needed' },
+      { user_id: 'AIA018', user_type: 'Investment researcher', source_channel: 'Referral', registered: 1, browsed_intro: 1, created_topic: 1, viewed_ai_summary: 1, completed_core_action: 1, enabled_reminder: 1, active_days: 13, topic_count: 4, faq_viewed: 0, prompt_viewed: 0, returned_7d: 1, use_scene: 'Track investment information', function_need: 'Industry tracking', pay_willingness: 'High', price_acceptance: 'CNY 29.9/month', feedback: 'I would like an industry-report organisation feature.', issue_type: 'Unclear content value' },
+      { user_id: 'AIA019', user_type: 'University student', source_channel: 'Organic search', registered: 1, browsed_intro: 0, created_topic: 0, viewed_ai_summary: 0, completed_core_action: 0, enabled_reminder: 0, active_days: 0, topic_count: 0, faq_viewed: 0, prompt_viewed: 0, returned_7d: 0, use_scene: 'Learn about the AI industry', function_need: 'AI news aggregation', pay_willingness: 'Low', price_acceptance: 'Not paying yet', feedback: 'I am not sure how a student should use it.', issue_type: 'Unclear use case' },
+      { user_id: 'AIA020', user_type: 'Frequent news reader', source_channel: 'Short-video platform', registered: 1, browsed_intro: 1, created_topic: 1, viewed_ai_summary: 0, completed_core_action: 0, enabled_reminder: 0, active_days: 2, topic_count: 1, faq_viewed: 0, prompt_viewed: 0, returned_7d: 0, use_scene: 'Save and organise news', function_need: 'Saved items', pay_willingness: 'Medium', price_acceptance: 'CNY 9.9/month', feedback: 'Categories and the saved-item journey could be clearer.', issue_type: 'Unclear content categories' }
+    ];
+
+    const sampleEventData = [
+      { 'Person.distinct_id': 'u_001', event: 'Application Opened', timestamp: '2026-07-15T08:12:00+10:00', Screen: 'Home', 'properties.$lib': 'iOS' },
+      { 'Person.distinct_id': 'u_001', event: 'Application Opened', timestamp: '2026-07-15T21:08:00+10:00', Screen: 'Topic Feed', 'properties.$lib': 'iOS' },
+      { 'Person.distinct_id': 'u_001', event: 'Application Opened', timestamp: '2026-07-16T09:22:00+10:00', Screen: 'Home', 'properties.$lib': 'iOS' },
+      { 'Person.distinct_id': 'u_001', event: 'Application Opened', timestamp: '2026-07-17T10:15:00+10:00', Screen: 'AI Summary', 'properties.$lib': 'iOS' },
+      { 'Person.distinct_id': 'u_002', event: 'Application Opened', timestamp: '2026-07-15T12:01:00+10:00', Screen: 'Home', 'properties.$lib': 'Android' },
+      { 'Person.distinct_id': 'u_002', event: 'Application Opened', timestamp: '2026-07-18T12:36:00+10:00', Screen: 'Notification', 'properties.$lib': 'Android' },
+      { 'Person.distinct_id': 'u_003', event: 'Application Opened', timestamp: '2026-07-15T18:45:00+10:00', Screen: 'Home', 'properties.$lib': 'iOS' },
+      { 'Person.distinct_id': 'u_004', event: 'Application Opened', timestamp: '2026-07-16T08:03:00+10:00', Screen: 'Home', 'properties.$lib': 'Web' },
+      { 'Person.distinct_id': 'u_004', event: 'Application Opened', timestamp: '2026-07-16T20:10:00+10:00', Screen: 'Topic Feed', 'properties.$lib': 'Web' },
+      { 'Person.distinct_id': 'u_004', event: 'Application Opened', timestamp: '2026-07-17T08:20:00+10:00', Screen: 'Home', 'properties.$lib': 'Web' },
+      { 'Person.distinct_id': 'u_004', event: 'Application Opened', timestamp: '2026-07-18T08:44:00+10:00', Screen: 'AI Summary', 'properties.$lib': 'Web' },
+      { 'Person.distinct_id': 'u_004', event: 'Application Opened', timestamp: '2026-07-19T09:05:00+10:00', Screen: 'Home', 'properties.$lib': 'Web' },
+      { 'Person.distinct_id': 'u_005', event: 'Application Opened', timestamp: '2026-07-16T19:27:00+10:00', Screen: 'Home', 'properties.$lib': 'Android' },
+      { 'Person.distinct_id': 'u_006', event: 'Application Opened', timestamp: '2026-07-17T11:18:00+10:00', Screen: 'Home', 'properties.$lib': 'iOS' },
+      { 'Person.distinct_id': 'u_006', event: 'Application Opened', timestamp: '2026-07-18T11:33:00+10:00', Screen: 'Topic Feed', 'properties.$lib': 'iOS' },
+      { 'Person.distinct_id': 'u_007', event: 'Application Opened', timestamp: '2026-07-19T22:16:00+10:00', Screen: 'Home', 'properties.$lib': 'Android' }
+    ];
+
+    const sampleSurveyData = [
+      { 'Age group': '18-24', 'Occupation / Industry': 'University student', 'City / Country': 'Shanghai', 'Usage status': 'Tried it', 'Experience rating': 4, 'Usage friction': 'Feature understanding, Prompt guidance needed', 'Reason for trying': 'Learn about the AI industry', 'Most valuable capability': 'AI summaries, Prompt examples', 'Would pay': 'Not yet', 'Price acceptance': 'CNY 9.9/month', 'Payment hesitation': 'Price concerns', 'Top improvement request': 'More prompt examples for analytical summaries' },
+      { 'Age group': '25-34', 'Occupation / Industry': 'Technology professional', 'City / Country': 'Beijing', 'Usage status': 'Regular use', 'Experience rating': 5, 'Usage friction': 'Hidden entry point', 'Reason for trying': 'Daily AI news reading', 'Most valuable capability': 'Topic tracking, News alerts', 'Would pay': 'Yes', 'Price acceptance': 'CNY 19.9/month', 'Payment hesitation': 'Unclear membership benefits', 'Top improvement request': 'Reminder settings are hard to find' },
+      { 'Age group': '25-34', 'Occupation / Industry': 'Technology creator', 'City / Country': 'Hangzhou', 'Usage status': 'Regular use', 'Experience rating': 4, 'Usage friction': 'Unclear content categories, Prompt guidance needed', 'Reason for trying': 'Find content ideas', 'Most valuable capability': 'AI summaries, Topic tracking', 'Would pay': 'Yes', 'Price acceptance': 'CNY 19.9/month', 'Payment hesitation': 'Want a trial first', 'Top improvement request': 'Topic templates for creators' },
+      { 'Age group': '35-44', 'Occupation / Industry': 'Investment research', 'City / Country': 'Shenzhen', 'Usage status': 'Regular use', 'Experience rating': 5, 'Usage friction': 'Unclear content categories', 'Reason for trying': 'Track investment information', 'Most valuable capability': 'Keyword monitoring, Industry tracking', 'Would pay': 'Yes', 'Price acceptance': 'CNY 29.9/month', 'Payment hesitation': 'Unsure about data coverage', 'Top improvement request': 'Track companies, technologies and supply-chain segments separately' },
+      { 'Age group': '25-34', 'Occupation / Industry': 'AI enthusiast', 'City / Country': 'Guangzhou', 'Usage status': 'Occasional use', 'Experience rating': 3, 'Usage friction': 'Unclear use case', 'Reason for trying': 'Daily AI news reading', 'Most valuable capability': 'AI news aggregation', 'Would pay': 'Unsure', 'Price acceptance': 'CNY 9.9/month', 'Payment hesitation': 'Unsure whether it is worth paying', 'Top improvement request': 'Explain the difference from a regular news subscription' },
+      { 'Age group': '18-24', 'Occupation / Industry': 'University student', 'City / Country': 'Nanjing', 'Usage status': 'Stopped using', 'Experience rating': 3, 'Usage friction': 'Complex flow, Feature understanding', 'Reason for trying': 'Learn about the AI industry', 'Most valuable capability': 'AI news aggregation', 'Would pay': 'Not yet', 'Price acceptance': 'Not paying yet', 'Payment hesitation': 'Price concerns', 'Top improvement request': 'First-topic creation feels complicated' },
+      { 'Age group': '35-44', 'Occupation / Industry': 'Semiconductor follower', 'City / Country': 'Suzhou', 'Usage status': 'Regular use', 'Experience rating': 4, 'Usage friction': 'Difficult keywords, Unclear content categories', 'Reason for trying': 'Follow semiconductor developments', 'Most valuable capability': 'Keyword monitoring, Industry tracking', 'Would pay': 'Yes', 'Price acceptance': 'CNY 29.9/month', 'Payment hesitation': 'Broader supply-chain coverage', 'Top improvement request': 'Unsure which keywords to use for semiconductor tracking' },
+      { 'Age group': '25-34', 'Occupation / Industry': 'Frequent news reader', 'City / Country': 'Chengdu', 'Usage status': 'Occasional use', 'Experience rating': 4, 'Usage friction': 'Unclear saved-item organisation', 'Reason for trying': 'Save and organise news', 'Most valuable capability': 'Saved items, News alerts', 'Would pay': 'Unsure', 'Price acceptance': 'CNY 9.9/month', 'Payment hesitation': 'Irregular usage', 'Top improvement request': 'Saving is useful but organising topics is unclear' }
+    ];
+
+    const sampleDailyData = [
+      { 'Date': '2026-07-15', 'DAU': 1080, 'Cold-start UV': 520, 'Icon reactivation UV': 210, 'Push reactivation UV': 96, 'External H5 reactivation UV': 82, 'Day-1 retention': '36%', 'Average app duration': 6.2, 'Registered users': 318, 'Topic follow actions': 168, 'Topic follow UV': 92, 'Topics followed': 78, 'Topics created': 62, 'Topic creation UV': 45, 'News items ingested': 1180, 'Push sends': 9800, 'Push recipients': 1880 },
+      { 'Date': '2026-07-16', 'DAU': 1165, 'Cold-start UV': 548, 'Icon reactivation UV': 236, 'Push reactivation UV': 122, 'External H5 reactivation UV': 94, 'Day-1 retention': '39%', 'Average app duration': 6.8, 'Registered users': 342, 'Topic follow actions': 196, 'Topic follow UV': 108, 'Topics followed': 84, 'Topics created': 74, 'Topic creation UV': 52, 'News items ingested': 1270, 'Push sends': 10500, 'Push recipients': 2040 },
+      { 'Date': '2026-07-17', 'DAU': 1218, 'Cold-start UV': 560, 'Icon reactivation UV': 248, 'Push reactivation UV': 138, 'External H5 reactivation UV': 106, 'Day-1 retention': '42%', 'Average app duration': 7.1, 'Registered users': 360, 'Topic follow actions': 218, 'Topic follow UV': 121, 'Topics followed': 95, 'Topics created': 82, 'Topic creation UV': 58, 'News items ingested': 1390, 'Push sends': 11200, 'Push recipients': 2180 },
+      { 'Date': '2026-07-18', 'DAU': 1116, 'Cold-start UV': 506, 'Icon reactivation UV': 231, 'Push reactivation UV': 101, 'External H5 reactivation UV': 98, 'Day-1 retention': '37%', 'Average app duration': 6.5, 'Registered users': 335, 'Topic follow actions': 184, 'Topic follow UV': 103, 'Topics followed': 89, 'Topics created': 70, 'Topic creation UV': 49, 'News items ingested': 1218, 'Push sends': 10800, 'Push recipients': 2060 },
+      { 'Date': '2026-07-19', 'DAU': 1290, 'Cold-start UV': 612, 'Icon reactivation UV': 260, 'Push reactivation UV': 144, 'External H5 reactivation UV': 112, 'Day-1 retention': '44%', 'Average app duration': 7.4, 'Registered users': 386, 'Topic follow actions': 248, 'Topic follow UV': 132, 'Topics followed': 106, 'Topics created': 96, 'Topic creation UV': 66, 'News items ingested': 1510, 'Push sends': 12000, 'Push recipients': 2300 },
+      { 'Date': '2026-07-20', 'DAU': 1368, 'Cold-start UV': 640, 'Icon reactivation UV': 286, 'Push reactivation UV': 166, 'External H5 reactivation UV': 119, 'Day-1 retention': '45%', 'Average app duration': 7.8, 'Registered users': 408, 'Topic follow actions': 276, 'Topic follow UV': 148, 'Topics followed': 114, 'Topics created': 108, 'Topic creation UV': 74, 'News items ingested': 1640, 'Push sends': 12600, 'Push recipients': 2420 },
+      { 'Date': '2026-07-21', 'DAU': 1312, 'Cold-start UV': 606, 'Icon reactivation UV': 271, 'Push reactivation UV': 151, 'External H5 reactivation UV': 117, 'Day-1 retention': '41%', 'Average app duration': 7.0, 'Registered users': 392, 'Topic follow actions': 254, 'Topic follow UV': 139, 'Topics followed': 110, 'Topics created': 99, 'Topic creation UV': 69, 'News items ingested': 1585, 'Push sends': 12400, 'Push recipients': 2380 }
+    ];
+
+    const builtInDatasets = {
+      path: { label: 'User journeys', rows: samplePathData, source: 'Synthetic user journeys' },
+      event: { label: 'Events', rows: sampleEventData, source: 'Synthetic events' },
+      survey: { label: 'Survey responses', rows: sampleSurveyData, source: 'Synthetic survey responses' },
+      daily: { label: 'Daily metrics', rows: sampleDailyData, source: 'Synthetic daily metrics' }
+    };
+
+    const state = {
+      rawRows: samplePathData,
+      mode: 'path',
+      sourceLabel: 'Synthetic user journeys',
+      headers: pathAllFields,
+      sourceFieldSet: new Set(pathAllFields),
+      fieldReport: { recognized: pathAllFields, missing: [], autoFilled: [], unavailable: [] },
+      activeTab: 'all',
+      filters: Object.fromEntries(pathFilterFields.map((field) => [field, ''])),
+      previewAllFields: false,
+      anonymousIdMap: new Map(),
+      crossRow: 'user_type',
+      crossCol: 'issue_type'
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const escapeHTML = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+    const toBool = (value) => {
+      if (typeof value === 'boolean') return value;
+      if (typeof value === 'number') return value === 1;
+      const normalized = String(value ?? '').trim().toLowerCase();
+      return ['1', 'true', 'yes', 'y', 'completed', 'complete', 'on', 'enabled'].includes(normalized);
+    };
+    const toNumber = (value) => {
+      if (value === null || value === undefined || value === '') return 0;
+      const cleaned = String(value).replace(/%|,/g, '').trim();
+      const num = Number(cleaned);
+      return Number.isFinite(num) ? num : 0;
+    };
+    const percentNumber = (value, total) => total ? (value / total) * 100 : 0;
+    const formatPercent = (value, total) => total ? `${percentNumber(value, total).toFixed(1)}%` : '0.0%';
+    const formatMaybePercent = (value) => {
+      if (value === null || value === undefined || value === '') return 'No data';
+      const raw = String(value).trim();
+      if (raw.includes('%')) return raw;
+      const num = toNumber(raw);
+      if (num <= 1 && num > 0) return `${(num * 100).toFixed(1)}%`;
+      return `${num.toFixed(1)}%`;
+    };
+    const formatNumber = (value, digits = 1) => Number(value || 0).toFixed(digits);
+    const unique = (items) => [...new Set(items.filter((item) => item !== null && item !== undefined && String(item).trim() !== '').map((item) => String(item).trim()))];
+    const countByValues = (values) => values.reduce((acc, value) => {
+      const key = String(value ?? '').trim() || 'Not answered';
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {});
+    const countBy = (rows, field) => countByValues(rows.map((row) => displayValue(row, field)));
+    const topEntry = (obj) => Object.entries(obj).sort((a, b) => b[1] - a[1])[0] || ['Not available', 0];
+    const isPrivateField = (field) => privateFieldPatterns.some((pattern) => pattern.test(String(field)));
+    const isIdentifierField = (field) => identifierFieldPatterns.some((pattern) => pattern.test(String(field)));
+    const safeHeaders = (headers) => headers.filter((field) => !isPrivateField(field) || isIdentifierField(field));
+    const sensitiveHeaders = (headers) => headers.filter((field) => isPrivateField(field));
+    const anonymizeIdentifier = (value) => {
+      const raw = String(value ?? '').trim() || 'unknown';
+      if (!state.anonymousIdMap.has(raw)) {
+        state.anonymousIdMap.set(raw, `U${String(state.anonymousIdMap.size + 1).padStart(3, '0')}`);
+      }
+      return state.anonymousIdMap.get(raw);
+    };
+    const splitMulti = (value) => {
+      const text = String(value ?? '').trim();
+      if (!text) return ['Not answered'];
+      return text.split(/[;,，；、|/]/).map((item) => item.trim()).filter(Boolean);
+    };
+    const normalizeHeader = (header) => String(header ?? '').replace(/^\uFEFF/, '').trim();
+
+    function getHeaders(rows) {
+      return Object.keys(rows[0] || {}).map(normalizeHeader);
+    }
+
+    function hasSourceField(field) {
+      return state.sourceFieldSet.has(field);
+    }
+
+    function normalizeOptionalText(record, field, fallback) {
+      return hasSourceField(field) ? (String(record[field] ?? '').trim() || fallback) : fallback;
+    }
+
+    function normalizeOptionalBoolean(record, field) {
+      return hasSourceField(field) ? toBool(record[field]) : null;
+    }
+
+    function normalizeOptionalNumber(record, field) {
+      return hasSourceField(field) ? toNumber(record[field]) : null;
+    }
+
+    function normalizePathRecord(record) {
+      return {
+        user_id: String(record.user_id ?? '').trim(),
+        registered: toBool(record.registered),
+        browsed_intro: toBool(record.browsed_intro),
+        created_topic: toBool(record.created_topic),
+        viewed_ai_summary: toBool(record.viewed_ai_summary),
+        completed_core_action: toBool(record.completed_core_action),
+        user_type: normalizeOptionalText(record, 'user_type', 'Unclassified user'),
+        source_channel: normalizeOptionalText(record, 'source_channel', 'Unknown source'),
+        enabled_reminder: normalizeOptionalBoolean(record, 'enabled_reminder'),
+        active_days: normalizeOptionalNumber(record, 'active_days'),
+        topic_count: normalizeOptionalNumber(record, 'topic_count'),
+        faq_viewed: normalizeOptionalBoolean(record, 'faq_viewed'),
+        prompt_viewed: normalizeOptionalBoolean(record, 'prompt_viewed'),
+        returned_7d: normalizeOptionalBoolean(record, 'returned_7d'),
+        use_scene: normalizeOptionalText(record, 'use_scene', 'Not answered'),
+        function_need: normalizeOptionalText(record, 'function_need', 'Not answered'),
+        pay_willingness: normalizeOptionalText(record, 'pay_willingness', 'Payment intention field unavailable'),
+        price_acceptance: normalizeOptionalText(record, 'price_acceptance', 'Payment intention field unavailable'),
+        feedback: normalizeOptionalText(record, 'feedback', ''),
+        issue_type: normalizeOptionalText(record, 'issue_type', 'Unclassified issue')
+      };
+    }
+
+    function displayValue(row, field) {
+      const value = row[field];
+      if (typeof value === 'boolean') return value ? 'Yes' : 'No';
+      if (value === null || value === undefined || value === '') return 'Not answered';
+      return String(value);
+    }
+
+    function displayPreviewValue(row, field) {
+      if (isIdentifierField(field)) return anonymizeIdentifier(row[field]);
+      return displayValue(row, field);
+    }
+
+    function parseDelimited(text) {
+      const firstLine = String(text).split(/\r?\n/).find((line) => line.trim()) || '';
+      const delimiters = [',', '\t', ';'];
+      const delimiter = delimiters
+        .map((char) => [char, (firstLine.match(new RegExp(char === '\t' ? '\\t' : `\\${char}`, 'g')) || []).length])
+        .sort((a, b) => b[1] - a[1])[0][0];
+      const rows = [];
+      let row = [];
+      let cell = '';
+      let quoted = false;
+      const source = String(text).replace(/\r\n/g, '\n');
+
+      for (let i = 0; i < source.length; i += 1) {
+        const char = source[i];
+        const next = source[i + 1];
+        if (char === '"' && quoted && next === '"') {
+          cell += '"';
+          i += 1;
+        } else if (char === '"') {
+          quoted = !quoted;
+        } else if (char === delimiter && !quoted) {
+          row.push(cell.trim());
+          cell = '';
+        } else if (char === '\n' && !quoted) {
+          row.push(cell.trim());
+          if (row.some((item) => item !== '')) rows.push(row);
+          row = [];
+          cell = '';
+        } else {
+          cell += char;
+        }
+      }
+      row.push(cell.trim());
+      if (row.some((item) => item !== '')) rows.push(row);
+      if (!rows.length) return [];
+
+      const headers = rows[0].map(normalizeHeader);
+      return rows.slice(1).map((values) => headers.reduce((record, header, index) => {
+        record[header] = values[index] ?? '';
+        return record;
+      }, {}));
+    }
+
+    function findField(headers, aliases) {
+      const normalized = headers.map((field) => ({ raw: field, compact: String(field).replace(/\s+/g, '').toLowerCase() }));
+      for (const alias of aliases) {
+        const aliasCompact = String(alias).replace(/\s+/g, '').toLowerCase();
+        const exact = normalized.find((item) => item.compact === aliasCompact);
+        if (exact) return exact.raw;
+      }
+      for (const alias of aliases) {
+        const aliasCompact = String(alias).replace(/\s+/g, '').toLowerCase();
+        const partial = normalized.find((item) => item.compact.includes(aliasCompact) || aliasCompact.includes(item.compact));
+        if (partial) return partial.raw;
+      }
+      return null;
+    }
+
+    function detectMode(headers) {
+      const headerSet = new Set(headers);
+      const hasPath = pathRequiredFields.every((field) => headerSet.has(field));
+      const distinctField = findField(headers, ['Person.distinct_id', 'distinct_id']);
+      const eventField = findField(headers, ['event']);
+      const timeField = findField(headers, ['timestamp', 'time', 'Time']);
+      const hasEvent = Boolean(distinctField && eventField && timeField);
+      const dailyScore = ['Date', 'DAU', 'Cold-start UV', 'Icon reactivation UV', 'Push reactivation UV', 'External H5 reactivation UV', 'Day-1 retention', 'Average app duration', 'Registered users', 'Topic follow actions', 'Topic follow UV', 'Topics followed', 'Topics created', 'Topic creation UV', 'News items ingested', 'Push sends', 'Push recipients']
+        .filter((field) => findDailyField(headers, field)).length;
+      const surveyScore = ['Age group', 'Occupation', 'Industry', 'Usage status', 'Experience rating', 'Usage friction', 'Reason for trying', 'Most valuable capability', 'Would pay', 'Price acceptance', 'Payment hesitation', 'Top improvement request']
+        .filter((field) => findField(headers, [field])).length;
+
+      if (hasPath) return 'path';
+      if (hasEvent) return 'event';
+      if (dailyScore >= 4 && findField(headers, ['Date'])) return 'daily';
+      if (surveyScore >= 3) return 'survey';
+      return 'unknown';
+    }
+
+    function modeName(mode) {
+      return {
+        path: 'User journeys',
+        event: 'Events',
+        survey: 'Survey responses',
+        daily: 'Daily metrics',
+        unknown: 'Unrecognised data'
+      }[mode] || 'Unrecognised data';
+    }
+
+    function buildFieldReport(headers, mode) {
+      const headerSet = new Set(headers);
+      const missing = [];
+      const autoFilled = [];
+      const unavailable = [];
+
+      if (mode === 'path') {
+        pathAllFields.forEach((field) => {
+          if (!headerSet.has(field)) missing.push(field);
+        });
+        pathOptionalFields.forEach((field) => {
+          if (!headerSet.has(field)) {
+            if (field === 'source_channel') autoFilled.push('source_channel > Unknown source');
+            else if (field === 'user_type') autoFilled.push('user_type > Unclassified user');
+            else if (field === 'issue_type') autoFilled.push('issue_type > Unclassified issue');
+            else if (field === 'pay_willingness' || field === 'price_acceptance') autoFilled.push(`${field} > Payment intention field unavailable`);
+            else if (pathBooleanOptionalFields.includes(field) || pathNumberOptionalFields.includes(field)) autoFilled.push(`${field} > No data`);
+            else autoFilled.push(`${field} > Not answered`);
+          }
+        });
+        if (!headerSet.has('issue_type')) unavailable.push('Issue classification');
+        if (!headerSet.has('pay_willingness') || !headerSet.has('price_acceptance')) unavailable.push('Payment intention analysis');
+        ['enabled_reminder', 'faq_viewed', 'prompt_viewed', 'returned_7d', 'active_days', 'topic_count'].forEach((field) => {
+          if (!headerSet.has(field)) unavailable.push(`${field} Supporting metrics`);
+        });
+      } else if (mode === 'event') {
+        ['Person.distinct_id / distinct_id', 'event', 'timestamp'].forEach((field) => {
+          const aliases = field.includes('distinct') ? ['Person.distinct_id', 'distinct_id'] : [field];
+          if (!findField(headers, aliases)) missing.push(field);
+        });
+        unavailable.push('User-level core journey funnel', 'user_type x issue_type analysis');
+      } else if (mode === 'survey') {
+        ['Age group', 'Occupation / Industry', 'Usage status', 'Experience rating', 'Usage friction', 'Would pay', 'Price acceptance'].forEach((field) => {
+          if (!findSurveyField(headers, field)) missing.push(field);
+        });
+        unavailable.push('User-level core journey funnel', 'Event activity trends', 'Daily aggregate trends');
+      } else if (mode === 'daily') {
+        ['Date', 'DAU', 'Day-1 retention', 'Topic creation UV', 'Topic follow UV', 'Push reactivation UV', 'Push recipients'].forEach((field) => {
+          if (!findDailyField(headers, field)) missing.push(field);
+        });
+        unavailable.push('User-level core journey funnel', 'User segment details', 'user_type x issue_type cross table');
+      } else {
+        unavailable.push('Some fields are missing. Available analyses are shown; other modules are hidden or marked as unavailable');
+      }
+
+      return { recognized: headers, missing, autoFilled, unavailable };
+    }
+
+    function applyUploadedRows(rows, label) {
+      if (!rows.length) {
+        $('dataStatus').textContent = 'Upload failed: no usable data. Check the header and data rows.';
+        return;
+      }
+      const headers = getHeaders(rows);
+      const mode = detectMode(headers);
+      state.rawRows = rows;
+      state.mode = mode;
+      state.sourceLabel = label;
+      state.headers = headers;
+      state.sourceFieldSet = new Set(headers.filter((field) => pathAllFields.includes(field)));
+      state.fieldReport = buildFieldReport(headers, mode);
+      state.activeTab = 'all';
+      state.filters = Object.fromEntries(pathFilterFields.map((field) => [field, '']));
+      state.previewAllFields = false;
+      state.anonymousIdMap = new Map();
+      setDefaultCross(mode);
+      $('dataStatus').textContent = `Using: ${label}, ${rows.length}  records.`;
+      renderAll();
+    }
+
+    function resetToSample() {
+      switchBuiltInMode('path');
+    }
+
+    function switchBuiltInMode(mode) {
+      const dataset = builtInDatasets[mode] || builtInDatasets.path;
+      const headers = mode === 'path' ? pathAllFields : getHeaders(dataset.rows);
+      state.rawRows = dataset.rows;
+      state.mode = mode;
+      state.sourceLabel = dataset.source;
+      state.headers = headers;
+      state.sourceFieldSet = new Set(headers.filter((field) => pathAllFields.includes(field)));
+      state.fieldReport = buildFieldReport(headers, mode);
+      state.activeTab = 'all';
+      state.filters = Object.fromEntries(pathFilterFields.map((field) => [field, '']));
+      state.previewAllFields = false;
+      state.anonymousIdMap = new Map();
+      setDefaultCross(mode);
+      if ($('fileInput')) $('fileInput').value = '';
+      $('dataStatus').textContent = `Using: ${dataset.source}, ${dataset.rows.length}  records.`;
+      renderAll();
+    }
+
+    function getPathRows() {
+      if (state.mode !== 'path') return [];
+      state.sourceFieldSet = new Set(state.headers.filter((field) => pathAllFields.includes(field)));
+      return state.rawRows.map(normalizePathRecord);
+    }
+
+    function applyStatusTab(rows) {
+      if (state.activeTab === 'completed') return rows.filter((row) => row.completed_core_action);
+      if (state.activeTab === 'incomplete') return rows.filter((row) => row.registered && !row.completed_core_action);
+      if (state.activeTab === 'highPay') return rows.filter((row) => row.pay_willingness === 'High');
+      if (state.activeTab === 'pendingIssue') return rows.filter((row) => !row.issue_type || row.issue_type === 'Unclassified issue');
+      return rows;
+    }
+
+    function getFilteredPathRows() {
+      const tabRows = applyStatusTab(getPathRows());
+      return tabRows.filter((row) => pathFilterFields.every((field) => !state.filters[field] || displayValue(row, field) === state.filters[field]));
+    }
+
+    function computePathStats(rows) {
+      const total = rows.length;
+      const registered = rows.filter((row) => row.registered).length;
+      const browsedIntro = rows.filter((row) => row.registered && row.browsed_intro).length;
+      const createdTopic = rows.filter((row) => row.registered && row.created_topic).length;
+      const aiSummary = rows.filter((row) => row.registered && row.created_topic && row.viewed_ai_summary).length;
+      const completedCore = rows.filter((row) => row.registered && row.completed_core_action).length;
+      const returned7d = hasSourceField('returned_7d') ? rows.filter((row) => row.registered && row.returned_7d).length : null;
+      const enabledReminder = hasSourceField('enabled_reminder') ? rows.filter((row) => row.registered && row.enabled_reminder).length : null;
+      const highPay = hasSourceField('pay_willingness') ? rows.filter((row) => row.registered && row.pay_willingness === 'High').length : null;
+      const activeDaySum = hasSourceField('active_days') ? rows.reduce((sum, row) => sum + (row.active_days || 0), 0) : null;
+      const topicSum = hasSourceField('topic_count') ? rows.reduce((sum, row) => sum + (row.topic_count || 0), 0) : null;
+      const faqViewed = hasSourceField('faq_viewed') ? rows.filter((row) => row.registered && row.faq_viewed).length : null;
+      const promptViewed = hasSourceField('prompt_viewed') ? rows.filter((row) => row.registered && row.prompt_viewed).length : null;
+      const funnelSteps = [
+        { key: 'registered', label: 'Register', count: registered, reason: 'Records entering the journey' },
+        { key: 'browsed_intro', label: 'Read introduction', count: rows.filter((row) => row.registered && row.browsed_intro).length, reason: 'Product positioning or value may be unclear' },
+        { key: 'created_topic', label: 'Create topic', count: rows.filter((row) => row.registered && row.browsed_intro && row.created_topic).length, reason: 'Topic value, entry point or templates may be unclear' },
+        { key: 'viewed_ai_summary', label: 'View AI summary', count: rows.filter((row) => row.registered && row.browsed_intro && row.created_topic && row.viewed_ai_summary).length, reason: 'Results access, waiting time or guidance may cause friction' },
+        { key: 'completed_core_action', label: 'Complete core experience', count: rows.filter((row) => row.registered && row.browsed_intro && row.created_topic && row.viewed_ai_summary && row.completed_core_action).length, reason: 'Saving, reminders or return steps may not be clear' }
+      ];
+      const dropoffs = funnelSteps.slice(1).map((step, index) => {
+        const previous = funnelSteps[index];
+        const lost = Math.max(previous.count - step.count, 0);
+        return { from: previous.label, to: step.label, key: `${previous.key}->${step.key}`, lost, previous: previous.count, current: step.count, rate: previous.count ? lost / previous.count : 0, reason: step.reason };
+      });
+      const maxDropoff = [...dropoffs].sort((a, b) => b.lost - a.lost || b.rate - a.rate)[0] || null;
+      return {
+        total,
+        registered,
+        browsedIntro,
+        createdTopic,
+        aiSummary,
+        completedCore,
+        returned7d,
+        enabledReminder,
+        highPay,
+        activeDaySum,
+        topicSum,
+        faqViewed,
+        promptViewed,
+        avgActiveDays: hasSourceField('active_days') && total ? activeDaySum / total : null,
+        topicPerRegistered: hasSourceField('topic_count') && registered ? topicSum / registered : null,
+        funnelSteps,
+        dropoffs,
+        maxDropoff
+      };
+    }
+
+    function renderModeStatus() {
+      const mode = modeName(state.mode);
+      $('modeBadge').textContent = `Mode: ${mode}`;
+      const hasMissing = state.fieldReport.missing.length || state.mode === 'unknown';
+      $('modeCompleteness').className = `badge border ${hasMissing ? 'border-orange/30 bg-orange/10 text-orange' : 'border-neutralLine bg-neutralSoft text-primary'}`;
+      $('modeCompleteness').textContent = hasMissing ? 'Partial fields; available analyses shown' : 'Complete fields';
+      $('suggestionModeBadge').textContent = mode;
+    }
+
+    function renderModeSwitch() {
+      $('modeSwitch').innerHTML = Object.entries(builtInDatasets).map(([mode, dataset]) => {
+        const active = state.mode === mode && state.rawRows === dataset.rows;
+        return `
+          <button type="button" data-built-in-mode="${mode}" class="rounded-lg border px-3 py-2 text-sm font-semibold transition ${active ? 'border-primary bg-primary text-white shadow-soft' : 'border-line bg-white text-bodyText hover:border-neutralLine hover:text-primary'}">
+            ${escapeHTML(dataset.label)}
+          </button>
+        `;
+      }).join('');
+      document.querySelectorAll('[data-built-in-mode]').forEach((button) => {
+        button.addEventListener('click', () => switchBuiltInMode(button.dataset.builtInMode));
+      });
+    }
+
+    function moduleApplicability(mode = state.mode) {
+      const always = ['overview', 'metricCards', 'data-security', 'data-quality', 'suggestions', 'data-preview'];
+      const byMode = {
+        path: ['status-tabs', 'filters', 'funnel', 'activation', 'segments', 'cross-analysis', 'issues', 'issue-category'],
+        event: ['event-data'],
+        daily: ['daily-metrics'],
+        survey: ['survey-feedback', 'cross-analysis', 'issues'],
+        unknown: []
+      };
+      return new Set([...always, ...(byMode[mode] || [])]);
+    }
+
+    function updateModuleVisibility() {
+      const applicable = moduleApplicability();
+      document.querySelectorAll('.module[id], #issue-category').forEach((section) => {
+        if (section.id === 'overview') return;
+        section.classList.toggle('hidden', !applicable.has(section.id));
+      });
+      document.querySelectorAll('#sidebarNav a').forEach((link) => {
+        const isApplicable = applicable.has(link.dataset.target);
+        link.classList.toggle('nav-item-disabled', !isApplicable);
+        link.setAttribute('aria-disabled', String(!isApplicable));
+      });
+    }
+
+    let modeHintTimer = null;
+    function showModeHint(targetId) {
+      const targetText = document.querySelector(`#sidebarNav a[data-target="${targetId}"] span:last-child`)?.textContent || 'This module';
+      const hint = $('modeHint');
+      hint.innerHTML = `
+        <p class="font-bold text-ink">This module does not apply to the current dataset</p>
+        <p class="mt-1 text-xs leading-5 text-muted">${escapeHTML(targetText)} Not available for ${modeName(state.mode)}. Select a compatible dataset.</p>
+      `;
+      hint.classList.remove('hidden');
+      clearTimeout(modeHintTimer);
+      modeHintTimer = setTimeout(() => hint.classList.add('hidden'), 2800);
+    }
+
+    function renderFieldReport() {
+      const report = state.fieldReport;
+      const list = (items, empty) => items.length ? items.map(escapeHTML).join(', ') : empty;
+      $('fieldReport').innerHTML = `
+        <div class="mb-2 flex items-center justify-between gap-2">
+          <p class="text-sm font-bold text-ink">Field checks</p>
+          <span class="badge border border-neutralLine bg-neutralSoft text-primary">${modeName(state.mode)}</span>
+        </div>
+        <div class="grid gap-2">
+          ${(report.missing.length || state.mode === 'unknown') ? '<p class="rounded-lg border border-orange/20 bg-orange/10 px-3 py-2 text-bodyText">Some fields are missing. Available analyses are shown; other modules are hidden or marked as unavailable.</p>' : ''}
+          <p><span class="font-semibold text-ink">Recognised fields:</span> ${list(report.recognized, 'Not available')}</p>
+          <p><span class="font-semibold text-ink">Missing fields:</span> ${list(report.missing, 'None')}</p>
+          <p><span class="font-semibold text-ink">Defaulted fields:</span> ${list(report.autoFilled, 'None')}</p>
+          <p><span class="font-semibold text-ink">Unavailable analyses:</span> ${list(report.unavailable, 'None')}</p>
+        </div>
+      `;
+    }
+
+    function inactiveModule(text) {
+      return `<div class="w-fit max-w-full rounded-lg border border-dashed border-line bg-slate-50 px-3 py-2 text-xs leading-5 text-muted">${escapeHTML(text)}</div>`;
+    }
+
+    function getIdentifierFieldForMode() {
+      if (state.mode === 'path') return hasSourceField('user_id') ? 'user_id' : null;
+      if (state.mode === 'event') return eventFieldMap().id;
+      return findField(state.headers, ['user_id', 'User identifier', 'Person.distinct_id', 'distinct_id', 'openid', 'unionid']);
+    }
+
+    function getAnalysisRowsForQuality() {
+      return getCurrentRowsForPreview();
+    }
+
+    function getNullRatio(rows, headers) {
+      const totalCells = rows.length * Math.max(headers.length, 1);
+      if (!totalCells) return 0;
+      const emptyCells = rows.reduce((sum, row) => sum + headers.filter((field) => String(row[field] ?? '').trim() === '').length, 0);
+      return emptyCells / totalCells;
+    }
+
+    function getDuplicateUserCount(rows) {
+      const idField = getIdentifierFieldForMode();
+      if (!idField) return 'No user identifier field';
+      const counts = countByValues(rows.map((row) => row[idField]).filter((value) => String(value ?? '').trim() !== ''));
+      return Object.values(counts).filter((count) => count > 1).length;
+    }
+
+    function getApplicableModuleLabels() {
+      const labels = {
+        overview: 'Overview notes',
+        metricCards: 'Key metrics',
+        'data-security': 'Privacy checks',
+        'data-quality': 'Data quality checks',
+        'status-tabs': 'User status',
+        filters: 'Segment filters',
+        funnel: 'Core journey funnel',
+        activation: 'Activation and return behaviour',
+        segments: 'User segments',
+        'cross-analysis': 'Cross analysis and significance',
+        'event-data': 'Event analysis',
+        'daily-metrics': 'Daily metric analysis',
+        'survey-feedback': 'Survey analysis',
+        issues: 'Issue analysis',
+        'issue-category': 'Content / Product issue categories',
+        suggestions: 'Recommendations',
+        'data-preview': 'Data preview'
+      };
+      const applicable = moduleApplicability();
+      return {
+        applicable: [...applicable].map((id) => labels[id] || id),
+        unavailable: Object.entries(labels)
+          .filter(([id]) => !applicable.has(id))
+          .map(([, label]) => label)
+      };
+    }
+
+    function renderDataSecurity() {
+      const headers = state.headers || [];
+      const sensitive = sensitiveHeaders(headers);
+      const safe = safeHeaders(headers);
+      const hasSensitive = sensitive.length > 0;
+      $('securityContent').innerHTML = `
+        <div class="grid gap-4 xl:grid-cols-[1fr_1fr]">
+          <div class="rounded-xl border ${hasSensitive ? 'border-orange/20 bg-orange/10' : 'border-altLine bg-altSoft'} p-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p class="text-sm font-bold text-ink">Sensitive-field checks</p>
+                <p class="mt-1 text-xs leading-5 text-muted">Checked: ${sensitiveFieldKeywords.map(escapeHTML).join(', ')}</p>
+              </div>
+              <span class="badge ${hasSensitive ? 'bg-orange text-white' : 'bg-altText text-white'}">${hasSensitive ? `${sensitive.length}  sensitive fields` : 'No sensitive fields detected'}</span>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-2">
+              ${hasSensitive ? sensitive.map((field) => `<span class="badge bg-white text-orange">${escapeHTML(field)}</span>`).join('') : '<span class="badge bg-white text-altText">No recognised sensitive fields in the preview</span>'}
+            </div>
+            <p class="mt-3 text-xs leading-5 text-bodyText">The preview hides recognised personal fields. Where an identifier is required, it is replaced with an anonymous value such as U001 or U002.</p>
+          </div>
+          <div class="rounded-xl border border-neutralLine bg-neutralSoft p-4">
+            <p class="text-sm font-bold text-ink">Local processing</p>
+            <p class="mt-2 text-xs leading-5 text-bodyText">Files are parsed locally in this browser. No uploaded data is sent to a server, database or external API.</p>
+            <div class="mt-4 rounded-lg border border-line bg-white p-3">
+              <p class="text-xs font-bold text-ink">Production architecture reference</p>
+              <p class="mt-2 text-xs leading-5 text-muted">Events / Surveys / Daily metrics > Cleaning and de-identification > Aggregates > Dashboard API > Dashboard</p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 rounded-xl border border-line bg-slate-50 p-4">
+          <p class="text-sm font-bold text-ink">Limits of use</p>
+          <p class="mt-2 text-xs leading-5 text-muted">This tool supports exploratory journey, feedback and daily-metric analysis. It is not a sole decision system. Validate formal conclusions against agreed BI definitions, data-team checks and sufficient samples.</p>
+        </div>
+      `;
+    }
+
+    function renderDataQuality() {
+      const rows = getAnalysisRowsForQuality();
+      const headers = state.headers || getHeaders(rows);
+      const modules = getApplicableModuleLabels();
+      const nullRatio = getNullRatio(rows, headers);
+      const duplicateUsers = getDuplicateUserCount(rows);
+      const cards = [
+        { label: 'Rows', value: rows.length, formula: 'COUNT(rows)', note: 'Records in the current dataset or filter' },
+        { label: 'Fields', value: headers.length, formula: 'COUNT(fields)', note: 'Fields in the uploaded or demo dataset' },
+        { label: 'Missing fields', value: state.fieldReport.missing.length, formula: 'MISSING(fields)', note: state.fieldReport.missing.length ? state.fieldReport.missing.join(', ') : 'None' },
+        { label: 'Missing-value rate', value: `${(nullRatio * 100).toFixed(1)}%`, formula: 'EMPTY(cells) / ALL(cells)', note: 'Approximate rate across readable fields' },
+        { label: 'Duplicate users', value: duplicateUsers, formula: 'DUPLICATE(user_id)', note: 'Using the recognised user identifier' },
+        { label: 'Available modules', value: modules.applicable.length, formula: 'AVAILABLE(modules)', note: 'Analyses available for this dataset' }
+      ];
+      $('qualityContent').innerHTML = `
+        <div class="metric-grid">${cards.map(renderMetricCard).join('')}</div>
+        <div class="mt-5 grid gap-4 xl:grid-cols-2">
+          <div class="rounded-xl border border-neutralLine bg-neutralSoft p-4">
+            <p class="text-sm font-bold text-ink">Available analyses</p>
+            <div class="mt-3 flex flex-wrap gap-2">${modules.applicable.map((item) => `<span class="badge bg-white text-primary">${escapeHTML(item)}</span>`).join('')}</div>
+          </div>
+          <div class="rounded-xl border border-line bg-slate-50 p-4">
+            <p class="text-sm font-bold text-ink">Unavailable analyses and reasons</p>
+            <div class="mt-3 grid gap-2">
+              ${modules.unavailable.length ? modules.unavailable.map((item) => `<p class="rounded-lg bg-white px-3 py-2 text-xs leading-5 text-muted">${escapeHTML(item)}: this dataset lacks the required detail or metric definitions.</p>`).join('') : '<p class="rounded-lg bg-white px-3 py-2 text-xs leading-5 text-muted">Core modules are available for this dataset.</p>'}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderStatusTabs() {
+      const pathRows = getPathRows();
+      const counts = {
+        all: pathRows.length,
+        completed: pathRows.filter((row) => row.completed_core_action).length,
+        incomplete: pathRows.filter((row) => row.registered && !row.completed_core_action).length,
+        highPay: pathRows.filter((row) => row.pay_willingness === 'High').length,
+        pendingIssue: pathRows.filter((row) => !row.issue_type || row.issue_type === 'Unclassified issue').length
+      };
+      $('tabStatus').textContent = state.mode === 'path' ? `Segment: ${statusTabs.find((tab) => tab.key === state.activeTab)?.label || 'All users'}` : 'User journeys only';
+      $('statusTabs').innerHTML = statusTabs.map((tab) => {
+        const active = state.activeTab === tab.key && state.mode === 'path';
+        const disabled = state.mode !== 'path';
+        return `
+          <button type="button" data-tab="${tab.key}" class="rounded-lg border px-3 py-2 text-sm font-semibold transition ${active ? 'border-primary bg-primary text-white shadow-soft' : 'border-line bg-white text-bodyText hover:border-neutralLine hover:bg-neutralSoft'} ${disabled ? 'cursor-not-allowed opacity-50' : ''}" ${disabled ? 'disabled' : ''}>
+            ${tab.label}<span class="ml-2 text-xs ${active ? 'text-white/80' : 'text-muted'}">${counts[tab.key] || 0}</span>
+          </button>
+        `;
+      }).join('');
+      document.querySelectorAll('[data-tab]').forEach((button) => {
+        button.addEventListener('click', () => {
+          state.activeTab = button.dataset.tab;
+          renderAll();
+        });
+      });
+    }
+
+    function renderFilters() {
+      if (state.mode !== 'path') {
+        $('filterControls').innerHTML = inactiveModule('Segment filters apply to user-journey data. Upload this format to filter by user type, source, willingness to pay, issue and use case.');
+        $('filterStatus').textContent = 'Filters follow SQL-style WHERE conditions and GROUP BY summaries.';
+        $('filterInsight').textContent = 'Journey filter conclusions do not apply to this dataset.';
+        return;
+      }
+      const baseRows = applyStatusTab(getPathRows());
+      $('filterControls').innerHTML = pathFilterFields.map((field) => {
+        const values = unique(baseRows.map((row) => displayValue(row, field)));
+        return `
+          <label class="grid gap-1 text-xs font-semibold text-muted">${fieldLabels[field]}
+            <select data-filter="${field}" class="rounded-lg border border-line bg-white px-3 py-2 text-sm font-medium text-bodyText outline-none transition focus:border-primary">
+              <option value="">All ${fieldLabels[field]}</option>
+              ${values.map((value) => `<option value="${escapeHTML(value)}" ${state.filters[field] === value ? 'selected' : ''}>${escapeHTML(value)}</option>`).join('')}
+            </select>
+          </label>
+        `;
+      }).join('');
+      document.querySelectorAll('[data-filter]').forEach((select) => {
+        select.addEventListener('change', () => {
+          state.filters[select.dataset.filter] = select.value;
+          renderAll();
+        });
+      });
+      const rows = getFilteredPathRows();
+      const stats = computePathStats(rows);
+      const activeEntries = Object.entries(state.filters).filter(([, value]) => value);
+      const whereText = activeEntries.length ? activeEntries.map(([field, value]) => `${fieldLabels[field]} = "${value}"`).join(' AND ') : 'No filters set';
+      $('filterStatus').textContent = `SQL-style filtering and grouping. WHERE ${whereText}; ${rows.length} / ${getPathRows().length}  records.`;
+      $('filterInsight').textContent = buildFilterInsight(stats, rows);
+    }
+
+    function buildFilterInsight(stats, rows) {
+      if (!rows.length) return 'No users match these filters. Adjust the selection.';
+      const allStats = computePathStats(getPathRows());
+      const issue = topEntry(countBy(rows, 'issue_type'))[0];
+      const topicRate = percentNumber(stats.createdTopic, stats.registered);
+      const allTopicRate = percentNumber(allStats.createdTopic, allStats.registered);
+      const highPayRate = hasSourceField('pay_willingness') ? percentNumber(stats.highPay, stats.registered) : null;
+      if (topicRate + 5 < allTopicRate) return 'Topic creation is lower in this segment than overall. Review onboarding and user needs before choosing an intervention.';
+      if (highPayRate !== null && highPayRate >= 45) return 'This segment has a higher share of users willing to pay. Consider clearer trial and membership information.';
+      if (['Feature understanding', 'Unclear use case', 'Prompt guidance needed'].includes(issue)) return 'Most recorded issues in this segment concern guidance. Review tutorials, FAQs and use-case content first.';
+      if (['Hidden entry point', 'Complex flow', 'Unclear content categories'].includes(issue)) return 'Recorded issues focus on entry points or flow. Review the first-use experience with the product team.';
+      return 'No clear issue is flagged by these rules. Continue reviewing feature needs and feedback by use case.';
+    }
+
+    function renderMetricCards() {
+      if (state.mode !== 'path') {
+        const modeRows = getCurrentRowsForPreview();
+        const cards = [
+          { label: 'Dataset mode', value: modeName(state.mode), formula: 'AUTO DETECT', note: state.sourceLabel },
+          { label: 'Rows', value: modeRows.length, formula: 'COUNT(rows)', note: 'Analysable records' },
+          { label: 'Recognised fields', value: state.headers.length, formula: 'COUNT(fields)', note: 'Excludes hidden personal fields' },
+          { label: 'Missing field count', value: state.fieldReport.missing.length, formula: 'MISSING(fields)', note: 'Affected modules may be unavailable' },
+          { label: 'Preview fields', value: safeHeaders(state.headers).length, formula: 'SAFE(fields)', note: 'Recognised personal fields removed' },
+          { label: 'Analysis status', value: state.mode === 'unknown' ? 'Additional fields needed' : 'Recognised', formula: 'MODE STATUS', note: 'Dataset mode detected on upload' }
+        ];
+        $('metricCards').innerHTML = cards.map(renderMetricCard).join('');
+        return;
+      }
+      const stats = computePathStats(getFilteredPathRows());
+      const highPayText = hasSourceField('pay_willingness') ? formatPercent(stats.highPay, stats.registered) : 'Payment intention field unavailable';
+      const cards = [
+        { label: 'Registered users', value: stats.registered, formula: 'COUNT(registered = 1)', note: `${stats.registered} / ${stats.total}  records enter the registration journey` },
+        { label: 'Topic creation rate', value: formatPercent(stats.createdTopic, stats.registered), formula: 'created_topic / registered', note: `${stats.createdTopic} / ${stats.registered}  users created a topic` },
+        { label: 'AI summary view rate', value: formatPercent(stats.aiSummary, stats.createdTopic), formula: 'viewed_ai_summary / created_topic', note: `${stats.aiSummary} / ${stats.createdTopic}  users viewed AI results` },
+        { label: 'Core experience completion', value: formatPercent(stats.completedCore, stats.registered), formula: 'completed_core_action / registered', note: `${stats.completedCore} / ${stats.registered}  users completed the core experience` },
+        { label: 'Largest drop-off', value: stats.maxDropoff ? `${stats.maxDropoff.lost}  users` : 'Not available', formula: 'MAX(step_dropoff)', note: stats.maxDropoff ? `${stats.maxDropoff.from} → ${stats.maxDropoff.to}` : 'No drop-off recorded' },
+        { label: 'High willingness to pay', value: highPayText, formula: 'pay_willingness = High', note: hasSourceField('pay_willingness') ? `${stats.highPay} / ${stats.registered}  users with high willingness to pay` : 'pay_willingness missing from CSV' }
+      ];
+      $('metricCards').innerHTML = cards.map(renderMetricCard).join('');
+    }
+
+    function renderMetricCard(card) {
+      return `
+        <article class="panel metric-card">
+          <p class="metric-title text-sm font-bold text-ink">${escapeHTML(card.label)}</p>
+          <p class="metric-formula mt-2 rounded-md bg-neutralSoft px-2 py-1 text-[11px] font-semibold text-primary">${escapeHTML(card.formula || 'AUTO')}</p>
+          <p class="mt-5 min-h-[44px] text-3xl font-bold tracking-tight text-ink">${escapeHTML(card.value)}</p>
+          <p class="mt-3 border-t border-line pt-3 text-xs leading-5 text-muted">${escapeHTML(card.note)}</p>
+        </article>
+      `;
+    }
+
+    function renderFunnel() {
+      if (state.mode !== 'path') {
+        $('funnelContent').innerHTML = inactiveModule('A user-level funnel requires user_id, registered, browsed_intro, created_topic, viewed_ai_summary and completed_core_action. This dataset is not suitable.');
+        $('dropoffBadge').textContent = 'Not applicable to this mode';
+        return;
+      }
+      const stats = computePathStats(getFilteredPathRows());
+      const base = Math.max(stats.funnelSteps[0]?.count || 0, 1);
+      $('dropoffBadge').textContent = stats.maxDropoff ? `Largest drop-off: ${stats.maxDropoff.from} → ${stats.maxDropoff.to}` : 'No drop-off recorded';
+      const steps = stats.funnelSteps.map((step, index) => {
+        const previous = index === 0 ? step.count : stats.funnelSteps[index - 1].count;
+        const lost = index === 0 ? 0 : Math.max(previous - step.count, 0);
+        const isMax = stats.maxDropoff && stats.maxDropoff.to === step.label;
+        return `
+          <article class="min-w-[210px] flex-1 rounded-xl border ${isMax ? 'border-neutralLine bg-neutralSoft' : 'border-line bg-white'} p-4 shadow-soft">
+            <div class="flex items-center justify-between gap-2">
+              <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white">${index + 1}</span>
+              <span class="badge ${isMax ? 'bg-primary text-white' : 'bg-slate-100 text-muted'}">${isMax ? 'Largest drop-off' : 'Journey stage'}</span>
+            </div>
+            <h3 class="mt-3 min-h-[42px] text-sm font-bold leading-5 text-ink">${escapeHTML(step.label)}</h3>
+            <p class="mt-2 text-3xl font-bold tracking-tight text-primary">${step.count}</p>
+            <p class="mt-2 text-xs leading-5 text-muted">From previous step: ${index === 0 ? formatPercent(step.count, step.count) : formatPercent(step.count, previous)}</p>
+            <p class="text-xs leading-5 text-muted">From registration: ${formatPercent(step.count, base)}</p>
+            <p class="text-xs leading-5 text-muted">Users lost: ${lost}</p>
+          </article>
+        `;
+      }).join('<div class="hidden items-center text-2xl font-bold text-slate-300 xl:flex">→</div>');
+
+      $('funnelContent').innerHTML = `
+        <div class="flex gap-3 overflow-x-auto pb-2">${steps}</div>
+        <div class="mt-5 rounded-xl border border-line bg-slate-50 p-4">
+          <p class="text-sm font-bold text-ink">Journey stages</p>
+          <div class="mt-4 space-y-3">${renderPathTree(stats)}</div>
+        </div>
+      `;
+    }
+
+    function renderPathTree(stats) {
+      return stats.funnelSteps.map((step, index) => {
+        const previous = index === 0 ? step.count : stats.funnelSteps[index - 1].count;
+        const lost = index === 0 ? 0 : Math.max(previous - step.count, 0);
+        const indent = index * 22;
+        const isMax = stats.maxDropoff && stats.maxDropoff.to === step.label;
+        return `
+          <div class="flex items-start gap-3" style="margin-left: ${indent}px">
+            <span class="mt-2 h-px w-5 bg-slate-300"></span>
+            <div class="flex-1 rounded-lg border ${isMax ? 'border-neutralLine bg-neutralSoft' : 'border-line bg-white'} px-3 py-3">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="font-semibold text-ink">${index === 0 ? '' : '└─ '}${escapeHTML(step.label)}</span>
+                <span class="badge bg-white text-primary">${step.count}  users</span>
+                <span class="badge bg-slate-100 text-muted">Step conversion: ${index === 0 ? '100.0%' : formatPercent(step.count, previous)}</span>
+                <span class="badge ${isMax ? 'bg-primary text-white' : 'bg-slate-100 text-muted'}">Drop-off: ${lost}  users</span>
+              </div>
+              <p class="mt-2 text-xs leading-5 text-muted">Possible issue to check: ${escapeHTML(step.reason)}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderActivation() {
+      if (state.mode !== 'path') {
+        $('activationContent').innerHTML = inactiveModule('User activation analysis is unavailable for this format. Events, surveys and daily metrics have separate modules.');
+        return;
+      }
+      const rows = getFilteredPathRows();
+      const stats = computePathStats(rows);
+      const hasRevenue = hasSourceField('pay_willingness') && hasSourceField('price_acceptance');
+      const priceEntries = hasRevenue ? Object.entries(countBy(rows, 'price_acceptance')).sort((a, b) => b[1] - a[1]) : [];
+      const maxPriceCount = Math.max(...priceEntries.map(([, count]) => count), 1);
+      const metric = (label, value, formula, note) => `
+        <div class="card min-w-[220px] p-4">
+          <p class="metric-title text-sm font-bold text-ink">${escapeHTML(label)}</p>
+          <p class="metric-formula mt-2 rounded-md bg-slate-100 px-2 py-1 text-[11px] font-semibold text-muted">${escapeHTML(formula)}</p>
+          <p class="mt-4 text-2xl font-bold tracking-tight text-ink">${escapeHTML(value)}</p>
+          <p class="mt-2 text-xs leading-5 text-muted">${escapeHTML(note)}</p>
+        </div>
+      `;
+      const activationMetrics = [
+        metric('Topic creation rate', formatPercent(stats.createdTopic, stats.registered), 'created_topic / registered', `${stats.createdTopic} / ${stats.registered}  users`),
+        metric('AI summary view rate', formatPercent(stats.aiSummary, stats.createdTopic), 'viewed_ai_summary / created_topic', `${stats.aiSummary} / ${stats.createdTopic}  users`),
+        metric('Core experience completion', formatPercent(stats.completedCore, stats.registered), 'completed_core_action / registered', `${stats.completedCore} / ${stats.registered}  users`)
+      ].join('');
+      const retentionMetrics = [
+        metric('Returned within 7 days', hasSourceField('returned_7d') ? formatPercent(stats.returned7d, stats.registered) : 'No data', 'returned_7d / registered', hasSourceField('returned_7d') ? `${stats.returned7d} / ${stats.registered}  users` : 'returned_7d missing from CSV'),
+        metric('Average active days', hasSourceField('active_days') ? `${formatNumber(stats.avgActiveDays, 1)}  days` : 'No data', 'AVG(active_days)', hasSourceField('active_days') ? 'Based on active_days in the current sample' : 'active_days missing from CSV'),
+        metric('Topics per user', hasSourceField('topic_count') ? formatNumber(stats.topicPerRegistered, 2) : 'No data', 'SUM(topic_count) / registered', hasSourceField('topic_count') ? `${stats.topicSum}  topics / ${stats.registered}  users` : 'topic_count missing from CSV'),
+        metric('Reminder adoption', hasSourceField('enabled_reminder') ? formatPercent(stats.enabledReminder, stats.registered) : 'No data', 'enabled_reminder / registered', hasSourceField('enabled_reminder') ? `${stats.enabledReminder} / ${stats.registered}  users` : 'enabled_reminder missing from CSV')
+      ].join('');
+      const commercialMetrics = [
+        metric('High willingness to pay', hasRevenue ? formatPercent(stats.highPay, stats.registered) : 'Payment intention field unavailable', 'pay_willingness = High', hasRevenue ? `${stats.highPay} / ${stats.registered}  users` : 'pay_willingness or price_acceptance missing from CSV')
+      ].join('');
+      const priceDist = hasRevenue && priceEntries.length ? priceEntries.map(([price, count]) => `
+        <div class="mb-3 last:mb-0">
+          <div class="mb-1 flex items-center justify-between gap-3 text-xs">
+            <span class="font-bold text-bodyText">${escapeHTML(price)}</span>
+            <span class="text-muted">${count}  users / ${formatPercent(count, rows.length)}</span>
+          </div>
+          <div class="bar-track h-2"><div class="h-2 rounded-full bg-primary" style="width:${Math.max((count / maxPriceCount) * 100, 8)}%"></div></div>
+        </div>
+      `).join('') : '<p class="text-sm leading-6 text-muted">Payment intention field unavailable</p>';
+      $('activationContent').innerHTML = `
+        <div class="grid gap-4 xl:grid-cols-3">
+          <article class="rounded-xl border border-line bg-white p-4"><h3 class="mb-4 text-base font-bold text-ink">Activation metrics</h3><div class="grid gap-3">${activationMetrics}</div></article>
+          <article class="rounded-xl border border-line bg-white p-4"><h3 class="mb-4 text-base font-bold text-ink">Return behaviour</h3><div class="grid gap-3">${retentionMetrics}</div></article>
+          <article class="rounded-xl border border-line bg-white p-4"><h3 class="mb-4 text-base font-bold text-ink">Payment intention</h3><div class="grid gap-3">${commercialMetrics}</div><div class="mt-4 rounded-lg border border-line bg-slate-50 p-4"><p class="mb-3 text-sm font-bold text-ink">Price acceptance</p>${priceDist}</div></article>
+        </div>
+        <div class="mt-5 rounded-xl border border-neutralLine bg-neutralSoft p-4">
+          <p class="text-sm font-bold text-ink">Rule-based observations</p>
+          <div class="mt-3 grid gap-2">${buildActivationDiagnosis(rows, stats).map((item) => `<p class="rounded-lg bg-white px-3 py-3 text-sm leading-6 text-bodyText">${escapeHTML(item)}</p>`).join('')}</div>
+        </div>
+      `;
+    }
+
+    function buildActivationDiagnosis(rows, stats) {
+      const insights = [];
+      const topicRate = percentNumber(stats.createdTopic, stats.registered);
+      const summaryRate = percentNumber(stats.aiSummary, stats.createdTopic);
+      const coreRate = percentNumber(stats.completedCore, stats.registered);
+      const returnedRate = hasSourceField('returned_7d') ? percentNumber(stats.returned7d, stats.registered) : null;
+      if (topicRate < 50) insights.push('Low topic creation: check understanding of topic value and the creation steps.');
+      if (summaryRate < 60) insights.push('Low AI summary views: check access to results, generation delays and feature guidance.');
+      if (coreRate < 50) insights.push('Low core-experience completion: review the steps between seeing a feature and completing its use.');
+      if (returnedRate !== null && returnedRate < 40) insights.push('Low seven-day return: investigate user need, reminders, templates and content relevance.');
+      if (hasSourceField('pay_willingness') && stats.highPay > 0) {
+        const highRows = rows.filter((row) => row.pay_willingness === 'High');
+        const [type, count] = topEntry(countBy(highRows, 'user_type'));
+        insights.push(`High willingness to pay is concentrated in ${type}, with ${count}  users. Consider trial and membership information for this group.`);
+      } else if (!hasSourceField('pay_willingness')) {
+        insights.push('Payment intention fields are missing. Add pay_willingness and price_acceptance.');
+      }
+      return insights.length ? insights : ['No major issue is flagged by these rules. Continue observing feature needs and return behaviour.'];
+    }
+
+    function groupMetrics(rows) {
+      const registered = rows.filter((row) => row.registered).length;
+      const created = rows.filter((row) => row.registered && row.created_topic).length;
+      const completed = rows.filter((row) => row.registered && row.completed_core_action).length;
+      const returned = hasSourceField('returned_7d') ? rows.filter((row) => row.registered && row.returned_7d).length : null;
+      const highPay = hasSourceField('pay_willingness') ? rows.filter((row) => row.registered && row.pay_willingness === 'High').length : null;
+      const issue = topEntry(countBy(rows, 'issue_type'))[0];
+      return {
+        userCount: rows.length,
+        topicRate: formatPercent(created, registered),
+        topicRateNum: percentNumber(created, registered),
+        coreRate: formatPercent(completed, registered),
+        coreRateNum: percentNumber(completed, registered),
+        returnedRate: hasSourceField('returned_7d') ? formatPercent(returned, registered) : 'No data',
+        highPayRate: hasSourceField('pay_willingness') ? formatPercent(highPay, registered) : 'Payment intention field unavailable',
+        topNeed: topEntry(countBy(rows, 'function_need'))[0],
+        topIssue: issue,
+        status: getSegmentStatus(percentNumber(created, registered), percentNumber(completed, registered), issue)
+      };
+    }
+
+    function getSegmentStatus(topicRate, coreRate, issue) {
+      if (coreRate >= 65) return ['Journey progressing', 'bg-emerald-50 text-success border-emerald-200'];
+      if (['Feature understanding', 'Unclear use case', 'Prompt guidance needed'].includes(issue)) return ['Guidance to review', 'bg-neutralSoft text-primary border-neutralLine'];
+      if (['Hidden entry point', 'Complex flow', 'Unclear content categories'].includes(issue)) return ['Product review needed', 'bg-altSoft text-altText border-altLine'];
+      if (topicRate < 55 || coreRate < 45) return ['Drop-off risk', 'bg-orange/10 text-orange border-orange/20'];
+      return ['Guidance to review', 'bg-neutralSoft text-primary border-neutralLine'];
+    }
+
+    function renderSegments() {
+      if (state.mode !== 'path') {
+        $('segmentsContent').innerHTML = inactiveModule('User-level segmentation requires journey data. Compare activation, return behaviour, payment intention and issues by user_type.');
+        return;
+      }
+      const groups = Object.entries(getFilteredPathRows().reduce((acc, row) => {
+        acc[row.user_type] = acc[row.user_type] || [];
+        acc[row.user_type].push(row);
+        return acc;
+      }, {})).sort((a, b) => b[1].length - a[1].length);
+      if (!groups.length) {
+        $('segmentsContent').innerHTML = inactiveModule('No segment data matches the filters.');
+        return;
+      }
+      $('segmentsContent').innerHTML = `
+        <div class="table-wrap overflow-x-auto rounded-xl border border-line bg-white">
+          <table class="w-full min-w-[1080px] border-collapse text-left text-sm">
+            <thead class="bg-slate-50 text-xs font-bold text-muted">
+              <tr>
+                <th class="px-4 py-4">User type</th>
+                <th class="px-4 py-4">Users</th>
+                <th class="px-4 py-4">Topic creation rate</th>
+                <th class="px-4 py-4">Core experience completion</th>
+                <th class="px-4 py-4">Returned within 7 days</th>
+                <th class="px-4 py-4">High payment intention</th>
+                <th class="px-4 py-4">Main feature need</th>
+                <th class="px-4 py-4">Main issue</th>
+                <th class="px-4 py-4">Status</th>
+                <th class="px-4 py-4">Recommendations</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${groups.map(([type, rows]) => {
+                const metrics = groupMetrics(rows);
+                const [status, statusClass] = metrics.status;
+                return `
+                  <tr class="border-b border-line last:border-0">
+                    <td class="px-4 py-4 font-bold text-ink">${escapeHTML(type)}</td>
+                    <td class="px-4 py-4 text-bodyText">${metrics.userCount}</td>
+                    <td class="px-4 py-4 text-bodyText">${metrics.topicRate}</td>
+                    <td class="px-4 py-4 text-bodyText">${metrics.coreRate}</td>
+                    <td class="px-4 py-4 text-bodyText">${metrics.returnedRate}</td>
+                    <td class="px-4 py-4 text-bodyText">${metrics.highPayRate}</td>
+                    <td class="px-4 py-4 text-bodyText">${escapeHTML(metrics.topNeed)}</td>
+                    <td class="px-4 py-4 text-bodyText">${escapeHTML(metrics.topIssue)}</td>
+                    <td class="px-4 py-4"><span class="badge border ${statusClass}">${escapeHTML(status)}</span></td>
+                    <td class="px-4 py-4 text-muted">${escapeHTML(getActionForIssue(metrics.topIssue))}</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function getActionForIssue(issue) {
+      return pathIssueMeta[issue]?.suggestion || 'Use feedback to improve guidance or raise usability issues with the product team.';
+    }
+
+    function setDefaultCross(mode) {
+      if (mode === 'survey') {
+        const map = getSurveyMap(state.headers);
+        state.crossRow = map.industry || map.status || state.headers[0] || '';
+        state.crossCol = map.pay || map.pain || state.headers[1] || '';
+      } else {
+        state.crossRow = 'user_type';
+        state.crossCol = 'issue_type';
+      }
+    }
+
+    function getCrossRowsAndDimensions() {
+      if (state.mode === 'path') {
+        return { rows: getFilteredPathRows(), dimensions: pathCrossDimensions.map((field) => ({ field, label: `${field} · ${fieldLabels[field]}` })) };
+      }
+      if (state.mode === 'survey') {
+        const map = getSurveyMap(state.headers);
+        const dims = [
+          map.industry, map.pain, map.status, map.rating, map.pay, map.price, map.hesitate, map.reason, map.value
+        ].filter(Boolean);
+        return { rows: state.rawRows, dimensions: unique(dims).map((field) => ({ field, label: field })) };
+      }
+      return { rows: [], dimensions: [] };
+    }
+
+    function renderCrossControls() {
+      const { dimensions } = getCrossRowsAndDimensions();
+      if (!dimensions.length) {
+        $('crossControls').innerHTML = '';
+        return;
+      }
+      if (!dimensions.some((item) => item.field === state.crossRow)) state.crossRow = dimensions[0].field;
+      if (!dimensions.some((item) => item.field === state.crossCol)) state.crossCol = dimensions[1]?.field || dimensions[0].field;
+      const options = dimensions.map((item) => `<option value="${escapeHTML(item.field)}">${escapeHTML(item.label)}</option>`).join('');
+      $('crossControls').innerHTML = `
+        <label class="grid gap-1 text-xs font-semibold text-muted">Row dimension
+          <select id="crossRow" class="min-w-[190px] rounded-lg border border-line bg-white px-3 py-2 text-sm font-medium text-bodyText outline-none transition focus:border-primary">${options}</select>
+        </label>
+        <label class="grid gap-1 text-xs font-semibold text-muted">Column dimension
+          <select id="crossCol" class="min-w-[190px] rounded-lg border border-line bg-white px-3 py-2 text-sm font-medium text-bodyText outline-none transition focus:border-primary">${options}</select>
+        </label>
+      `;
+      $('crossRow').value = state.crossRow;
+      $('crossCol').value = state.crossCol;
+      $('crossRow').addEventListener('change', (event) => {
+        state.crossRow = event.target.value;
+        renderCrossAnalysis();
+      });
+      $('crossCol').addEventListener('change', (event) => {
+        state.crossCol = event.target.value;
+        renderCrossAnalysis();
+      });
+    }
+
+    function getExpandedCellValues(row, field) {
+      if (state.mode === 'survey') return splitMulti(row[field]);
+      return [displayValue(row, field)];
+    }
+
+    function buildCrossTable(rows, rowField, colField) {
+      const rowValues = unique(rows.flatMap((row) => getExpandedCellValues(row, rowField)));
+      const colValues = unique(rows.flatMap((row) => getExpandedCellValues(row, colField)));
+      const matrix = rowValues.map((rowValue) => colValues.map((colValue) => rows.reduce((count, row) => {
+        const rowMatches = getExpandedCellValues(row, rowField).includes(rowValue);
+        const colMatches = getExpandedCellValues(row, colField).includes(colValue);
+        return count + (rowMatches && colMatches ? 1 : 0);
+      }, 0)));
+      return { rowValues, colValues, matrix };
+    }
+
+    function renderCrossAnalysis() {
+      renderCrossControls();
+      const { rows, dimensions } = getCrossRowsAndDimensions();
+      if (!['path', 'survey'].includes(state.mode)) {
+        $('crossContent').innerHTML = inactiveModule('Cross analysis does not apply to this dataset. Events support activity and frequency analysis; daily aggregates support trend analysis.');
+        return;
+      }
+      if (!rows.length || !dimensions.length) {
+        $('crossContent').innerHTML = inactiveModule('No cross-analysis data matches the filters.');
+        return;
+      }
+      const { rowValues, colValues, matrix } = buildCrossTable(rows, state.crossRow, state.crossCol);
+      const stats = chiSquareTest(matrix);
+      const statCards = [
+        { label: 'Chi-square χ²', value: formatNumber(stats.chi2, 3) },
+        { label: 'df', value: stats.df },
+        { label: 'p-value', value: stats.df > 0 ? formatP(stats.p) : 'Not available' },
+        { label: "Cramer's V", value: formatNumber(stats.cramersV, 3) }
+      ];
+      const table = `
+        <div class="table-wrap overflow-x-auto rounded-xl border border-line bg-white">
+          <table class="w-full min-w-[900px] border-collapse text-left text-sm">
+            <thead class="bg-slate-50 text-xs font-bold text-muted">
+              <tr>
+                <th class="px-4 py-4">${escapeHTML(state.crossRow)}</th>
+                ${colValues.map((col) => `<th class="px-4 py-4">${escapeHTML(col)}</th>`).join('')}
+                <th class="px-4 py-4">Row total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowValues.map((rowValue, rowIndex) => {
+                const rowTotal = matrix[rowIndex].reduce((sum, value) => sum + value, 0);
+                return `
+                  <tr class="border-b border-line last:border-0">
+                    <td class="px-4 py-4 font-bold text-ink">${escapeHTML(rowValue)}</td>
+                    ${colValues.map((colValue, colIndex) => {
+                      const count = matrix[rowIndex][colIndex];
+                      return `<td class="px-4 py-4"><p class="font-semibold text-bodyText">${count}  users</p><p class="mt-1 text-xs text-muted">Row share: ${formatPercent(count, rowTotal)}</p></td>`;
+                    }).join('')}
+                    <td class="px-4 py-4 font-bold text-bodyText">${rowTotal}</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+      const lowSample = stats.n < 30 || stats.lowExpected;
+      $('crossContent').innerHTML = `
+        <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">${statCards.map((card) => `<div class="card p-4"><p class="text-xs font-bold text-muted">${escapeHTML(card.label)}</p><p class="mt-2 text-2xl font-bold text-ink">${escapeHTML(card.value)}</p></div>`).join('')}</div>
+        <div class="mt-4 rounded-xl border border-neutralLine bg-neutralSoft p-4">
+          <p class="text-sm font-bold text-ink">${escapeHTML(buildCrossInsight(state.crossRow, state.crossCol, stats, lowSample))}</p>
+          <p class="mt-2 text-xs leading-5 text-muted">Synthetic or small-sample data: chi-square and p-values demonstrate an exploratory method and should not be treated as validated statistical findings.</p>
+        </div>
+        <div class="mt-4">${table}</div>
+      `;
+    }
+
+    function chiSquareTest(matrix) {
+      const rows = matrix.length;
+      const cols = matrix[0]?.length || 0;
+      const rowTotals = matrix.map((row) => row.reduce((sum, value) => sum + value, 0));
+      const colTotals = Array.from({ length: cols }, (_, col) => matrix.reduce((sum, row) => sum + row[col], 0));
+      const n = rowTotals.reduce((sum, value) => sum + value, 0);
+      let chi2 = 0;
+      let lowExpected = false;
+      for (let r = 0; r < rows; r += 1) {
+        for (let c = 0; c < cols; c += 1) {
+          const expected = n ? (rowTotals[r] * colTotals[c]) / n : 0;
+          if (expected > 0 && expected < 5) lowExpected = true;
+          if (expected > 0) chi2 += ((matrix[r][c] - expected) ** 2) / expected;
+        }
+      }
+      const df = Math.max((rows - 1) * (cols - 1), 0);
+      const p = df > 0 ? chiSquarePValue(chi2, df) : 1;
+      const cramersV = n && Math.min(rows - 1, cols - 1) > 0 ? Math.sqrt(chi2 / (n * Math.min(rows - 1, cols - 1))) : 0;
+      return { chi2, df, p, cramersV, n, lowExpected };
+    }
+
+    function gammaln(xx) {
+      const cof = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
+      let x = xx - 1;
+      let tmp = x + 5.5;
+      tmp -= (x + 0.5) * Math.log(tmp);
+      let ser = 1.000000000190015;
+      for (let j = 0; j < cof.length; j += 1) {
+        x += 1;
+        ser += cof[j] / x;
+      }
+      return -tmp + Math.log(2.5066282746310005 * ser);
+    }
+
+    function gammap(a, x) {
+      if (x < 0 || a <= 0) return 0;
+      if (x === 0) return 0;
+      if (x < a + 1) {
+        let ap = a;
+        let sum = 1 / a;
+        let del = sum;
+        for (let n = 1; n <= 100; n += 1) {
+          ap += 1;
+          del *= x / ap;
+          sum += del;
+          if (Math.abs(del) < Math.abs(sum) * 3e-7) return sum * Math.exp(-x + a * Math.log(x) - gammaln(a));
+        }
+        return sum * Math.exp(-x + a * Math.log(x) - gammaln(a));
+      }
+      return 1 - gammq(a, x);
+    }
+
+    function gammq(a, x) {
+      if (x < 0 || a <= 0) return 1;
+      if (x < a + 1) return 1 - gammap(a, x);
+      let b = x + 1 - a;
+      let c = 1 / 1e-30;
+      let d = 1 / b;
+      let h = d;
+      for (let i = 1; i <= 100; i += 1) {
+        const an = -i * (i - a);
+        b += 2;
+        d = an * d + b;
+        if (Math.abs(d) < 1e-30) d = 1e-30;
+        c = b + an / c;
+        if (Math.abs(c) < 1e-30) c = 1e-30;
+        d = 1 / d;
+        const del = d * c;
+        h *= del;
+        if (Math.abs(del - 1) < 3e-7) break;
+      }
+      return Math.exp(-x + a * Math.log(x) - gammaln(a)) * h;
+    }
+
+    function chiSquarePValue(chi2, df) {
+      return Math.max(0, Math.min(1, gammq(df / 2, chi2 / 2)));
+    }
+
+    function formatP(p) {
+      if (p < 0.001) return '< 0.001';
+      return p.toFixed(3);
+    }
+
+    function buildCrossInsight(rowField, colField, stats, lowSample) {
+      const effect = stats.cramersV >= 0.5 ? 'Stronger association' : stats.cramersV >= 0.3 ? 'Moderate association' : stats.cramersV >= 0.1 ? 'Weak association' : 'Limited association';
+      const sig = stats.p < 0.05 ? 'An association is indicated at the chosen threshold' : 'No significant association detected';
+      const caveat = lowSample ? 'Small samples or low expected counts limit reliability. Treat this as exploratory.' : '';
+      if (rowField === 'user_type' && colField === 'issue_type' && stats.p < 0.05) return `Issue patterns may differ by user group. Investigate targeted onboarding content. ${caveat}`;
+      if (rowField === 'user_type' && colField === 'pay_willingness' && stats.p < 0.05) return `Willingness to pay may vary by user group. Review the high-intent segments. ${caveat}`;
+      if (rowField === 'use_scene' && colField === 'function_need' && stats.p < 0.05) return `Feature needs vary across use cases. Consider task-specific templates and guidance. ${caveat}`;
+      return `${sig}. Cramer's V indicates ${effect}. ${caveat}`;
+    }
+
+    function renderIssues() {
+      if (state.mode === 'survey') {
+        renderSurveyIssues();
+        return;
+      }
+      if (state.mode !== 'path') {
+        $('issuesContent').innerHTML = inactiveModule('Issue-label analysis does not apply to this dataset.');
+        $('pathTreeContent').innerHTML = inactiveModule('Journey diagnosis does not apply to this dataset.');
+        renderIssueCategory([], true);
+        return;
+      }
+      const rows = getFilteredPathRows();
+      const stats = computePathStats(rows);
+      if (!hasSourceField('issue_type')) {
+        $('issuesContent').innerHTML = inactiveModule('Add issue_type to analyse recorded issues.');
+      } else {
+        const issueEntries = Object.entries(countBy(rows, 'issue_type')).sort((a, b) => b[1] - a[1]);
+        const max = Math.max(...issueEntries.map(([, count]) => count), 1);
+        $('issuesContent').innerHTML = `
+          <div class="space-y-3">
+            ${issueEntries.map(([issue, count]) => {
+              const meta = pathIssueMeta[issue] || pathIssueMeta['Unclassified issue'];
+              return `
+                <div class="rounded-xl border border-line bg-white p-4">
+                  <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p class="font-bold text-ink">${escapeHTML(issue)}</p>
+                      <p class="mt-1 text-xs text-muted">Recorded for ${count}  users / Share: ${formatPercent(count, rows.length)}</p>
+                    </div>
+                    <span class="badge bg-neutralSoft text-primary">${escapeHTML(meta.node)}</span>
+                  </div>
+                  <div class="mt-3 bar-track h-2"><div class="h-2 rounded-full bg-primary" style="width:${Math.max((count / max) * 100, 8)}%"></div></div>
+                  <p class="mt-3 text-xs leading-5 text-muted">Suggested action: ${escapeHTML(meta.suggestion)}</p>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
+      $('pathTreeContent').innerHTML = `
+        <div class="rounded-xl border border-line bg-white p-4">
+          <div class="mb-3 flex flex-wrap items-center gap-2">
+            <span class="badge bg-primary text-white">Review priority</span>
+            <span class="badge bg-slate-100 text-bodyText">${stats.maxDropoff ? `${stats.maxDropoff.from} → ${stats.maxDropoff.to}` : 'No clear drop-off'}</span>
+          </div>
+          <p class="text-3xl font-bold text-primary">${stats.maxDropoff ? stats.maxDropoff.lost : 0}  users</p>
+          <p class="mt-2 text-sm font-semibold text-muted">Stage drop-off rate: ${stats.maxDropoff ? formatPercent(stats.maxDropoff.lost, stats.maxDropoff.previous) : '0.0%'}</p>
+          <div class="mt-4 space-y-3">${renderPathTree(stats)}</div>
+        </div>
+      `;
+      renderIssueCategory(rows);
+    }
+
+    function renderIssueCategory(rows, inactive = false) {
+      if (inactive) {
+        $('opsIssueBadge').textContent = 'Not applicable';
+        $('productIssueBadge').textContent = 'Not applicable';
+        $('opsIssueContent').innerHTML = inactiveModule('Content / product issue classification does not apply to this dataset.');
+        $('productIssueContent').innerHTML = inactiveModule('Content / product issue classification does not apply to this dataset.');
+        return;
+      }
+      const issueCounts = countBy(rows, 'issue_type');
+      const opsTotal = opsIssueTypes.reduce((sum, issue) => sum + (issueCounts[issue] || 0), 0);
+      const productTotal = productIssueTypes.reduce((sum, issue) => sum + (issueCounts[issue] || 0), 0);
+      $('opsIssueBadge').textContent = `${opsTotal}  users / ${formatPercent(opsTotal, rows.length)}`;
+      $('productIssueBadge').textContent = `${productTotal}  users / ${formatPercent(productTotal, rows.length)}`;
+      const renderList = (types, colorClass) => types.map((issue) => `
+        <div class="rounded-xl border border-white/70 bg-white p-4">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="font-bold text-ink">${escapeHTML(issue)}</p>
+              <p class="mt-1 text-xs text-muted">${escapeHTML(pathIssueMeta[issue]?.suggestion || 'Continue reviewing feedback')}</p>
+            </div>
+            <span class="badge ${colorClass} text-white">${issueCounts[issue] || 0}</span>
+          </div>
+        </div>
+      `).join('');
+      $('opsIssueContent').innerHTML = renderList(opsIssueTypes, 'bg-primary');
+      $('productIssueContent').innerHTML = renderList(productIssueTypes, 'bg-altText');
+    }
+
+    function renderSuggestions() {
+      const suggestions = buildSuggestions();
+      const checklist = (items, colorClass) => items.map((item) => `
+        <div class="rounded-xl border border-line bg-white p-4">
+          <div class="flex gap-3">
+            <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md ${colorClass} text-xs font-bold text-white">✓</span>
+            <div>
+              <p class="font-bold text-ink">${escapeHTML(item.title)}</p>
+              <p class="mt-1 text-xs leading-5 text-muted">${escapeHTML(item.basis)}</p>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      $('suggestionsContent').innerHTML = `
+        <div class="grid gap-5 xl:grid-cols-2">
+          <div>
+            <h3 class="mb-3 text-base font-bold text-primary">Content recommendations</h3>
+            <div class="space-y-3">${checklist(suggestions.ops, 'bg-primary')}</div>
+          </div>
+          <div>
+            <h3 class="mb-3 text-base font-bold text-altText">Product discussion points</h3>
+            <div class="space-y-3">${checklist(suggestions.product, 'bg-altText')}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildSuggestions() {
+      if (state.mode === 'event') {
+        const event = analyzeEvents();
+        return {
+          ops: [
+            { title: 'Review onboarding for infrequent users', basis: `Infrequent users: ${event.lowFrequencyUsers} . Check first-day guidance and reasons to return.` },
+            { title: 'Review use cases among frequent returners', basis: `Frequent returning users: ${event.highFrequencyUsers} . Explore which use cases keep them returning.` },
+            { title: 'Add deeper events to complete the journey', basis: 'Consider created_topic, viewed_ai_summary and enabled_reminder events.' }
+          ],
+          product: [
+            { title: 'Check access to core features after first opening', basis: 'Many one-time opens may indicate onboarding friction, but other causes need checking.' },
+            { title: 'Instrument topic creation and AI summary views', basis: 'App-open events alone cannot explain core-feature use.' }
+          ]
+        };
+      }
+      if (state.mode === 'daily') {
+        const daily = analyzeDaily();
+        return {
+          ops: [
+            { title: 'Compare DAU changes with news availability', basis: `Daily dataset: ${daily.rows.length} days; peak DAU: ${daily.maxDau.value}.` },
+            { title: 'Improve topic templates and first-use guidance', basis: `Topic creation UV rate: ${daily.topicCreateUvRate}. Review alongside other feature-use measures.` },
+            { title: 'Review push copy and timing', basis: `Push reactivation rate: ${daily.pushWakeRate}.` }
+          ],
+          product: [
+            { title: 'Review topic entry points and default templates', basis: 'Low topic creation may warrant a review of the first-use experience.' },
+            { title: 'Add relevant daily fields', basis: 'Consider logged-in users, news volume and deeper feature-use measures.' }
+          ]
+        };
+      }
+      if (state.mode === 'survey') {
+        const survey = analyzeSurvey();
+        const topPain = topEntry(survey.painCounts)[0];
+        return {
+          ops: [
+            { title: 'Add onboarding content', basis: `Survey friction centres on ${topPain}. Consider tutorials and examples.` },
+            { title: 'Add use cases for different user groups', basis: 'Use occupation and reasons for trying to inform content.' },
+            { title: 'Explain membership value', basis: 'Address payment concerns with clear trial and benefit comparisons.' }
+          ],
+          product: [
+            { title: 'Raise journey friction with the product team', basis: `Frequent pain point: ${topPain}.` },
+            { title: 'Improve content categories and saved-item organisation', basis: 'Open feedback includes topic management and information-organisation requests.' }
+          ]
+        };
+      }
+      if (state.mode !== 'path') {
+        return {
+          ops: [{ title: 'Add recognised fields before generating recommendations', basis: 'Insufficient fields to analyse journeys or feedback.' }],
+          product: [{ title: 'Check the export format first', basis: 'Upload user journeys, events, survey responses or daily metrics.' }]
+        };
+      }
+      const rows = getFilteredPathRows();
+      const stats = computePathStats(rows);
+      const issueCounts = countBy(rows, 'issue_type');
+      return {
+        ops: [
+          { title: 'Add onboarding content', basis: `Feature understanding: ${issueCounts['Feature understanding'] || 0} users; topic creation: ${formatPercent(stats.createdTopic, stats.registered)}.` },
+          { title: 'Add use cases for different user groups', basis: `Unclear use case: ${issueCounts['Unclear use case'] || 0}  users.` },
+          { title: 'Add prompt examples', basis: `Prompt guidance needed: ${issueCounts['Prompt guidance needed'] || 0}  users.` },
+          { title: 'Add topic-creation tutorials', basis: 'Build first-use content around topic creation, keyword monitoring and alerts.' },
+          { title: 'Explain membership value', basis: `Price concerns: ${issueCounts['Price concerns'] || 0} users; high payment intention: ${hasSourceField('pay_willingness') ? formatPercent(stats.highPay, stats.registered) : 'Payment intention field unavailable'}.` },
+          { title: 'Prepare trial guidance for high-intent users', basis: hasSourceField('pay_willingness') ? `Users with high payment intention: ${stats.highPay}  users.` : 'Payment intention field unavailable.' }
+        ],
+        product: [
+          { title: 'Raise entry-point visibility issues', basis: `Hidden entry point: ${issueCounts['Hidden entry point'] || 0}  users.` },
+          { title: 'Review first-topic creation complexity', basis: `Complex flow: ${issueCounts['Complex flow'] || 0}  users.` },
+          { title: 'Consider default topic templates', basis: 'Examples include AI news, semiconductors, investment tracking and content research.' },
+          { title: 'Review reminder settings access', basis: `Reminder adoption: ${hasSourceField('enabled_reminder') ? formatPercent(stats.enabledReminder, stats.registered) : 'No data'}.` },
+          { title: 'Review categories and saved-item organisation', basis: `Unclear content categories: ${issueCounts['Unclear content categories'] || 0}  users.` }
+        ]
+      };
+    }
+
+    function eventFieldMap() {
+      return {
+        id: findField(state.headers, ['Person.distinct_id', 'distinct_id']),
+        event: findField(state.headers, ['event']),
+        timestamp: findField(state.headers, ['timestamp', 'time', 'Time']),
+        url: findField(state.headers, ['Url', 'URL', 'Screen', 'screen', 'Page']),
+        lib: findField(state.headers, ['properties.$lib', '$lib', 'lib'])
+      };
+    }
+
+    function analyzeEvents() {
+      const map = eventFieldMap();
+      const rows = state.mode === 'event' ? state.rawRows : [];
+      const userCounts = {};
+      const userDates = {};
+      const daily = {};
+      rows.forEach((row) => {
+        const id = row[map.id] || 'Unknown user';
+        const event = row[map.event] || 'Unknown event';
+        const dateObj = new Date(row[map.timestamp]);
+        const date = Number.isNaN(dateObj.getTime()) ? String(row[map.timestamp] || 'Unknown date').slice(0, 10) : dateObj.toISOString().slice(0, 10);
+        userCounts[id] = (userCounts[id] || 0) + 1;
+        userDates[id] = userDates[id] || [];
+        userDates[id].push(date);
+        daily[date] = daily[date] || { events: 0, users: new Set() };
+        daily[date].events += 1;
+        daily[date].users.add(id);
+      });
+      const userStats = Object.entries(userCounts).map(([id, count]) => {
+        const dates = unique(userDates[id]).sort();
+        return { id: anonymizeIdentifier(id), rawId: id, count, first: dates[0] || '-', last: dates[dates.length - 1] || '-', activeDays: dates.length, status: count >= 5 ? 'Frequent returner' : count >= 2 ? 'Regular active user' : 'Infrequent user' };
+      }).sort((a, b) => b.count - a.count);
+      const eventCounts = countByValues(rows.map((row) => row[map.event] || 'Unknown event'));
+      const uniqueUsers = Object.keys(userCounts).length;
+      return {
+        rows,
+        map,
+        totalEvents: rows.length,
+        uniqueUsers,
+        eventTypes: Object.keys(eventCounts).length,
+        eventCounts,
+        avgEvents: uniqueUsers ? rows.length / uniqueUsers : 0,
+        daily: Object.entries(daily).sort((a, b) => a[0].localeCompare(b[0])).map(([date, item]) => ({ date, events: item.events, users: item.users.size, avg: item.users.size ? item.events / item.users.size : 0 })),
+        userStats,
+        highFrequencyUsers: userStats.filter((user) => user.status === 'Frequent returner').length,
+        lowFrequencyUsers: userStats.filter((user) => user.status === 'Infrequent user').length,
+        openedCount: rows.filter((row) => String(row[map.event]).toLowerCase().includes('application opened')).length,
+        onlyOpened: Object.keys(eventCounts).length === 1 && Object.keys(eventCounts)[0]?.toLowerCase().includes('application opened')
+      };
+    }
+
+    function renderEventData() {
+      if (state.mode !== 'event') {
+        $('eventContent').innerHTML = inactiveModule('This is not event data. Upload Person.distinct_id or distinct_id, event and timestamp fields.');
+        return;
+      }
+      const event = analyzeEvents();
+      const dates = event.daily.map((item) => item.date).filter((date) => date !== 'Unknown date');
+      const range = dates.length ? `${dates[0]} to ${dates[dates.length - 1]}` : 'Not available';
+      const maxEvents = Math.max(...event.daily.map((item) => item.events), 1);
+      $('eventContent').innerHTML = `
+        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          ${[
+            ['Total events', event.totalEvents, 'Events in the current dataset'],
+            ['Unique users', event.uniqueUsers, 'Deduplicated by distinct_id'],
+            ['Event types', event.eventTypes, 'Distinct event names'],
+            ['Date range', range, 'Parsed from timestamp'],
+            ['Events per user', formatNumber(event.avgEvents, 2), 'Total events / Unique users']
+          ].map(([label, value, note]) => renderMetricCard({ label, value, note })).join('')}
+        </div>
+        <div class="mt-5 grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+          <div class="card p-4">
+            <h3 class="mb-3 text-base font-bold text-ink">App-open analysis</h3>
+            <div class="grid gap-3">
+              ${renderSmallStat('Total app opens', event.openedCount || event.totalEvents)}
+              ${renderSmallStat('Users who opened the app', event.uniqueUsers)}
+              ${renderSmallStat('Opens per user', formatNumber(event.avgEvents, 2))}
+              ${renderSmallStat('Frequent users', event.highFrequencyUsers)}
+              ${renderSmallStat('Infrequent users', event.lowFrequencyUsers)}
+            </div>
+            ${event.onlyOpened ? '<p class="mt-4 rounded-lg border border-neutralLine bg-neutralSoft px-3 py-3 text-sm leading-6 text-bodyText">This dataset mainly contains app-open events. It supports activity and return analysis, not a complete core-feature funnel without topic, summary and reminder events.</p>' : ''}
+          </div>
+          <div class="card p-4">
+            <h3 class="mb-3 text-base font-bold text-ink">Daily activity</h3>
+            <div class="space-y-3">
+              ${event.daily.map((item) => `
+                <div>
+                  <div class="mb-1 flex items-center justify-between gap-3 text-xs">
+                    <span class="font-bold text-bodyText">${escapeHTML(item.date)}</span>
+                    <span class="text-muted">${item.events}  events / ${item.users}  users / Average: ${formatNumber(item.avg, 2)}</span>
+                  </div>
+                  <div class="bar-track h-2"><div class="h-2 rounded-full bg-primary" style="width:${Math.max((item.events / maxEvents) * 100, 6)}%"></div></div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+        <div class="mt-5">
+          <h3 class="mb-3 text-base font-bold text-ink">Frequent-user analysis</h3>
+          <div class="table-wrap overflow-x-auto rounded-xl border border-line bg-white">
+          <table class="w-full min-w-[860px] text-left text-sm">
+            <thead class="bg-slate-50 text-xs font-bold text-muted"><tr><th class="px-4 py-4">User ID</th><th class="px-4 py-4">Opens</th><th class="px-4 py-4">First open</th><th class="px-4 py-4">Last open</th><th class="px-4 py-4">Active days</th><th class="px-4 py-4">Activity status</th></tr></thead>
+            <tbody>${event.userStats.slice(0, 12).map((user) => `<tr class="border-b border-line last:border-0"><td class="px-4 py-4 font-bold text-ink">${escapeHTML(user.id)}</td><td class="px-4 py-4">${user.count}</td><td class="px-4 py-4">${escapeHTML(user.first)}</td><td class="px-4 py-4">${escapeHTML(user.last)}</td><td class="px-4 py-4">${user.activeDays}</td><td class="px-4 py-4"><span class="badge ${user.status === 'Frequent returner' ? 'bg-neutralSoft text-primary' : user.status === 'Regular active user' ? 'bg-emerald-50 text-success' : 'bg-slate-100 text-muted'}">${escapeHTML(user.status)}</span></td></tr>`).join('')}</tbody>
+          </table>
+          </div>
+        </div>
+        <div class="mt-5 rounded-xl border border-neutralLine bg-neutralSoft p-4">
+          <p class="text-sm font-bold text-ink">Rule-based event observations</p>
+          <div class="mt-2 grid gap-2 text-sm leading-6 text-bodyText">
+            <p>The data shows app-open frequency and return activity.</p>
+            <p>${event.avgEvents >= 2 ? 'Repeated opens are present in the sample.' : 'Average opens are low. Investigate onboarding alongside other possible causes.'}</p>
+            <p>Add created_topic, viewed_ai_summary and enabled_reminder to build a deeper feature funnel.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSmallStat(label, value) {
+      return `<div class="flex items-center justify-between rounded-lg border border-line bg-slate-50 px-3 py-2"><span class="text-sm text-muted">${escapeHTML(label)}</span><span class="font-bold text-ink">${escapeHTML(value)}</span></div>`;
+    }
+
+    function findDailyField(headers, key) {
+      const aliases = {
+        'Date': ['Date', 'date', 'day'],
+        'DAU': ['DAU', 'DAU', 'dau'],
+        'Cold-start UV': ['Cold-start UV', 'ColdStartUV', 'cold_start_uv'],
+        'Icon reactivation UV': ['Icon reactivation UV', 'IconUV', 'icon_uv'],
+        'Push reactivation UV': ['Push reactivation UV', 'PushWakeUV', 'push_wake_uv'],
+        'External H5 reactivation UV': ['External H5 reactivation UV', 'ExternalH5UV', 'h5_uv'],
+        'Day-1 retention': ['Day-1 retention', 'd1_retention'],
+        'Average app duration': ['Average app duration', 'AvgDuration', 'avg_duration'],
+        'Registered users': ['Registered users', 'Logged-in users', 'registered_users'],
+        'Topic follow actions': ['Topic follow actions', 'follow_topic_count'],
+        'Topic follow UV': ['Topic follow UV', 'FollowTopicUV', 'follow_topic_uv'],
+        'Topics followed': ['Topics followed', 'followed_topic_count'],
+        'Topics created': ['Topics created', 'created_topic_count'],
+        'Topic creation UV': ['Topic creation UV', 'CreateTopicUV', 'created_topic_uv'],
+        'News items ingested': ['News items ingested', 'news_count'],
+        'Push sends': ['Push sends', 'PushSendCount', 'push_send_count'],
+        'Push recipients': ['Push recipients', 'PushSendUsers', 'push_send_users']
+      };
+      return findField(headers, aliases[key] || [key]);
+    }
+
+    function dailyValue(row, key) {
+      const field = findDailyField(state.headers, key);
+      return field ? row[field] : '';
+    }
+
+    function analyzeDaily() {
+      const rows = state.mode === 'daily' ? [...state.rawRows].sort((a, b) => String(dailyValue(a, 'Date')).localeCompare(String(dailyValue(b, 'Date')))) : [];
+      const sum = (key) => rows.reduce((total, row) => total + toNumber(dailyValue(row, key)), 0);
+      const dauValues = rows.map((row) => ({ date: dailyValue(row, 'Date'), value: toNumber(dailyValue(row, 'DAU')) }));
+      const maxDau = dauValues.reduce((best, item) => item.value > best.value ? item : best, { date: '-', value: 0 });
+      const minDau = dauValues.reduce((best, item) => item.value < best.value ? item : best, dauValues[0] || { date: '-', value: 0 });
+      const firstDau = dauValues[0]?.value || 0;
+      const lastDau = dauValues[dauValues.length - 1]?.value || 0;
+      const createUv = sum('Topic creation UV');
+      const followUv = sum('Topic follow UV');
+      const totalDau = sum('DAU');
+      const pushWake = sum('Push reactivation UV');
+      const pushUsers = sum('Push recipients');
+      const pushSends = sum('Push sends');
+      return {
+        rows,
+        dauValues,
+        maxDau,
+        minDau,
+        trend: firstDau ? formatPercent(lastDau - firstDau, firstDau) : 'No data',
+        source: {
+          cold: sum('Cold-start UV'),
+          icon: sum('Icon reactivation UV'),
+          push: pushWake,
+          h5: sum('External H5 reactivation UV')
+        },
+        retentionRows: rows.map((row) => ({ date: dailyValue(row, 'Date'), retention: dailyValue(row, 'Day-1 retention'), duration: dailyValue(row, 'Average app duration'), loginUsers: dailyValue(row, 'Registered users'), dau: dailyValue(row, 'DAU') })),
+        topic: {
+          followCount: sum('Topic follow actions'),
+          followUv,
+          followedTopics: sum('Topics followed'),
+          createCount: sum('Topics created'),
+          createUv,
+          newsCount: sum('News items ingested')
+        },
+        topicCreateUvRate: totalDau ? formatPercent(createUv, totalDau) : 'No data',
+        topicFollowUvRate: totalDau ? formatPercent(followUv, totalDau) : 'No data',
+        avgFollowPerUser: followUv ? formatNumber(sum('Topic follow actions') / followUv, 2) : 'No data',
+        avgCreatePerUser: createUv ? formatNumber(sum('Topics created') / createUv, 2) : 'No data',
+        push: { sends: pushSends, users: pushUsers, wake: pushWake },
+        pushWakeRate: pushUsers ? formatPercent(pushWake, pushUsers) : 'No data',
+        pushSingleEfficiency: pushSends ? formatPercent(pushWake, pushSends) : 'No data'
+      };
+    }
+
+    function renderDailyMetrics() {
+      if (state.mode !== 'daily') {
+        $('dailyContent').innerHTML = inactiveModule('This is not daily-metric data. Upload date, DAU, day-1 retention, topic creation UV and push reactivation fields.');
+        return;
+      }
+      const daily = analyzeDaily();
+      const maxDau = Math.max(...daily.dauValues.map((item) => item.value), 1);
+      const sourceEntries = [
+        ['Cold-start UV', daily.source.cold],
+        ['Icon reactivation UV', daily.source.icon],
+        ['Push reactivation UV', daily.source.push],
+        ['External H5 reactivation UV', daily.source.h5]
+      ];
+      const sourceTotal = sourceEntries.reduce((sum, [, value]) => sum + value, 0);
+      $('dailyContent').innerHTML = `
+        <div class="rounded-xl border border-neutralLine bg-neutralSoft p-4 text-sm leading-6 text-bodyText">Daily aggregates support trend and feature-use analysis. They do not support user-level cross analysis such as user_type x issue_type.</div>
+        <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          ${renderMetricCard({ label: 'Peak DAU', value: `${daily.maxDau.value}`, note: daily.maxDau.date })}
+          ${renderMetricCard({ label: 'Lowest DAU', value: `${daily.minDau.value}`, note: daily.minDau.date })}
+          ${renderMetricCard({ label: 'Period change', value: daily.trend, note: 'Last day relative to first day' })}
+          ${renderMetricCard({ label: 'Topic creation UV rate', value: daily.topicCreateUvRate, note: 'Topic creation UV / DAU' })}
+        </div>
+        <div class="mt-5 grid gap-5 xl:grid-cols-2">
+          <div class="card p-4">
+            <h3 class="mb-3 text-base font-bold text-ink">DAU trend</h3>
+            <div class="space-y-3">${daily.dauValues.map((item) => `<div><div class="mb-1 flex justify-between text-xs"><span class="font-bold text-bodyText">${escapeHTML(item.date)}</span><span class="text-muted">${item.value} DAU</span></div><div class="bar-track h-2"><div class="h-2 rounded-full bg-primary" style="width:${Math.max((item.value / maxDau) * 100, 6)}%"></div></div></div>`).join('')}</div>
+          </div>
+          <div class="card p-4">
+            <h3 class="mb-3 text-base font-bold text-ink">Reactivation sources</h3>
+            <div class="space-y-3">${sourceEntries.map(([label, value]) => `<div><div class="mb-1 flex justify-between text-xs"><span class="font-bold text-bodyText">${label}</span><span class="text-muted">${value} · ${formatPercent(value, sourceTotal)}</span></div><div class="bar-track h-2"><div class="h-2 rounded-full bg-primary" style="width:${Math.max(percentNumber(value, sourceTotal), 6)}%"></div></div></div>`).join('')}</div>
+          </div>
+          <div class="card p-4">
+            <h3 class="mb-3 text-base font-bold text-ink">Retention and depth of use</h3>
+            <div class="space-y-2">${daily.retentionRows.map((row) => {
+              const loginRate = row.loginUsers ? formatPercent(toNumber(row.loginUsers), toNumber(row.dau)) : 'No data';
+              return `<div class="rounded-lg bg-slate-50 px-3 py-2 text-xs text-muted"><span class="font-bold text-bodyText">${escapeHTML(row.date)}</span> / Day-1 retention: ${formatMaybePercent(row.retention)} / Average duration: ${escapeHTML(row.duration || 'No data')} / Logged-in share: ${loginRate}</div>`;
+            }).join('')}</div>
+          </div>
+          <div class="card p-4">
+            <h3 class="mb-3 text-base font-bold text-ink">Topic use / Push efficiency</h3>
+            <div class="grid gap-2">
+              ${renderSmallStat('Topic follow actions', daily.topic.followCount)}
+              ${renderSmallStat('Topic follow UV rate', daily.topicFollowUvRate)}
+              ${renderSmallStat('Topic follows per user', daily.avgFollowPerUser)}
+              ${renderSmallStat('Topics created', daily.topic.createCount)}
+              ${renderSmallStat('Topics per user', daily.avgCreatePerUser)}
+              ${renderSmallStat('Push user reactivation', daily.pushWakeRate)}
+              ${renderSmallStat('Reactivations per push sent', daily.pushSingleEfficiency)}
+            </div>
+          </div>
+        </div>
+        <div class="mt-5 rounded-xl border border-neutralLine bg-neutralSoft p-4">
+          <p class="text-sm font-bold text-ink">Rule-based daily observations</p>
+          <div class="mt-2 grid gap-2 text-sm leading-6 text-bodyText">
+            <p>Largest recorded source: ${sourceEntries.sort((a, b) => b[1] - a[1])[0][0]} . Review its contribution to active usage.</p>
+            <p>Topic creation UV rate: ${daily.topicCreateUvRate}. If low, review guidance and templates alongside user needs.</p>
+            <p>Push reactivation rate: ${daily.pushWakeRate}. Review timing, relevance and alert copy.</p>
+            <p>Compare day-1 retention with topic creation and news availability to investigate continued use.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function getSurveyMap(headers = state.headers) {
+      return {
+        age: findSurveyField(headers, 'Age group'),
+        industry: findSurveyField(headers, 'Occupation / Industry'),
+        city: findSurveyField(headers, 'City / Country'),
+        status: findSurveyField(headers, 'Usage status'),
+        rating: findSurveyField(headers, 'Experience rating'),
+        pain: findSurveyField(headers, 'Usage friction'),
+        reason: findSurveyField(headers, 'Reason for trying'),
+        value: findSurveyField(headers, 'Most valuable capability'),
+        pay: findSurveyField(headers, 'Would pay'),
+        price: findSurveyField(headers, 'Price acceptance'),
+        hesitate: findSurveyField(headers, 'Payment hesitation'),
+        improve: findSurveyField(headers, 'Top improvement request')
+      };
+    }
+
+    function findSurveyField(headers, key) {
+      const aliases = {
+        'Age group': ['Age group', 'Age', 'age'],
+        'Occupation / Industry': ['Occupation / Industry', 'Occupation/Industry', 'Occupation', 'Industry', 'Industry'],
+        'City / Country': ['City / Country', 'City/Country', 'City', 'Country', 'Region'],
+        'Usage status': ['Usage status', 'Current usage', 'Usage state'],
+        'Experience rating': ['Experience rating', 'Experience score', 'User experience score', 'Rating'],
+        'Usage friction': ['Usage friction', 'Friction', 'Pain points', 'Usage pain'],
+        'Reason for trying': ['Reason for trying', 'Usage reason', 'Initial motivation'],
+        'Most valuable capability': ['Most valuable capability', 'Valuable capabilities', 'Most valuable feature'],
+        'Would pay': ['Would pay', 'Willingness to pay', 'Willing to pay'],
+        'Price acceptance': ['Price acceptance', 'CNY 9.9/month acceptance', 'CNY9.9/month acceptance'],
+        'Payment hesitation': ['Payment hesitation', 'Payment concerns', 'Reason not to pay'],
+        'Top improvement request': ['Top improvement request', 'Improvement priority', 'Improvement suggestions']
+      };
+      return findField(headers, aliases[key] || [key]);
+    }
+
+    function surveyDistribution(rows, field, multi = false) {
+      if (!field) return {};
+      const values = rows.flatMap((row) => multi ? splitMulti(row[field]) : [row[field] || 'Not answered']);
+      return countByValues(values);
+    }
+
+    function analyzeSurvey() {
+      const rows = state.mode === 'survey' ? state.rawRows : [];
+      const map = getSurveyMap();
+      const ratings = map.rating ? rows.map((row) => toNumber(row[map.rating])).filter((num) => num > 0) : [];
+      return {
+        rows,
+        map,
+        ageCounts: surveyDistribution(rows, map.age),
+        industryCounts: surveyDistribution(rows, map.industry),
+        cityCounts: surveyDistribution(rows, map.city),
+        statusCounts: surveyDistribution(rows, map.status),
+        avgRating: ratings.length ? ratings.reduce((sum, num) => sum + num, 0) / ratings.length : null,
+        painCounts: surveyDistribution(rows, map.pain, true),
+        reasonCounts: surveyDistribution(rows, map.reason, true),
+        valueCounts: surveyDistribution(rows, map.value, true),
+        payCounts: surveyDistribution(rows, map.pay),
+        priceCounts: surveyDistribution(rows, map.price),
+        hesitateCounts: surveyDistribution(rows, map.hesitate, true),
+        openFeedback: map.improve ? rows.map((row) => row[map.improve]).filter(Boolean).slice(0, 8) : []
+      };
+    }
+
+    function renderDistribution(title, counts, total, color = 'bg-primary') {
+      const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+      const max = Math.max(...entries.map(([, count]) => count), 1);
+      return `
+        <div class="card p-4">
+          <h3 class="mb-3 text-base font-bold text-ink">${escapeHTML(title)}</h3>
+          <div class="space-y-3">
+            ${entries.length ? entries.map(([label, count]) => `
+              <div>
+                <div class="mb-1 flex items-center justify-between gap-3 text-xs">
+                  <span class="font-bold text-bodyText">${escapeHTML(label)}</span>
+                  <span class="text-muted">${count} · ${formatPercent(count, total)}</span>
+                </div>
+                <div class="bar-track h-2"><div class="h-2 rounded-full ${color}" style="width:${Math.max((count / max) * 100, 6)}%"></div></div>
+              </div>
+            `).join('') : '<p class="text-sm text-muted">No data</p>'}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSurveyFeedback() {
+      if (state.mode !== 'survey') {
+        $('surveyContent').innerHTML = inactiveModule('This is not survey data. Upload age group, occupation, usage status, experience rating and payment-intention fields.');
+        return;
+      }
+      const survey = analyzeSurvey();
+      const total = survey.rows.length;
+      $('surveyContent').innerHTML = `
+        ${total < 30 ? '<div class="mb-5 rounded-xl border border-orange/20 bg-orange/10 p-4 text-sm leading-6 text-bodyText">Small survey sample: chi-square tests and p-values are exploratory, not validated statistical findings.</div>' : ''}
+        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          ${renderMetricCard({ label: 'Respondents', value: total, note: 'Current survey sample' })}
+          ${renderMetricCard({ label: 'Age groups', value: Object.keys(survey.ageCounts).length, note: 'Age distribution' })}
+          ${renderMetricCard({ label: 'Occupations / Industries', value: Object.keys(survey.industryCounts).length, note: 'Occupation / Industry distribution' })}
+          ${renderMetricCard({ label: 'Average experience rating', value: survey.avgRating === null ? 'No data' : formatNumber(survey.avgRating, 2), note: 'Mean reported experience score' })}
+        </div>
+        <div class="mt-5 grid gap-5 xl:grid-cols-2">
+          ${renderDistribution('Age distribution', survey.ageCounts, total)}
+          ${renderDistribution('Occupation / Industry distribution', survey.industryCounts, total)}
+          ${renderDistribution('City / Country distribution', survey.cityCounts, total)}
+          ${renderDistribution('Usage status distribution', survey.statusCounts, total)}
+          ${renderDistribution('Usage friction', survey.painCounts, total)}
+          ${renderDistribution('Reasons for trying', survey.reasonCounts, total)}
+          ${renderDistribution('Perceived feature value', survey.valueCounts, total)}
+          <div class="card p-4">
+            <h3 class="mb-3 text-base font-bold text-ink">Willingness to pay</h3>
+            <div class="grid gap-4">
+              ${renderDistribution('Would pay', survey.payCounts, total).replace('card p-4', 'rounded-lg border border-line bg-white p-3')}
+              ${renderDistribution('Price acceptance', survey.priceCounts, total).replace('card p-4', 'rounded-lg border border-line bg-white p-3')}
+              ${renderDistribution('Payment hesitation', survey.hesitateCounts, total).replace('card p-4', 'rounded-lg border border-line bg-white p-3')}
+            </div>
+          </div>
+        </div>
+        <div class="mt-5 rounded-xl border border-line bg-white p-4">
+          <h3 class="mb-3 text-base font-bold text-ink">Open feedback</h3>
+          <div class="grid gap-3 xl:grid-cols-2">${survey.openFeedback.length ? survey.openFeedback.map((feedback) => `<div class="rounded-lg border border-line bg-slate-50 p-3"><p class="text-sm leading-6 text-bodyText">${escapeHTML(feedback)}</p><p class="mt-2 text-xs font-bold text-primary">Issue category: ${escapeHTML(classifyOpenFeedback(feedback))}</p></div>`).join('') : '<p class="text-sm text-muted">No open-feedback field</p>'}</div>
+        </div>
+      `;
+    }
+
+    function classifyOpenFeedback(text) {
+      const value = String(text);
+      if (/price|pay|membership|expensive|价格|付费|会员|贵/i.test(value)) return 'Price concerns';
+      if (/topic|save|organis|organiz|categor|专题|收藏|整理|分类/i.test(value)) return 'Topic management';
+      if (/AI|summar|explain|value|摘要|解读|价值/i.test(value)) return 'AI explanation value';
+      if (/entry|journey|flow|unclear|入口|路径|流程|不会|不清楚/i.test(value)) return 'Usage journey';
+      if (/feature|want|add|support|功能|希望|增加|支持/i.test(value)) return 'Feature request';
+      return 'Information volume';
+    }
+
+    function renderSurveyIssues() {
+      const survey = analyzeSurvey();
+      const feedbackCounts = countByValues(survey.openFeedback.map(classifyOpenFeedback));
+      const entries = Object.entries(feedbackCounts).sort((a, b) => b[1] - a[1]);
+      $('issuesContent').innerHTML = entries.length ? `
+        <div class="space-y-3">${entries.map(([issue, count]) => `<div class="rounded-xl border border-line bg-white p-4"><div class="flex items-center justify-between gap-3"><p class="font-bold text-ink">${escapeHTML(issue)}</p><span class="badge bg-neutralSoft text-primary">${count}  records</span></div><p class="mt-2 text-xs text-muted">Review the original responses to separate content guidance from product usability issues.</p></div>`).join('')}</div>
+      ` : inactiveModule('No classifiable open-feedback field.');
+      $('pathTreeContent').innerHTML = inactiveModule('Survey responses are not user-level journey records, so a journey tree is not generated.');
+      renderIssueCategory([], true);
+    }
+
+    function renderPreview() {
+      const rows = getCurrentRowsForPreview();
+      const fields = getPreviewFields(rows);
+      $('previewCount').textContent = `${Math.min(10, rows.length)} / ${rows.length}  records`;
+      $('togglePreviewFields').textContent = state.previewAllFields ? 'Show key fields' : 'Show all fields';
+      if (!rows.length) {
+        $('previewContent').innerHTML = inactiveModule('No preview data matches the filters.');
+        return;
+      }
+      $('previewContent').innerHTML = `
+        <div class="table-wrap overflow-x-auto rounded-xl border border-line bg-white">
+          <table class="w-full min-w-[980px] border-collapse text-left text-sm">
+            <thead class="bg-slate-50 text-xs font-bold text-muted"><tr>${fields.map((field) => `<th class="px-4 py-4">${escapeHTML(field)}</th>`).join('')}</tr></thead>
+            <tbody>${rows.slice(0, 10).map((row) => `<tr class="border-b border-line last:border-0">${fields.map((field) => `<td class="max-w-[320px] px-4 py-4 align-top text-muted">${escapeHTML(displayPreviewValue(row, field))}</td>`).join('')}</tr>`).join('')}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function getCurrentRowsForPreview() {
+      if (state.mode === 'path') return getFilteredPathRows();
+      return state.rawRows;
+    }
+
+    function getPreviewFields(rows) {
+      const headers = safeHeaders(state.mode === 'path' ? pathAllFields : getHeaders(rows));
+      if (state.previewAllFields) return headers;
+      const preferred = {
+        path: ['user_id', 'user_type', 'use_scene', 'function_need', 'completed_core_action', 'pay_willingness', 'issue_type', 'feedback'],
+        event: ['Person.distinct_id', 'distinct_id', 'event', 'timestamp', 'Url', 'Screen', 'properties.$lib'],
+        survey: ['Age group', 'Occupation / Industry', 'Occupation', 'Industry', 'Usage status', 'Experience rating', 'Would pay', 'Price acceptance', 'Top improvement request'],
+        daily: ['Date', 'DAU', 'Day-1 retention', 'Average app duration', 'Topic creation UV', 'Topic follow UV', 'Push reactivation UV', 'Push recipients']
+      }[state.mode] || headers.slice(0, 8);
+      return preferred.filter((field) => headers.includes(field)).slice(0, 10).length ? preferred.filter((field) => headers.includes(field)).slice(0, 10) : headers.slice(0, 10);
+    }
+
+    function renderAll() {
+      renderModeStatus();
+      renderModeSwitch();
+      renderFieldReport();
+      renderStatusTabs();
+      renderFilters();
+      renderMetricCards();
+      renderDataSecurity();
+      renderDataQuality();
+      renderFunnel();
+      renderActivation();
+      renderSegments();
+      renderCrossAnalysis();
+      renderEventData();
+      renderDailyMetrics();
+      renderSurveyFeedback();
+      renderIssues();
+      renderSuggestions();
+      renderPreview();
+      updateModuleVisibility();
+      setupNavObserver();
+    }
+
+    function setupNav() {
+      document.querySelectorAll('#sidebarNav a').forEach((link) => {
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          if (!moduleApplicability().has(link.dataset.target)) {
+            showModeHint(link.dataset.target);
+            return;
+          }
+          const target = $(link.dataset.target);
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setActiveNav(link.dataset.target);
+        });
+      });
+    }
+
+    let navObserver = null;
+    function setupNavObserver() {
+      const main = $('mainContent');
+      const sections = Array.from(document.querySelectorAll('.module[id]')).filter((section) => !section.classList.contains('hidden'));
+      if (navObserver) navObserver.disconnect();
+      if (!('IntersectionObserver' in window)) return;
+      navObserver = new IntersectionObserver((entries) => {
+        const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActiveNav(visible.target.id);
+      }, { root: main, threshold: [0.18, 0.35, 0.6], rootMargin: '-10% 0px -65% 0px' });
+      sections.forEach((section) => navObserver.observe(section));
+    }
+
+    function setActiveNav(id) {
+      document.querySelectorAll('#sidebarNav a').forEach((link) => {
+        link.classList.toggle('nav-item-active', link.dataset.target === id);
+      });
+    }
+
+    function setupFileUpload() {
+      $('fileInput').addEventListener('change', async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        try {
+          const lower = file.name.toLowerCase();
+          let rows = [];
+          if (lower.endsWith('.xlsx') || lower.endsWith('.xls')) {
+            if (!window.XLSX) {
+              $('dataStatus').textContent = 'The XLSX parser is unavailable. Save the file as CSV and upload it instead.';
+              return;
+            }
+            const buffer = await file.arrayBuffer();
+            const workbook = XLSX.read(buffer, { type: 'array' });
+            const firstSheet = workbook.SheetNames[0];
+            rows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], { defval: '' });
+          } else {
+            const text = await file.text();
+            rows = parseDelimited(text);
+          }
+          const mode = detectMode(getHeaders(rows));
+          const label = `Uploaded ${modeName(mode)}`;
+          applyUploadedRows(rows, label);
+        } catch (error) {
+          $('dataStatus').textContent = `Upload failed: ${error.message || 'Could not read the file. Check the format.'}`;
+        }
+      });
+      $('resetData').addEventListener('click', resetToSample);
+      $('resetFilters').addEventListener('click', () => {
+        state.filters = Object.fromEntries(pathFilterFields.map((field) => [field, '']));
+        state.activeTab = 'all';
+        renderAll();
+      });
+      $('togglePreviewFields').addEventListener('click', () => {
+        state.previewAllFields = !state.previewAllFields;
+        renderPreview();
+      });
+    }
+
+    setupNav();
+    setupFileUpload();
+    resetToSample();
+  </script>
+</body>
+</html>

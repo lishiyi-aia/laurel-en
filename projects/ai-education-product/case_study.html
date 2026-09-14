@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AI education product content and pilot support: building WeChat content, organising feedback and product materials, and supporting training and presentations.">
+  <title>AI Education: Product Content & Pilot Support | Laurel Li</title>
+  <style>
+    :root {
+      --ink: #202e36; --dark: #20343d; --blue: #2462c8; --teal: #087b70;
+      --pink: #b13a69; --gold: #94651a; --yellow: #ffe083; --muted: #5d6c77;
+      --line: #d6dfe5; --soft: #f3f6f8; --paper: #fff;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+    body { margin: 0; color: var(--ink); background: #fff; font: 16px/1.8 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; letter-spacing: 0; }
+    h1, h2, h3, h4, p, figure { margin: 0; }
+    h1, h2, h3, h4 { line-height: 1.4; text-wrap: balance; letter-spacing: 0; }
+    p { overflow-wrap: anywhere; }
+    a { color: inherit; text-underline-offset: 4px; }
+    img { display: block; max-width: 100%; height: auto; }
+    button { font: inherit; cursor: pointer; touch-action: manipulation; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    [hidden] { display: none !important; }
+    :focus-visible { outline: 3px solid var(--pink); outline-offset: 5px; }
+    .mono { font-family: "SFMono-Regular", Consolas, monospace; font-variant-numeric: tabular-nums; }
+    .wrap { width: min(1180px, calc(100% - 64px)); margin-inline: auto; }
+    .skip-link { position: fixed; left: 12px; top: 8px; z-index: 100; transform: translateY(-150%); padding: 8px 12px; background: #fff; }
+    .skip-link:focus { transform: none; }
+    .nav { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 64px; padding: 0 max(32px, calc((100% - 1180px) / 2)); color: #fff; background: #20343dfb; border-bottom: 1px solid #ffffff30; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 750; text-decoration: none; white-space: nowrap; }
+    .brand-mark { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid #ffffff75; border-radius: 50%; font-size: 11px; }
+    .nav-links { display: flex; gap: 22px; min-width: 0; overflow: auto; scrollbar-width: none; }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links a { display: inline-flex; flex-shrink: 0; align-items: center; min-height: 44px; color: #d1dde4; font-size: 12px; border-bottom: 2px solid transparent; text-decoration: none; }
+    .nav-links a:hover, .nav-links a[aria-current="location"] { color: #fff; border-bottom-color: var(--yellow); }
+    .hero { position: relative; isolation: isolate; color: #fff; background: var(--dark); }
+    .hero-inner { padding-block: 58px 48px; }
+    .eyebrow { margin-bottom: 22px; color: #ffdf8a; font-size: 11px; font-weight: 750; }
+    h1 { max-width: 870px; font-size: 56px; line-height: 1.23; font-weight: 850; }
+    .hero-copy { max-width: 640px; margin-top: 24px; color: #e1eaf0; font-size: 17px; line-height: 1.95; }
+    .hero-meta { display: flex; gap: 8px 22px; flex-wrap: wrap; margin-top: 25px; color: #d0dfe6; font-size: 12px; }
+    .hero-meta span { padding-left: 10px; border-left: 2px solid #ffdf8a; }
+    .hero-foot { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-top: 30px; padding-top: 17px; border-top: 1px solid #ffffff40; }
+    .hero-foot p { color: #d0dfe6; font-size: 12px; }
+    .hero-foot a { display: inline-flex; min-height: 44px; align-items: center; gap: 16px; color: #ffdf8a; text-decoration: none; font-size: 12px; font-weight: 750; }
+    .disclosure { color: #362807; background: var(--yellow); border-bottom: 1px solid #d9b759; }
+    .disclosure-inner { display: grid; grid-template-columns: 205px 1fr; align-items: center; gap: 40px; padding-block: 22px; }
+    .disclosure h2 { font-size: 18px; }
+    .disclosure strong { display: block; font-size: 15px; }
+    .disclosure p { margin-top: 5px; font-size: 12px; }
+    .snapshot { border-bottom: 1px solid var(--line); }
+    .metric-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .metric { --accent: var(--blue); display: grid; grid-template-columns: 1fr; align-content: start; gap: 12px; padding: 27px 24px; border-right: 1px solid var(--line); }
+    .metric:first-child { padding-left: 0; }
+    .metric:nth-child(2) { --accent: var(--teal); }
+    .metric:nth-child(3) { --accent: var(--gold); }
+    .metric:last-child { --accent: var(--pink); border: 0; }
+    .metric strong { color: var(--accent); font: 48px/1.2 "SFMono-Regular", Consolas, monospace; }
+    .metric b { display: block; font-size: 14px; }
+    .metric span { display: block; margin-top: 4px; font-size: 11px; color: var(--muted); }
+    .band { border-bottom: 1px solid var(--line); }
+    .band.soft { background: var(--soft); }
+    .section { padding-block: 74px; scroll-margin-top: 14px; }
+    .section-head { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 70px; margin-bottom: 36px; align-items: start; }
+    .kicker { color: var(--blue); font-size: 11px; font-weight: 750; margin-bottom: 12px; }
+    h2 { font-size: 36px; line-height: 1.35; font-weight: 800; }
+    h3 { font-size: 21px; } h4 { font-size: 16px; }
+    .lead { color: var(--muted); font-size: 15px; line-height: 1.95; padding-top: 3px; }
+    .lead p + p { margin-top: 12px; }
+    .responsibilities { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+    .responsibility { --accent: var(--blue); display: grid; grid-template-columns: 40px 1fr; gap: 20px; padding-top: 24px; border-top: 3px solid var(--accent); }
+    .responsibility:nth-child(2) { --accent: var(--teal); }
+    .responsibility:nth-child(3) { --accent: var(--pink); }
+    .responsibility > span { color: var(--accent); font: 27px/1.5 "SFMono-Regular", Consolas, monospace; }
+    .responsibility p { margin-top: 10px; color: var(--muted); font-size: 13px; }
+    .subheading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+    .subheading h3 { font-size: 18px; }
+    .example-label { color: var(--gold); font-size: 11px; font-weight: 650; }
+    .usage-path { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px; padding: 0; list-style: none; margin: 0 0 44px; }
+    .usage-path li { --accent: var(--blue); position: relative; padding-top: 22px; border-top: 3px solid var(--accent); }
+    .usage-path li:nth-child(2) { --accent: var(--teal); }
+    .usage-path li:nth-child(3) { --accent: var(--pink); }
+    .usage-path li:nth-child(4) { --accent: var(--gold); }
+    .usage-path li:nth-child(5) { --accent: var(--teal); }
+    .usage-path li:not(:last-child)::after { content: "→"; position: absolute; right: -23px; top: -20px; background: var(--soft); color: var(--accent); font-size: 23px; padding-inline: 3px; }
+    .path-number { display: block; color: var(--accent); font: 33px/1.1 "SFMono-Regular", Consolas, monospace; margin-bottom: 16px; }
+    .usage-path h4 { font-size: 16px; }
+    .usage-path p { margin-top: 9px; font-size: 12px; color: var(--muted); }
+    .feedback-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px 28px; margin-bottom: 22px; }
+    .feedback-tabs { display: flex; width: min(580px, 100%); padding: 4px; border: 1px solid #c7d3db; border-radius: 6px; background: #fff; }
+    .feedback-tabs button { flex: 1; min-width: 0; min-height: 44px; padding: 8px 12px; border: 0; border-radius: 3px; color: var(--muted); background: transparent; font-size: 13px; }
+    .feedback-tabs button[aria-selected="true"] { color: #fff; background: var(--dark); }
+    .feedback-tabs button:hover:not([aria-selected="true"]) { color: var(--blue); background: var(--soft); }
+    .decision-panel { min-width: 0; padding: 28px 0; border-block: 1px solid var(--line); }
+    .decision-panel + .decision-panel { margin-top: 28px; }
+    .feedback-enhanced .decision-panel { margin-top: 0; }
+    .case-question { display: grid; grid-template-columns: 62px 1fr; gap: 22px; align-items: center; min-height: 91px; padding-bottom: 25px; }
+    .case-question > span { color: var(--blue); font: 42px/1.1 "SFMono-Regular", Consolas, monospace; }
+    .case-question small { display: block; color: var(--muted); font-size: 10px; margin-bottom: 7px; }
+    .case-question h3 { font-size: 23px; }
+    .decision-columns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px; }
+    .decision-column { --accent: var(--blue); padding-top: 18px; border-top: 3px solid var(--accent); }
+    .decision-column:nth-child(2) { --accent: var(--teal); }
+    .decision-column:nth-child(3) { --accent: var(--pink); }
+    .decision-column h4 { color: var(--accent); font-size: 16px; }
+    .decision-column p { min-height: 94px; margin-top: 12px; color: var(--muted); font-size: 14px; line-height: 1.95; }
+    .decision-column small { display: block; padding-top: 13px; border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); }
+    .example-note { margin-top: 20px; font-size: 11px; color: var(--muted); }
+    .content-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+    .content-item { --accent: var(--blue); padding: 25px 22px; border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 5px; background: #fff; }
+    .content-item:nth-child(2) { --accent: var(--teal); }
+    .content-item:nth-child(3) { --accent: var(--pink); }
+    .content-item:nth-child(4) { --accent: var(--gold); }
+    .content-item > span { display: block; color: var(--accent); font: 35px/1.2 "SFMono-Regular", Consolas, monospace; }
+    .content-item h3 { margin-top: 22px; font-size: 21px; }
+    .content-item p { min-height: 76px; margin-top: 12px; color: var(--muted); font-size: 13px; }
+    .content-item small { display: block; font-size: 11px; color: var(--accent); margin-top: 18px; padding-top: 13px; border-top: 1px solid var(--line); }
+    .document-outline { display: grid; grid-template-columns: .8fr 1.2fr; gap: 60px; margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--line); }
+    .outline-intro h3 { margin-bottom: 12px; font-size: 23px; }
+    .outline-intro p { color: var(--muted); font-size: 13px; margin-top: 17px; }
+    .outline-steps { list-style: none; margin: 0; padding: 0; }
+    .outline-steps li { display: grid; grid-template-columns: 30px 92px 1fr; gap: 20px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--line); }
+    .outline-steps li:first-child { padding-top: 0; }
+    .outline-steps li span { color: var(--blue); font-size: 11px; }
+    .outline-steps li strong { font-size: 14px; }
+    .outline-steps li p { color: var(--muted); font-size: 12px; }
+    .pilot-stages { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; margin-bottom: 32px; }
+    .pilot-stage { --accent: var(--blue); padding-top: 24px; border-top: 3px solid var(--accent); }
+    .pilot-stage:nth-child(2) { --accent: var(--teal); }
+    .pilot-stage:nth-child(3) { --accent: var(--pink); }
+    .pilot-stage:nth-child(4) { --accent: var(--gold); }
+    .workflow-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--line); font-size: 13px; font-weight: 650; }
+    .workflow-summary b { color: var(--teal); }
+    .practice-note { margin: 0 0 32px; padding: 18px 0; border-block: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+    .practice-note strong { color: var(--ink); margin-right: 12px; }
+    .pilot-stage span { color: var(--accent); font-size: 10px; font-weight: 750; }
+    .pilot-stage h3 { margin-top: 16px; font-size: 23px; }
+    .pilot-stage p { color: var(--muted); font-size: 13px; margin-top: 13px; }
+    .results-band { color: #fff; background: var(--dark); }
+    .results-band .kicker { color: #9adacb; }
+    .results-band .lead { color: #d1dfe6; }
+    .result-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid #ffffff40; }
+    .result-list li { display: grid; grid-template-columns: 55px .8fr 1.2fr; align-items: baseline; gap: 28px; padding-block: 26px; border-bottom: 1px solid #ffffff40; }
+    .result-list li > span { font: 22px/1.2 "SFMono-Regular", Consolas, monospace; color: #ffdf8a; }
+    .result-list h3 { font-size: 21px; }
+    .result-list p { font-size: 14px; color: #d1dfe6; }
+    .scope-note { margin-top: 28px; font-size: 12px; color: #d1dfe6; }
+    .scope-note strong { color: #ffdf8a; margin-right: 14px; }
+    .footer { padding-block: 24px; color: var(--muted); font-size: 11px; }
+    .footer .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .footer a { display: inline-flex; min-height: 44px; align-items: center; color: var(--blue); font-weight: 700; }
+    @media (max-width: 1000px) {
+      h1 { font-size: 48px; } h2 { font-size: 32px; }
+      .nav-links { gap: 17px; } .brand { font-size: 12px; }
+      .section-head { gap: 36px; }
+      .metric { grid-template-columns: 1fr; gap: 7px; padding-inline: 22px; }
+      .metric strong { font-size: 43px; }
+      .responsibility { gap: 13px; grid-template-columns: 33px 1fr; }
+      .responsibility h3 { font-size: 19px; }
+      .usage-path { gap: 18px; } .usage-path li:not(:last-child)::after { right: -20px; }
+      .usage-path h4 { font-size: 15px; }
+      .decision-columns { gap: 24px; } .decision-column p { min-height: 120px; }
+      .content-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .content-item { padding: 24px; } .content-item p { min-height: 48px; }
+      .document-outline { gap: 34px; }
+      .pilot-stages { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 760px) {
+      html { scroll-padding-top: 104px; }
+      .wrap { width: calc(100% - 36px); }
+      .nav { flex-direction: column; align-items: stretch; padding: 12px 18px 0; gap: 0; }
+      .brand { font-size: 12px; } .brand-mark { width: 24px; height: 24px; }
+      .nav-links { width: 100%; gap: 23px; } .nav-links a { font-size: 11px; }
+      .hero-inner { padding-block: 36px 26px; }
+      h1 { font-size: 32px; line-height: 1.35; }
+      .eyebrow { font-size: 10px; margin-bottom: 16px; }
+      .hero-copy { font-size: 14px; margin-top: 19px; }
+      .hero-meta { font-size: 10px; gap: 7px 16px; margin-top: 20px; }
+      .hero-foot { margin-top: 24px; padding-top: 12px; gap: 18px; }
+      .hero-foot p { font-size: 10px; max-width: 178px; }
+      .hero-foot a { font-size: 11px; flex-shrink: 0; gap: 10px; }
+      .disclosure-inner { grid-template-columns: 1fr; gap: 10px; padding-block: 20px; }
+      .disclosure h2 { font-size: 18px; } .disclosure strong { font-size: 13px; } .disclosure p { font-size: 11px; }
+      .metric, .metric:first-child { padding: 20px 12px; gap: 9px; }
+      .metric-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metric:nth-child(odd) { padding-left: 0; } .metric:nth-child(even) { border-right: 0; }
+      .metric:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+      .metric strong { font-size: 34px; } .metric b { font-size: 12px; } .metric span { font-size: 10px; }
+      .section { padding-block: 50px; }
+      .section-head { grid-template-columns: 1fr; gap: 18px; margin-bottom: 28px; }
+      h2 { font-size: 29px; } .lead { font-size: 14px; }
+      .kicker { font-size: 10px; margin-bottom: 10px; }
+      .responsibilities { grid-template-columns: 1fr; gap: 24px; }
+      .responsibility { grid-template-columns: 35px 1fr; gap: 15px; padding-top: 18px; }
+      .responsibility p { margin-top: 7px; } .responsibility h3 { font-size: 21px; }
+      .subheading { gap: 8px; margin-bottom: 20px; }
+      .subheading h3 { font-size: 17px; } .example-label { font-size: 10px; }
+      .usage-path { grid-template-columns: 1fr; gap: 0; margin-bottom: 34px; }
+      .usage-path li { border-top: 0; border-left: 2px solid var(--accent); padding: 0 0 23px 54px; margin-left: 9px; }
+      .usage-path li:last-child { padding-bottom: 0; }
+      .path-number { position: absolute; top: 2px; left: 14px; font-size: 21px; }
+      .usage-path li:not(:last-child)::after { content: "↓"; left: -10px; right: auto; top: auto; bottom: 0; font-size: 20px; padding: 0; }
+      .usage-path h4 { font-size: 17px; } .usage-path p { margin-top: 6px; font-size: 12px; }
+      .feedback-toolbar { gap: 12px; }
+      .feedback-tabs { width: 100%; } .feedback-tabs button { font-size: 12px; padding-inline: 6px; min-height: 46px; }
+      .decision-panel { padding-block: 22px; }
+      .case-question { grid-template-columns: 40px 1fr; gap: 16px; min-height: 100px; }
+      .case-question > span { font-size: 30px; } .case-question h3 { font-size: 21px; }
+      .decision-columns { grid-template-columns: 1fr; gap: 23px; }
+      .decision-column { padding-top: 15px; } .decision-column p { min-height: 80px; font-size: 13px; margin-top: 9px; }
+      .decision-column small { font-size: 10px; padding-top: 10px; }
+      .example-note { font-size: 10px; margin-top: 16px; }
+      .content-grid { gap: 16px; }
+      .content-item { padding: 19px 15px; } .content-item > span { font-size: 29px; }
+      .content-item h3 { margin-top: 16px; font-size: 18px; }
+      .content-item p { min-height: 90px; font-size: 12px; margin-top: 10px; }
+      .content-item small { font-size: 10px; margin-top: 12px; }
+      .document-outline { grid-template-columns: 1fr; gap: 25px; margin-top: 30px; padding-top: 25px; }
+      .outline-intro h3 { font-size: 22px; } .outline-intro p { margin-top: 12px; }
+      .outline-steps li { grid-template-columns: 22px 76px 1fr; gap: 12px; }
+      .outline-steps li strong { font-size: 13px; } .outline-steps li p { font-size: 11px; }
+      .pilot-stages { grid-template-columns: 1fr; gap: 23px; margin-bottom: 30px; }
+      .workflow-summary { gap: 8px 12px; font-size: 12px; }
+      .practice-note { font-size: 13px; }
+      .pilot-stage { padding-top: 17px; } .pilot-stage h3 { margin-top: 10px; font-size: 21px; } .pilot-stage p { margin-top: 9px; }
+      .result-list li { grid-template-columns: 32px 1fr; gap: 10px 16px; padding-block: 23px; }
+      .result-list li > span { font-size: 19px; } .result-list h3 { font-size: 21px; }
+      .result-list p { grid-column: 2; font-size: 13px; }
+      .scope-note { font-size: 11px; } .scope-note strong { display: block; margin-bottom: 8px; }
+      .footer .wrap { flex-direction: column; align-items: flex-start; gap: 6px; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+  <link rel="stylesheet" href="../ai-news-dashboard/case-study-workspace.css">
+  <link rel="stylesheet" href="../project-workspace.css">
+  <link rel="stylesheet" href="../english-case.css">
+</head>
+<body>
+  <a class="skip-link" href="#overview">Skip to project content</a>
+  <nav class="nav" aria-label="Page navigation">
+    <a class="brand" href="../../index.html" aria-label="Back to portfolio"><span class="brand-mark">LL</span><span>Laurel Li · Market Operations</span></a>
+    <div class="nav-links"><a href="#overview">My contribution</a><a href="#feedback">User needs</a><a href="#content">WeChat content</a><a href="#pilot">Pilot support</a><a href="#results">Results</a></div>
+  </nav>
+  <main>
+    <header class="hero">
+      <div class="wrap hero-inner">
+        <p class="eyebrow">PROJECT 02 / AI EDUCATION · CONTENT & PILOT SUPPORT</p>
+        <h1>AI Education<br>Product Content & Pilot Support</h1>
+        <p class="hero-copy">I built the product WeChat content programme from scratch, turned feedback into improvement suggestions, and helped prepare demos, FAQs, teacher use cases and course plans for training and presentations.</p>
+        <div class="hero-meta"><span>2024.11–2025.04</span><span>AI Product Marketing Intern</span><span>Teaching / Lesson preparation / Self-study</span></div>
+        <div class="hero-foot"><p>Research / WeChat content / Product materials / Pilot support</p><a href="#pilot">Product content & pilot support <span aria-hidden="true">↓</span></a></div>
+      </div>
+    </header>
+    <aside class="disclosure" aria-labelledby="disclosure-title">
+      <div class="wrap disclosure-inner"><h2 id="disclosure-title">Materials and confidentiality</h2><div><strong>Original feedback containing personal information and internal data are not disclosed.</strong><p>Workflow and issue examples illustrate the approach, not original system records or direct user quotes.</p></div></div>
+    </aside>
+    <div class="snapshot">
+      <div class="wrap metric-row" aria-label="Work and period results">
+        <div class="metric"><strong>100+</strong><div><b>Feedback items</b><span>From teachers, students and pilot users</span></div></div>
+        <div class="metric"><strong>30+</strong><div><b>Content pieces</b><span>Guides, FAQs, tutorials and use cases</span></div></div>
+        <div class="metric"><strong>10+</strong><div><b>Improvement suggestions</b><span>Product and operational recommendations</span></div></div>
+        <div class="metric"><strong>0→1</strong><div><b>WeChat content programme</b><span>Built around practical user needs</span></div></div>
+      </div>
+    </div>
+
+    <div class="band">
+      <section class="wrap section" id="overview" aria-labelledby="overview-title">
+        <div class="section-head"><div><p class="kicker">01 / CONTEXT & CONTRIBUTION</p><h2 id="overview-title">Help educators understand the product<br>and begin using it</h2></div><div class="lead"><p>The product serves university teachers, students and educational institutions across teaching, lesson preparation and self-study. Promotion needs both a clear value proposition and practical instructions.</p><p>I connected feedback, WeChat content and product materials: understand the questions, prepare guidance with the team, support training, then use feedback for content updates and product suggestions.</p></div></div>
+        <div class="responsibilities">
+          <article class="responsibility"><span>01</span><div><h3>Organise user feedback</h3><p>Group questions from teachers, students and pilot users to identify recurring needs and improvement opportunities.</p></div></article>
+          <article class="responsibility"><span>02</span><div><h3>Build WeChat content</h3><p>Develop the content programme from scratch, writing guides, FAQs, tutorials and use cases around user needs.</p></div></article>
+          <article class="responsibility"><span>03</span><div><h3>Product content & pilot support</h3><p>Help organise demos, FAQs, teacher use cases and course plans, and assist with training and presentations.</p></div></article>
+        </div>
+        <p class="workflow-summary" aria-label="Project workflow"><span>Feedback items</span><b aria-hidden="true">→</b><span>Content & materials</span><b aria-hidden="true">→</b><span>Training & presentation support</span><b aria-hidden="true">→</b><span>Review usage questions</span><b aria-hidden="true">→</b><span>Update guidance and suggest improvements</span></p>
+      </section>
+    </div>
+
+    <div class="band soft">
+      <section class="wrap section" id="feedback" aria-labelledby="feedback-title">
+        <div class="section-head"><div><p class="kicker">02 / USER NEEDS & FEEDBACK</p><h2 id="feedback-title">Understand the questions<br>before preparing guidance</h2></div><p class="lead">I organised 100+ feedback items from communities and pilot users. Questions that guidance could resolve became WeChat topics, tutorials and FAQs. Feature and usability issues were documented with context for the product team.</p></div>
+        <div class="subheading"><h3>User journey</h3><span class="example-label">Illustrative process, not behavioural or conversion data</span></div>
+        <ol class="usage-path" aria-label="Illustrative user journey">
+          <li><span class="path-number">01</span><h4>Discover features</h4><p>Understand suitable tasks</p></li>
+          <li><span class="path-number">02</span><h4>Try the product</h4><p>Follow the initial instructions</p></li>
+          <li><span class="path-number">03</span><h4>Encounter a question</h4><p>Record confusion or obstacles</p></li>
+          <li><span class="path-number">04</span><h4>Get support</h4><p>Use guidance or team follow-up</p></li>
+          <li><span class="path-number">05</span><h4>Share feedback</h4><p>Report any unresolved issues</p></li>
+        </ol>
+        <div class="feedback-toolbar"><div class="feedback-tabs" role="tablist" aria-label="Illustrative feedback issues" hidden><button id="feedback-tab-entry" role="tab" type="button" aria-controls="feedback-entry" aria-selected="true" data-feedback="entry">Finding the starting point</button><button id="feedback-tab-input" role="tab" type="button" aria-controls="feedback-input" aria-selected="false" tabindex="-1" data-feedback="input">Input and steps</button><button id="feedback-tab-result" role="tab" type="button" aria-controls="feedback-result" aria-selected="false" tabindex="-1" data-feedback="result">Results and expectations</button></div><span class="example-label">Illustrative reasoning, not direct user quotes</span></div>
+        <div class="decision-panel" id="feedback-entry" role="region" aria-labelledby="entry-title" tabindex="0">
+          <div class="case-question"><span>01</span><div><small>Example issue</small><h3 id="entry-title">Cannot find a feature</h3></div></div>
+          <div class="decision-columns">
+            <article class="decision-column"><h4>What to check</h4><p>Is the entry point hard to find, or is the first step missing from the guide? One comment alone does not prove the journey is too long.</p><small>Check the situation before drawing a conclusion</small></article>
+            <article class="decision-column"><h4>My contribution</h4><p>Add entry-point and step-by-step guidance, group similar questions and identify where clearer explanations are needed.</p><small>User guidance / Feedback organisation</small></article>
+            <article class="decision-column"><h4>For product review</h4><p>Check whether placement, page prompts or interactions need changing. Separate unclear guidance from a product usability issue.</p><small>Product checks / Recommendations</small></article>
+          </div>
+        </div>
+        <div class="decision-panel" id="feedback-input" role="region" aria-labelledby="input-title" tabindex="0">
+          <div class="case-question"><span>02</span><div><small>Example issue</small><h3 id="input-title">Unsure how to describe a task</h3></div></div>
+          <div class="decision-columns">
+            <article class="decision-column"><h4>What to check</h4><p>Is the task clear? Are input requirements explained? Review the actual interaction to find the point of confusion.</p><small>Check the situation before drawing a conclusion</small></article>
+            <article class="decision-column"><h4>My contribution</h4><p>Add input examples and use-case guidance, turn requirements into concrete steps and note remaining questions.</p><small>User guidance / Feedback organisation</small></article>
+            <article class="decision-column"><h4>For product review</h4><p>Review input prompts, requirements and error messages to determine whether clearer instructions or interaction changes are needed.</p><small>Product checks / Recommendations</small></article>
+          </div>
+        </div>
+        <div class="decision-panel" id="feedback-result" role="region" aria-labelledby="result-title" tabindex="0">
+          <div class="case-question"><span>03</span><div><small>Example issue</small><h3 id="result-title">Results do not match expectations</h3></div></div>
+          <div class="decision-columns">
+            <article class="decision-column"><h4>What to check</h4><p>This could relate to inputs, the task or product capability. Understand the actual task and output before attributing it to user misunderstanding.</p><small>Check the situation before drawing a conclusion</small></article>
+            <article class="decision-column"><h4>My contribution</h4><p>Document the task, steps and specific differences. Clarify existing feature guidance and raise unresolved questions with the team.</p><small>User guidance / Feedback organisation</small></article>
+            <article class="decision-column"><h4>For product review</h4><p>Check output quality, feature limits and possible errors to identify product changes or additional guidance.</p><small>Product checks / Recommendations</small></article>
+          </div>
+        </div>
+        <p class="example-note">These examples illustrate the analysis approach. Causes and actions need to be checked against the actual situation.</p>
+      </section>
+    </div>
+
+    <div class="band">
+      <section class="wrap section" id="content" aria-labelledby="content-title">
+        <div class="section-head"><div><p class="kicker">03 / WECHAT CONTENT & USER EDUCATION</p><h2 id="content-title">From scratch<br>to a product content programme</h2></div><p class="lead">I produced 30+ guides, FAQs, tutorials and use-case articles around teaching, lesson preparation and self-study. They explain when a feature is useful, how to use it and what to do when questions arise.</p></div>
+        <div class="content-grid">
+          <article class="content-item"><span>01</span><h3>Getting-started guides</h3><p>Introduce entry points, key features and first-use steps.</p><small>Where to start</small></article>
+          <article class="content-item"><span>02</span><h3>Feature tutorials</h3><p>Explain specific steps, input requirements and how to view results.</p><small>How to complete a task</small></article>
+          <article class="content-item"><span>03</span><h3>FAQs</h3><p>Group recurring questions with clear answers and relevant notes.</p><small>How to resolve a question</small></article>
+          <article class="content-item"><span>04</span><h3>Use cases</h3><p>Connect features to lesson preparation, teaching and self-study.</p><small>Which tasks fit</small></article>
+        </div>
+        <div class="document-outline">
+          <div class="outline-intro"><h3>How content connects to product materials</h3><span class="example-label">Work summary, not historical backend screenshots</span><p>WeChat content provides a lasting reference; product materials add specific steps and examples. User feedback guides further updates.</p></div>
+          <ol class="outline-steps" aria-label="Connecting WeChat content and product materials">
+            <li><span class="mono">01</span><strong>Choose topics</strong><p>Use recurring questions and practical tasks to identify topics</p></li>
+            <li><span class="mono">02</span><strong>Write content</strong><p>Turn feature descriptions into clear steps and examples</p></li>
+            <li><span class="mono">03</span><strong>Prepare materials</strong><p>Help organise demos, FAQs, teacher use cases and course plans</p></li>
+            <li><span class="mono">04</span><strong>Update guidance</strong><p>Group feedback and pilot questions to refine the next explanation</p></li>
+          </ol>
+        </div>
+      </section>
+    </div>
+
+    <div class="band soft">
+      <section class="wrap section" id="pilot" aria-labelledby="pilot-title">
+        <div class="section-head"><div><p class="kicker">04 / PRODUCT CONTENT & PILOT SUPPORT</p><h2 id="pilot-title">Prepare product materials<br>for training and presentations</h2></div><p class="lead">I proposed 10+ improvements based on user feedback, helped organise product demos, FAQs, teacher use cases and course plans, and assisted with product training and presentations.</p></div>
+        <div class="pilot-stages">
+          <article class="pilot-stage"><span>01 / FEEDBACK</span><h3>Summarise feedback</h3><p>Group common questions and identify missing guidance.</p></article>
+          <article class="pilot-stage"><span>02 / MATERIALS</span><h3>Organise materials</h3><p>Work with the team on demos, FAQs, teacher use cases and course plans.</p></article>
+          <article class="pilot-stage"><span>03 / SUPPORT</span><h3>Support training</h3><p>Provide materials and content to assist the team with training and presentations.</p></article>
+          <article class="pilot-stage"><span>04 / SUGGESTIONS</span><h3>Share recommendations</h3><p>Summarise 10+ suggestions from user feedback for the relevant teams to consider.</p></article>
+        </div>
+        <p class="practice-note"><strong>My approach</strong>Materials should answer real questions. Address guidance gaps with tutorials and FAQs; document feature and usability issues as product suggestions.</p>
+      </section>
+    </div>
+
+    <div class="band results-band">
+      <section class="wrap section" id="results" aria-labelledby="results-title">
+        <div class="section-head"><div><p class="kicker">05 / RESULTS</p><h2 id="results-title">Turn user questions<br>into content and recommendations</h2></div><p class="lead">I built the WeChat content foundation, helped prepare product materials and translated user feedback into practical guidance and improvement suggestions, supporting training and presentations.</p></div>
+        <ul class="result-list">
+          <li><span>01</span><h3>Organised user questions</h3><p>Categorised feedback and identified recurring questions and issues requiring further checks.</p></li>
+          <li><span>02</span><h3>Established WeChat content</h3><p>Built the programme from scratch and produced 30+ guides, FAQs, tutorials and use cases.</p></li>
+          <li><span>03</span><h3>Product content & pilot support</h3><p>Helped organise demos, FAQs, teacher use cases and course plans, and assisted with product training and presentations.</p></li>
+          <li><span>04</span><h3>Proposed product and operational improvements</h3><p>Developed 10+ suggestions, updated explanations and raised issues with the relevant teams.</p></li>
+        </ul>
+        <p class="scope-note"><strong>Results and confidentiality</strong>Figures are from my internship summary; internal records are not disclosed. Suggestions were not necessarily all implemented. My training and presentation role was supportive.</p>
+      </section>
+    </div>
+  </main>
+  <footer class="footer"><div class="wrap"><span>Laurel Li · AI Education Product Content & Pilot Support · 2024.11–2025.04</span><a href="../../index.html">Back to project top</a></div></footer>
+  <script>
+    const tabs = [...document.querySelectorAll('[data-feedback]')];
+    const panels = [...document.querySelectorAll('.decision-panel')];
+    function selectFeedback(tab) {
+      tabs.forEach(item => {
+        const selected = item === tab;
+        item.setAttribute('aria-selected', String(selected));
+        item.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach(panel => {
+        panel.hidden = panel.id !== tab.getAttribute('aria-controls');
+      });
+    }
+    // All examples remain readable without JavaScript; tabs enhance the same content.
+    panels.forEach((panel, index) => {
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', tabs[index].id);
+    });
+    document.querySelector('.feedback-tabs').hidden = false;
+    document.querySelector('#feedback').classList.add('feedback-enhanced');
+    selectFeedback(tabs[0]);
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => selectFeedback(tab));
+      tab.addEventListener('keydown', event => {
+        let next;
+        if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+        if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
+        if (event.key === 'Home') next = 0;
+        if (event.key === 'End') next = tabs.length - 1;
+        if (next === undefined) return;
+        event.preventDefault();
+        selectFeedback(tabs[next]);
+        tabs[next].focus();
+      });
+    });
+    if ('IntersectionObserver' in window) {
+      const links = [...document.querySelectorAll('.nav-links a')];
+      const observer = new IntersectionObserver(entries => {
+        const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (!visible) return;
+        links.forEach(link => {
+          if (link.hash === '#' + visible.target.id) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        });
+      }, { rootMargin: '-110px 0px -55% 0px' });
+      links.forEach(link => observer.observe(document.querySelector(link.hash)));
+    }
+  </script>
+  <script src="../ai-news-dashboard/lucide.min.js"></script>
+  <script src="../project-workspace.js" data-project="education"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+.creator-route-compact { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px; }
+.campaign-briefs { display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px; }
+.campaign-brief { padding-top: 22px; border-top: 3px solid var(--blue); }
+.brief-label { font-size: 11px; font-weight: 750; color: var(--muted); }
+.campaign-brief h3 { margin-block: 10px 22px; font-size: 23px; }
+.campaign-brief dl { margin: 0; }
+.campaign-brief dl > div { display: grid; grid-template-columns: 68px minmax(0, 1fr); gap: 16px; padding-block: 14px; border-top: 1px solid var(--line); }
+.campaign-brief dt { font-size: 13px; font-weight: 700; }
+.campaign-brief dd { margin: 0; font-size: 13px; line-height: 1.9; color: var(--muted); }
+.campaign-note { margin: 26px 0 32px; padding-block: 18px; border-block: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+.campaign-note strong { color: var(--ink); margin-right: 12px; }
+.case-takeaway { margin-top: 32px; padding: 18px 0 18px 20px; border-left: 3px solid var(--cyan); font-size: 14px; }
+.case-takeaway strong { display: block; margin-bottom: 7px; color: var(--cyan); font-size: 12px; }
+.review-journey { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; padding: 0; margin: 0; list-style: none; }
+.review-journey li { position: relative; border-top: 2px solid var(--blue); padding-top: 18px; }
+.review-journey li:not(:last-child)::after { content: "→"; position: absolute; top: -17px; right: -22px; padding-inline: 3px; background: #fff; color: var(--muted); }
+.review-journey li > span { color: var(--blue); font: 12px/1.5 "SFMono-Regular", Consolas, monospace; }
+.review-journey h3 { margin-block: 8px 6px; font-size: 17px; }
+.review-journey p { font-size: 12px; color: var(--muted); }
+.chart-context, .chart-source { font-size: 12px; line-height: 1.85; color: var(--muted); }
+.chart-context { margin-top: -12px; }
+.result-charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; margin-top: 30px; }
+.result-chart { min-width: 0; border-top: 3px solid var(--chart-color); padding-top: 20px; }
+.result-chart h4 { font-size: 17px; }
+.result-chart figcaption p { margin-top: 7px; font-size: 12px; color: var(--muted); }
+.comparison-plot { position: relative; height: 208px; margin: 44px 0 42px; }
+.plot-scale { position: absolute; left: 0; top: 0; bottom: 0; width: 28px; }
+.plot-scale span { position: absolute; right: 0; transform: translateY(50%); font: 11px/1 "SFMono-Regular", Consolas, monospace; color: var(--muted); }
+.plot-data { position: absolute; inset: 0 20px 0 42px; border-bottom: 1px solid #b7c3cf; }
+.plot-gridline { position: absolute; left: 0; right: 0; border-top: 1px solid #e7ebef; }
+.plot-data svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.plot-data line { stroke: var(--chart-color); stroke-width: 3; fill: none; }
+.plot-point { position: absolute; transform: translate(-50%, 50%); width: 12px; height: 12px; border-radius: 50%; border: 3px solid var(--chart-color); background: var(--chart-color); }
+.plot-point.baseline { background: #fff; }
+.plot-point b { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); white-space: nowrap; color: var(--chart-color); background: #fff; padding-inline: 3px; font: 700 18px/1 "SFMono-Regular", Consolas, monospace; }
+.plot-period { position: absolute; bottom: -30px; transform: translateX(-50%); font-size: 12px; white-space: nowrap; color: var(--muted); }
+.chart-source { padding-top: 18px; border-top: 1px solid var(--line); }
+.project-outcomes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px; padding-block: 28px; border-block: 1px solid var(--line); }
+.project-outcomes > div { min-width: 0; }
+.outcome-value { display: block; font-size: 76px; font-weight: 750; line-height: 1.4; color: var(--blue); white-space: nowrap; }
+.outcome-value span { font-size: 42px; }
+.outcome-value small { font: 600 15px/1.5 Inter, -apple-system, sans-serif; margin-right: 6px; }
+.project-outcomes > div:nth-child(2) .outcome-value { color: var(--cyan); }
+.project-outcomes > div:nth-child(3) .outcome-value { color: var(--pink); }
+.project-outcomes h3 { margin-top: 16px; font-size: 17px; }
+.project-outcomes p { margin-top: 10px; color: var(--muted); font-size: 13px; }
+.outcome-context { margin-top: 20px; font-size: 12px; color: var(--muted); }
+.outcome-disclosure { max-width: none; margin-top: 20px; padding: 16px 20px; border-left: 3px solid var(--pink); background: #fff0f4; color: #742546; }
+.outcome-disclosure strong { display: block; margin-bottom: 6px; }
+@media (max-width: 1000px) {
+  .creator-route-compact { gap: 24px; }
+  .result-charts { gap: 30px; }
+  .project-outcomes { gap: 24px; }
+  .outcome-value { font-size: 56px; }
+  .outcome-value span { font-size: 30px; }
+  .project-outcomes h3 { font-size: 15px; }
+}
+@media (max-width: 720px) {
+  .campaign-briefs { grid-template-columns: 1fr; gap: 28px; }
+  .campaign-brief h3 { font-size: 21px; margin-bottom: 18px; }
+  .campaign-note { font-size: 13px; }
+  .creator-route-compact { grid-template-columns: 1fr; gap: 18px; }
+  .case-takeaway { font-size: 13px; padding-left: 16px; margin-top: 26px; }
+  .review-journey { grid-template-columns: 1fr; gap: 0; }
+  .review-journey li { margin-left: 8px; border-top: 0; border-left: 2px solid var(--blue); padding: 10px 0 22px 45px; }
+  .review-journey li > span { position: absolute; left: 13px; top: 13px; }
+  .review-journey li:not(:last-child)::after { content: "↓"; top: auto; right: auto; left: -9px; bottom: -9px; padding-inline: 0; z-index: 1; }
+  .review-journey h3 { margin-top: 0; font-size: 16px; }
+  .result-charts { grid-template-columns: 1fr; gap: 28px; }
+  .comparison-plot { height: 190px; }
+  .chart-context, .chart-source { font-size: 11px; }
+  .project-outcomes { grid-template-columns: 1fr; gap: 0; padding-block: 0; }
+  .project-outcomes > div { display: grid; grid-template-columns: 134px minmax(0, 1fr); column-gap: 18px; padding-block: 24px; }
+  .project-outcomes > div + div { border-top: 1px solid var(--line); }
+  .outcome-value { grid-row: 1 / 3; align-self: center; font-size: 44px; }
+  .outcome-value span { font-size: 25px; }
+  .outcome-value small { font-size: 12px; margin-right: 2px; }
+  .project-outcomes h3 { margin-top: 0; font-size: 14px; }
+  .project-outcomes p { margin-top: 7px; font-size: 11px; }
+  .outcome-disclosure { padding: 14px 16px; font-size: 11px; }
+}
+@media (max-width: 360px) {
+  .project-outcomes > div { grid-template-columns: 122px minmax(0, 1fr); column-gap: 14px; }
+  .outcome-value { font-size: 40px; }
+}

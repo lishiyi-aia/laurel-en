@@ -1,0 +1,31 @@
+.interactive-case .hero-meta { position: static; display: flex; margin-top: 18px; gap: 7px 20px; }
+.interactive-case .hero-meta span { text-align: left; }
+.interactive-case h1 { max-width: 980px; }
+.interactive-case h1 span { display: block; margin: 10px 0 0; padding: 0; border: 0; font-size: 26px; }
+.step-text strong, .step-text small, .summary-stat > span,
+.explorer-tabs button, .asset-tabs button, .workflow-footer button { overflow-wrap: break-word; }
+.summary-stat { min-width: 0; gap: 14px; }
+.summary-stat > span { min-width: 0; }
+.need-decisions > div { grid-template-columns: 100px minmax(0, 1fr); }
+.creative-annotation dl > div, #channel-detail dl > div { grid-template-columns: 100px minmax(0, 1fr); }
+.document-preview li { grid-template-columns: 22px 75px minmax(0, 1fr); }
+.workflow-tabs button { min-height: 80px; }
+.workflow-footer button { max-width: 72%; }
+.workflow-panel .feedback-rows > div { grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) 70px; }
+.feedback-tabs button, .explorer-tabs button { white-space: normal; }
+@media (max-width: 900px) {
+  .workflow-tabs button { flex-basis: 170px; }
+}
+@media (max-width: 600px) {
+  .interactive-case h1 span { font-size: 21px; }
+  .workflow-tabs button { flex-basis: 160px; min-height: 68px; }
+  .workspace-rail { position: sticky; }
+  .creative-annotation dl > div, #channel-detail dl > div { grid-template-columns: 85px minmax(0, 1fr); }
+  .explorer-tabs { flex-wrap: wrap; }
+  .explorer-tabs button { flex: 1 1 44%; }
+  .companion-case .feedback-tabs { flex-wrap: wrap; }
+  .companion-case .feedback-tabs button { white-space: normal; }
+  .document-preview li { grid-template-columns: 18px 70px minmax(0, 1fr); }
+  .workflow-panel .feedback-rows > div { grid-template-columns: minmax(0, 1fr) 70px; }
+  .companion-case .summary-stat > strong { font-size: 24px; }
+}

@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ZUS Coffee social media and launch support: audience research, Instagram production and English copy, FamilyMart communication and content reviews.">
+  <title>ZUS Coffee: Social Media & Launch Support | Laurel Li</title>
+  <style>
+    :root { --ink: #202a38; --blue: #1645c3; --pink: #ad3168; --teal: #08786a; --gold: #805e13; --yellow: #ffe083; --line: #d9e0e8; --muted: #596777; --soft: #f4f6f9; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 86px; }
+    body { margin: 0; color: var(--ink); background: #fff; font: 16px/1.8 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; letter-spacing: 0; }
+    h1, h2, h3, h4, p, figure { margin: 0; }
+    h1, h2, h3, h4 { line-height: 1.4; letter-spacing: 0; text-wrap: balance; }
+    p { overflow-wrap: anywhere; }
+    a { color: inherit; text-underline-offset: 4px; }
+    img { display: block; max-width: 100%; height: auto; }
+    button { font: inherit; cursor: pointer; touch-action: manipulation; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    [hidden] { display: none !important; }
+    :focus-visible { outline: 3px solid var(--pink); outline-offset: 4px; }
+    .wrap { width: min(1180px, calc(100% - 64px)); margin-inline: auto; }
+    .skip-link { position: fixed; top: 10px; left: 10px; z-index: 100; padding: 8px 12px; background: #fff; transform: translateY(-160%); }
+    .skip-link:focus { transform: none; }
+    .nav { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 64px; padding: 0 max(32px, calc((100% - 1180px) / 2)); background: #fffffffa; border-bottom: 1px solid var(--line); }
+    .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--blue); text-decoration: none; font-size: 13px; font-weight: 750; white-space: nowrap; }
+    .brand-mark { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid var(--blue); border-radius: 50%; font-size: 11px; }
+    .nav-links { display: flex; gap: 22px; min-width: 0; overflow: auto; scrollbar-width: none; }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links a { display: inline-flex; flex-shrink: 0; align-items: center; min-height: 44px; border-bottom: 2px solid transparent; color: var(--muted); text-decoration: none; font-size: 12px; }
+    .nav-links a:hover, .nav-links a[aria-current="location"] { color: var(--blue); border-bottom-color: var(--blue); }
+    .hero { position: relative; isolation: isolate; background: #d9e5ed; }
+    .hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, #f4f8fcfa 0%, #f4f8fcf5 36%, #f4f8fc75 60%, #f4f8fc00 80%), url("evidence/coffizz-launch.jpg") center 55% / cover no-repeat; }
+    .hero-inner { padding-block: 55px 35px; }
+    .eyebrow { margin-bottom: 20px; color: var(--blue); font-size: 11px; font-weight: 750; }
+    h1 { color: var(--blue); font-size: 64px; line-height: 1.14; font-weight: 850; }
+    h1 span { display: block; margin-top: 16px; color: var(--ink); font-size: 36px; line-height: 1.35; }
+    .hero-copy { max-width: 570px; margin-top: 22px; color: #334558; font-size: 16px; line-height: 1.9; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 23px; font-size: 12px; color: #334558; }
+    .hero-meta span { padding-left: 9px; border-left: 2px solid var(--blue); }
+    .hero-source { max-width: 570px; margin-top: 28px; font-size: 10px; color: #3c4e5f; }
+    .hero-source a { display: inline-flex; align-items: center; min-height: 32px; }
+    .disclosure { background: var(--yellow); color: #362807; border-bottom: 1px solid #d9b759; }
+    .disclosure-inner { display: grid; grid-template-columns: 205px 1fr; align-items: center; gap: 40px; padding-block: 21px; }
+    .disclosure h2 { font-size: 18px; }
+    .disclosure strong { font-size: 14px; }
+    .disclosure p { font-size: 12px; margin-top: 5px; }
+    .snapshot { border-bottom: 1px solid var(--line); }
+    .metric-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .metric { --accent: var(--blue); display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center; padding: 28px; border-right: 1px solid var(--line); }
+    .metric:first-child { padding-left: 0; }
+    .metric:nth-child(2) { --accent: var(--teal); }
+    .metric:last-child { --accent: var(--pink); border-right: 0; }
+    .metric strong { color: var(--accent); font: 46px/1.2 "SFMono-Regular", Consolas, monospace; white-space: nowrap; }
+    .metric b { display: block; font-size: 14px; }
+    .metric small { display: block; font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .band { border-bottom: 1px solid var(--line); }
+    .soft { background: var(--soft); }
+    .section { padding-block: 74px; }
+    .section-head { display: grid; grid-template-columns: .85fr 1.15fr; gap: 70px; margin-bottom: 34px; align-items: start; }
+    .kicker { color: var(--blue); font-size: 11px; font-weight: 750; margin-bottom: 12px; }
+    h2 { font-size: 36px; line-height: 1.35; }
+    h3 { font-size: 22px; } h4 { font-size: 16px; }
+    .lead { font-size: 15px; color: var(--muted); line-height: 1.95; padding-top: 3px; }
+    .lead p + p { margin-top: 12px; }
+    .roles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px; }
+    .role { --accent: var(--blue); display: grid; grid-template-columns: 38px 1fr; gap: 18px; border-top: 3px solid var(--accent); padding-top: 24px; }
+    .role:nth-child(2) { --accent: var(--pink); }
+    .role:nth-child(3) { --accent: var(--teal); }
+    .role > span { font: 28px/1.5 "SFMono-Regular", Consolas, monospace; color: var(--accent); }
+    .role p { font-size: 13px; color: var(--muted); margin-top: 10px; }
+    .research-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px; }
+    .research-item { padding-top: 22px; border-top: 1px solid #b3bfcd; }
+    .research-item > span { color: var(--blue); font: 12px/1.5 "SFMono-Regular", Consolas, monospace; }
+    .research-item h3 { margin-top: 12px; }
+    .research-item p { color: var(--muted); font-size: 14px; margin-top: 12px; }
+    .research-item small { display: block; font-size: 11px; color: var(--gold); margin-top: 20px; }
+    .research-note { padding-top: 24px; margin-top: 28px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+    .workflow-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+    .workflow-heading h3 { font-size: 19px; }
+    .example-label { font-size: 11px; color: var(--gold); font-weight: 650; }
+    .workflow { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 22px; list-style: none; margin: 0 0 38px; padding: 0; }
+    .workflow li { --accent: var(--blue); position: relative; border-top: 3px solid var(--accent); padding-top: 20px; }
+    .workflow li:nth-child(2), .workflow li:nth-child(5) { --accent: var(--pink); }
+    .workflow li:nth-child(3), .workflow li:nth-child(6) { --accent: var(--teal); }
+    .workflow li:not(:last-child)::after { content: "→"; position: absolute; right: -22px; top: -21px; color: var(--accent); font-size: 23px; background: #fff; padding-inline: 3px; }
+    .workflow li > span { display: block; color: var(--accent); font: 29px/1.3 "SFMono-Regular", Consolas, monospace; margin-bottom: 12px; }
+    .workflow h4 { font-size: 16px; }
+    .workflow p { font-size: 12px; color: var(--muted); margin-top: 8px; }
+    .tablist { display: flex; width: min(650px, 100%); padding: 4px; border: 1px solid #b7c4d4; background: #fff; border-radius: 6px; margin-bottom: 24px; }
+    .tablist button { flex: 1; min-width: 0; min-height: 46px; padding: 8px 12px; border: 0; border-radius: 3px; color: var(--muted); background: transparent; font-size: 13px; }
+    .tablist button[aria-selected="true"] { background: var(--blue); color: #fff; }
+    .tablist button:hover:not([aria-selected="true"]) { background: var(--soft); color: var(--blue); }
+    .panels { min-width: 0; }
+    .panel { padding: 28px 0; border-block: 1px solid var(--line); min-width: 0; }
+    .panel + .panel { margin-top: 24px; }
+    .enhanced .panels { display: grid; }
+    .enhanced .panel { grid-area: 1 / 1; margin: 0; }
+    .enhanced .panel[aria-hidden="true"] { visibility: hidden; pointer-events: none; }
+    .panel-heading { display: grid; grid-template-columns: 56px 1fr; align-items: center; gap: 20px; margin-bottom: 25px; }
+    .panel-heading > span { color: var(--pink); font: 37px/1.2 "SFMono-Regular", Consolas, monospace; }
+    .panel-heading small { display: block; font-size: 10px; color: var(--muted); margin-bottom: 7px; }
+    .panel-heading h3 { font-size: 24px; }
+    .panel-columns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px; }
+    .panel-column { --accent: var(--blue); border-top: 3px solid var(--accent); padding-top: 17px; }
+    .panel-column:nth-child(2) { --accent: var(--pink); }
+    .panel-column:nth-child(3) { --accent: var(--teal); }
+    .panel-column h4 { color: var(--accent); }
+    .panel-column p { font-size: 14px; color: var(--muted); line-height: 1.9; margin-top: 11px; }
+    .material-note { font-size: 11px; color: var(--muted); margin-top: 17px; }
+    .evidence { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: start; margin-top: 50px; }
+    .photo-link { display: block; cursor: zoom-in; border: 1px solid var(--line); background: #fff; }
+    .photo-link:hover { outline: 3px solid var(--blue); outline-offset: -3px; }
+    .feed img { width: 100%; aspect-ratio: 1206 / 2622; object-fit: contain; }
+    figcaption { font-size: 11px; color: var(--muted); margin-top: 12px; }
+    .evidence-copy { padding-top: 23px; border-top: 2px solid var(--ink); }
+    .evidence-copy h3 { font-size: 27px; }
+    .evidence-copy > p { margin-top: 16px; font-size: 14px; color: var(--muted); }
+    .evidence-points { margin: 25px 0; }
+    .evidence-points > div { padding-block: 16px; border-top: 1px solid var(--line); }
+    .evidence-points dt { font-size: 14px; font-weight: 700; }
+    .evidence-points dd { margin: 6px 0 0; font-size: 13px; color: var(--muted); }
+    .image-note { padding: 16px 18px; margin-top: 20px; border-left: 3px solid #ae790b; background: var(--yellow); color: #362807; font-size: 12px; }
+    .product-materials { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 28px; }
+    .product-materials img { width: 100%; aspect-ratio: 1; object-fit: contain; }
+    .channel-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px; margin-bottom: 40px; }
+    .channel-step { border-top: 3px solid var(--teal); padding-top: 22px; }
+    .channel-step:nth-child(2) { border-color: var(--pink); }
+    .channel-step:nth-child(3) { border-color: var(--blue); }
+    .channel-step h3 { font-size: 21px; }
+    .channel-step p { font-size: 13px; color: var(--muted); margin-top: 11px; }
+    .review-intro { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; flex-wrap: wrap; margin-bottom: 22px; }
+    .review-intro h3 { font-size: 23px; }
+    .review-note { padding: 15px 18px; background: #fff2c8; border-left: 3px solid #c79922; color: #604714; font-size: 12px; margin-bottom: 22px; }
+    .results { background: #f1f7f4; }
+    .result-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid #b9d2c7; }
+    .result-list li { display: grid; grid-template-columns: 55px .8fr 1.2fr; align-items: baseline; gap: 28px; padding-block: 26px; border-bottom: 1px solid #b9d2c7; }
+    .result-list li > span { font: 22px/1.2 "SFMono-Regular", Consolas, monospace; color: var(--teal); }
+    .result-list h3 { font-size: 22px; }
+    .result-list p { font-size: 14px; color: var(--muted); }
+    .scope-note { margin-top: 25px; font-size: 12px; color: #4b6258; }
+    .scope-note strong { margin-right: 10px; color: #25654a; }
+    .footer { padding-block: 22px; font-size: 11px; color: var(--muted); }
+    .footer .wrap { display: flex; justify-content: space-between; gap: 20px; align-items: center; }
+    .footer a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; color: var(--blue); }
+    @media (max-width: 1000px) {
+      h1 { font-size: 55px; } h1 span { font-size: 32px; } h2 { font-size: 32px; }
+      .hero-copy { max-width: 480px; }
+      .metric { grid-template-columns: 1fr; gap: 9px; padding-inline: 22px; }
+      .metric strong { font-size: 40px; }
+      .section-head { gap: 36px; }
+      .role { grid-template-columns: 30px 1fr; gap: 12px; } .role h3 { font-size: 20px; }
+      .workflow { gap: 15px; } .workflow li:not(:last-child)::after { right: -19px; font-size: 20px; top: -19px; }
+      .workflow h4 { font-size: 14px; }
+      .evidence { gap: 30px; }
+      .product-materials { gap: 12px; }
+    }
+    @media (max-width: 760px) {
+      html { scroll-padding-top: 102px; }
+      .wrap { width: calc(100% - 36px); }
+      .nav { flex-direction: column; align-items: stretch; padding: 12px 18px 0; gap: 0; }
+      .brand { font-size: 12px; } .brand-mark { width: 24px; height: 24px; }
+      .nav-links { width: 100%; gap: 23px; } .nav-links a { font-size: 11px; }
+      .hero::before { background-image: linear-gradient(90deg, #f4f8fcfa 0%, #f4f8fce8 48%, #f4f8fc85 100%), url("evidence/coffizz-launch.jpg"); background-position: center, 68% center; }
+      .hero-inner { padding-block: 32px 22px; }
+      h1 { font-size: 44px; } h1 span { margin-top: 14px; font-size: 27px; }
+      .eyebrow { font-size: 10px; margin-bottom: 15px; }
+      .hero-copy { font-size: 14px; margin-top: 17px; max-width: 390px; }
+      .hero-meta { font-size: 10px; gap: 7px 14px; margin-top: 18px; }
+      .hero-source { font-size: 10px; margin-top: 16px; }
+      .disclosure-inner { grid-template-columns: 1fr; gap: 8px; padding-block: 18px; }
+      .disclosure h2 { font-size: 18px; } .disclosure strong { font-size: 12px; } .disclosure p { font-size: 11px; }
+      .metric, .metric:first-child { padding: 22px 12px; }
+      .metric:first-child { padding-left: 0; } .metric:last-child { padding-right: 0; }
+      .metric strong { font-size: 30px; } .metric b { font-size: 12px; } .metric small { font-size: 10px; }
+      .section { padding-block: 50px; }
+      .section-head { grid-template-columns: 1fr; gap: 18px; margin-bottom: 28px; }
+      h2 { font-size: 29px; } .kicker { font-size: 10px; margin-bottom: 10px; } .lead { font-size: 14px; }
+      .roles, .research-grid { grid-template-columns: 1fr; gap: 24px; }
+      .role { padding-top: 18px; grid-template-columns: 35px 1fr; gap: 15px; }
+      .role h3 { font-size: 21px; } .role p { margin-top: 7px; }
+      .research-item { padding-top: 18px; } .research-item h3 { font-size: 21px; margin-top: 8px; }
+      .research-item p { margin-top: 8px; font-size: 13px; } .research-item small { margin-top: 12px; }
+      .research-note { font-size: 12px; padding-top: 20px; margin-top: 25px; }
+      .workflow-heading h3 { font-size: 18px; } .example-label { font-size: 10px; }
+      .workflow { grid-template-columns: 1fr; gap: 0; margin-bottom: 28px; }
+      .workflow li { border-top: 0; border-left: 2px solid var(--accent); padding: 0 0 24px 54px; margin-left: 9px; }
+      .workflow li:last-child { padding-bottom: 0; }
+      .workflow li > span { position: absolute; top: 1px; left: 14px; font-size: 21px; }
+      .workflow h4 { font-size: 17px; } .workflow p { margin-top: 6px; }
+      .workflow li:not(:last-child)::after { content: "↓"; top: auto; bottom: 0; left: -10px; right: auto; font-size: 20px; padding: 0; }
+      .tablist { width: 100%; margin-bottom: 20px; } .tablist button { font-size: 12px; padding-inline: 6px; }
+      .panel { padding-block: 22px; }
+      .panel-heading { grid-template-columns: 38px 1fr; gap: 15px; margin-bottom: 20px; }
+      .panel-heading > span { font-size: 29px; } .panel-heading h3 { font-size: 21px; }
+      .panel-columns { grid-template-columns: 1fr; gap: 23px; }
+      .panel-column { padding-top: 15px; } .panel-column p { font-size: 13px; margin-top: 9px; }
+      .material-note { font-size: 10px; }
+      .evidence { grid-template-columns: 1fr; gap: 26px; margin-top: 35px; }
+      .evidence-copy { padding-top: 19px; } .evidence-copy h3 { font-size: 25px; }
+      .evidence-copy > p { font-size: 13px; }
+      .product-materials { gap: 16px; }
+      .channel-steps { grid-template-columns: 1fr; gap: 24px; margin-bottom: 30px; }
+      .channel-step { padding-top: 18px; } .channel-step p { margin-top: 8px; }
+      .review-intro { gap: 8px; } .review-intro h3 { font-size: 21px; }
+      .review-note { font-size: 11px; padding: 14px 16px; }
+      .result-list li { grid-template-columns: 32px 1fr; gap: 10px 16px; padding-block: 23px; }
+      .result-list li > span { font-size: 19px; } .result-list h3 { font-size: 21px; }
+      .result-list p { grid-column: 2; font-size: 13px; }
+      .scope-note { font-size: 11px; } .scope-note strong { display: block; margin-bottom: 6px; }
+      .footer .wrap { flex-direction: column; align-items: flex-start; gap: 6px; }
+    }
+    @media (max-width: 360px) { .metric strong { font-size: 26px; } .nav-links { gap: 17px; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+  <link rel="stylesheet" href="../ai-news-dashboard/case-study-workspace.css">
+  <link rel="stylesheet" href="../project-workspace.css">
+  <link rel="stylesheet" href="../english-case.css">
+</head>
+<body>
+  <a class="skip-link" href="#overview">Skip to project content</a>
+  <nav class="nav" aria-label="Page navigation">
+    <a class="brand" href="../../index.html" aria-label="Back to portfolio"><span class="brand-mark">LL</span><span>Laurel Li · Market Operations</span></a>
+    <div class="nav-links"><a href="#overview">My contribution</a><a href="#research">Content research</a><a href="#content">Content production</a><a href="#review">Channel review</a><a href="#results">Results</a></div>
+  </nav>
+  <main>
+    <header class="hero">
+      <div class="wrap hero-inner">
+        <p class="eyebrow">PROJECT 03 / INSTAGRAM · ENGLISH CONTENT</p>
+        <h1>ZUS Coffee<span>Social media<br>& launch support</span></h1>
+        <p class="hero-copy">I contributed to launch content research, Instagram photography and editing, and English copy, while supporting online launches and FamilyMart communication.</p>
+        <div class="hero-meta"><span>2023.12–2024.06</span><span>Overseas Social Media Operations Intern</span><span>Malaysia</span></div>
+        <p class="hero-source">COFFIZZ product reference image / Not my photography / <a href="https://siakapkeli.my/articles/zus-coffee-perkenalkan-coffizz-kopi-berkarbonat-halal-dalam-tin-pertama-di-malaysia" target="_blank" rel="noopener noreferrer">Original image source</a></p>
+      </div>
+    </header>
+    <aside class="disclosure" aria-labelledby="disclosure-title">
+      <div class="wrap disclosure-inner"><h2 id="disclosure-title">Materials and data</h2><div><strong>Internal account records are not disclosed. Review examples are not historical data or experimental results.</strong><p>Product references and account screenshots show the product and account content. Not all assets pictured were created by me.</p></div></div>
+    </aside>
+    <div class="snapshot" aria-label="Work delivered and account results">
+      <div class="wrap metric-row">
+        <div class="metric"><strong>50</strong><div><b>Instagram posts</b><small>Contributed to production and publishing</small></div></div>
+        <div class="metric"><strong>15+</strong><div><b>Content reviews</b><small>Completed during the internship</small></div></div>
+        <div class="metric"><strong>11k+</strong><div><b>Account follower growth</b><small>Account-level result during the project period</small></div></div>
+      </div>
+    </div>
+
+    <section class="band" id="overview"><div class="wrap section">
+      <div class="section-head"><div><p class="kicker">01 / CONTEXT & CONTRIBUTION</p><h2>From preparing content<br>to reviewing performance</h2></div><div class="lead"><p>As an Overseas Social Media Operations Intern at Zuspresso (M) Sdn. Bhd., I worked on ZUS Coffee launch communication through research, content production, publishing and channel information.</p><p>My role focused on content execution and communication support, not independent ownership of a full launch or retail channel.</p></div></div>
+      <div class="roles">
+        <article class="role"><span>01</span><div><h3>Research & topics</h3><p>Use audience preferences, social feedback and competitor content to identify relevant product messages.</p></div></article>
+        <article class="role"><span>02</span><div><h3>Production & publishing</h3><p>Contribute to photography, editing, English captions, hashtags and asset organisation, following the publishing schedule.</p></div></article>
+        <article class="role"><span>03</span><div><h3>Channels & review</h3><p>Support online launches and FamilyMart communication, track content weekly and identify the next adjustments.</p></div></article>
+      </div>
+    </div></section>
+
+    <section class="band soft" id="research"><div class="wrap section">
+      <div class="section-head"><div><p class="kicker">02 / CONTENT RESEARCH</p><h2>Start with<br>a clear message</h2></div><div class="lead"><p>Research began with audience preferences, existing feedback and competitor content. These informed topics and product messaging.</p><p>Product information, use cases and purchasing details helped define the focus of each post.</p></div></div>
+      <div class="research-grid">
+        <article class="research-item"><span>01 / AUDIENCE</span><h3>What might the audience care about?</h3><p>Use audience preferences and social feedback to check whether product information is clear and the use case is relevant.</p><small>Find the message in user questions</small></article>
+        <article class="research-item"><span>02 / CONTENT</span><h3>How do other brands communicate?</h3><p>Review how competitors introduce products, present use cases and explain promotions or purchasing details.</p><small>Learn from the approach without copying</small></article>
+        <article class="research-item"><span>03 / TOPIC</span><h3>What belongs in this post?</h3><p>Use product references and the communication schedule to identify key messages, visuals and information for the English copy.</p><small>Bring research into content preparation</small></article>
+      </div>
+      <p class="research-note">Research informed topics, photography and English copy. It was not a quantitative comparison of competitor performance.</p>
+    </div></section>
+
+    <section class="band" id="content"><div class="wrap section">
+      <div class="section-head"><div><p class="kicker">03 / INSTAGRAM CONTENT & ASSETS</p><h2>Content and supporting assets</h2></div><p class="lead">I helped publish 50 Instagram posts, contributing to topics, photography, editing, English captions, hashtags and asset organisation.</p></div>
+      <div class="evidence">
+        <figure class="feed"><a class="photo-link" href="../../works/covers/zus-everywhere.jpg" target="_blank" rel="noopener noreferrer" aria-label="View original ZUS Everywhere account screenshot"><img src="../../works/covers/zus-everywhere.jpg" width="1206" height="2622" alt="ZUS Everywhere Instagram screenshot showing product, lifestyle and campaign content" loading="lazy"></a><figcaption>Original account screenshot / Not all content pictured is my work</figcaption></figure>
+        <div class="evidence-copy">
+          <p class="kicker">Account content and product references</p><h3>Prepare the visuals, copy<br>and publishing details together</h3>
+          <p>The account screenshot includes product, lifestyle and campaign content. My contribution covered the planning, production, English copy and publishing support described here.</p>
+          <dl class="evidence-points">
+            <div><dt>Photography & video</dt><dd>Help prepare photos and edits around the selected topic.</dd></div>
+            <div><dt>English captions & tags</dt><dd>Contribute to English captions, hashtags and product information.</dd></div>
+            <div><dt>Assets & timing</dt><dd>Help organise asset versions and confirm publishing details.</dd></div>
+          </dl>
+          <p class="image-note">The account screenshot illustrates the content mix. Product reference images below are not my photography or design work.</p>
+          <div class="product-materials">
+            <figure><a class="photo-link" href="evidence/coffizz-product.png" target="_blank" rel="noopener noreferrer" aria-label="View original COFFIZZ product reference"><img src="evidence/coffizz-product.png" width="1080" height="1080" alt="COFFIZZ product reference image" loading="lazy"></a><figcaption>COFFIZZ product reference image</figcaption></figure>
+            <figure><a class="photo-link" href="evidence/coffizz-carton.png" target="_blank" rel="noopener noreferrer" aria-label="View original COFFIZZ packaging reference"><img src="evidence/coffizz-carton.png" width="1080" height="1080" alt="COFFIZZ carton packaging reference" loading="lazy"></a><figcaption>COFFIZZ packaging reference</figcaption></figure>
+          </div>
+        </div>
+      </div>
+    </div></section>
+
+    <section class="band soft" id="review"><div class="wrap section">
+      <div class="section-head"><div><p class="kicker">04 / CHANNELS & REVIEW</p><h2>Prepare accurate information<br>and follow up after publishing</h2></div><div class="lead"><p>I supported online launches and FamilyMart retail communication by organising assets, store details, purchase links and publishing schedules.</p><p>I tracked content weekly and completed 15+ reviews, using feedback to refine topics, formats and publishing cadence.</p></div></div>
+      <div class="channel-steps">
+        <article class="channel-step"><h3>Before publishing: check information</h3><p>Check that product and channel information, creative assets and timing are consistent.</p></article>
+        <article class="channel-step"><h3>After publishing: capture feedback</h3><p>Track performance and identify questions that need follow-up.</p></article>
+        <article class="channel-step"><h3>During review: agree next steps</h3><p>Use performance and feedback to suggest changes to topics, formats and timing.</p></article>
+      </div>
+      <div class="review-intro"><h3>How I consider the next step</h3><span class="example-label">Illustrative reasoning, not historical findings</span></div>
+      <p class="review-note">These examples show my review approach, not user quotes, measured comparisons or verified improvements. When metrics change, check content, timing and other influences before deciding what to adjust.</p>
+      <div class="tabbed" data-tab-group="review">
+        <div class="tablist" role="tablist" aria-label="Review examples" hidden>
+          <button id="review-tab-info" type="button" role="tab" aria-controls="review-info">Where to buy</button>
+          <button id="review-tab-response" type="button" role="tab" aria-controls="review-response">Performance changes</button>
+          <button id="review-tab-product" type="button" role="tab" aria-controls="review-product">Product questions</button>
+        </div>
+        <div class="panels">
+          <article class="panel" id="review-info"><div class="panel-heading"><span>01</span><div><small>Example situation</small><h3>Comments ask where to buy</h3></div></div><div class="panel-columns">
+            <div class="panel-column"><h4>What to look at</h4><p>Identify the product, location and channel being asked about. An enquiry is not a completed purchase.</p></div>
+            <div class="panel-column"><h4>What else to check</h4><p>Check whether the post includes purchasing information and whether store details or links are still accurate.</p></div>
+            <div class="panel-column"><h4>Possible action</h4><p>Add confirmed purchasing details and make them clearer in subsequent relevant content.</p></div>
+          </div></article>
+          <article class="panel" id="review-response"><div class="panel-heading"><span>02</span><div><small>Example situation</small><h3>A post performs differently</h3></div></div><div class="panel-columns">
+            <div class="panel-column"><h4>What to look at</h4><p>Compare available reach and engagement over the same observation window, rather than relying on one number.</p></div>
+            <div class="panel-column"><h4>What else to check</h4><p>Check the topic, format, publishing time and any additional promotion or campaign activity.</p></div>
+            <div class="panel-column"><h4>Possible action</h4><p>Propose a specific next test, such as a different opening or information order. Review it after publishing without promising an uplift.</p></div>
+          </div></article>
+          <article class="panel" id="review-product"><div class="panel-heading"><span>03</span><div><small>Example situation</small><h3>Users have product questions</h3></div></div><div class="panel-columns">
+            <div class="panel-column"><h4>What to look at</h4><p>Distinguish factual questions from personal preferences. A few comments do not represent the whole audience.</p></div>
+            <div class="panel-column"><h4>What else to check</h4><p>Review the original explanation and product references to confirm what can be added.</p></div>
+            <div class="panel-column"><h4>Possible action</h4><p>Add verified information to captions or future topics; check uncertain details with the team first.</p></div>
+          </div></article>
+        </div>
+      </div>
+    </div></section>
+
+    <section class="band results" id="results"><div class="wrap section">
+      <div class="section-head"><div><p class="kicker">05 / RESULTS</p><h2>Contribute to publishing<br>and keep reviewing</h2></div><div class="lead"><p>Post counts and reviews describe my workload. Follower growth is shown separately as an account-level result, not a gain attributable to one post or to me alone.</p></div></div>
+      <ol class="result-list">
+        <li><span>01</span><h3>Contributed to 50 posts</h3><p>Topics, photography, editing, English captions, hashtags and asset organisation.</p></li>
+        <li><span>02</span><h3>Completed 15+ reviews</h3><p>Tracked performance weekly and used interaction feedback to inform subsequent content.</p></li>
+        <li><span>03</span><h3>11,000+ account follower growth</h3><p>Overall account change during the project period, not independently generated growth.</p></li>
+      </ol>
+      <p class="scope-note"><strong>Scope of figures</strong>Posts I helped publish, reviews I completed and account follower growth during the project period. Original account records are not disclosed.</p>
+    </div></section>
+  </main>
+  <footer class="footer"><div class="wrap"><span>Laurel Li · ZUS Coffee · 2023.12–2024.06</span><a href="../../index.html">Back to project top</a></div></footer>
+  <script>
+    // Shared grid sizing keeps all tab states stable; without JS every panel is readable.
+    document.querySelectorAll('[data-tab-group]').forEach(group => {
+      const tablist = group.querySelector('[role="tablist"]');
+      const tabs = [...tablist.querySelectorAll('[role="tab"]')];
+      const panels = [...group.querySelectorAll('.panel')];
+      function selectTab(tab) {
+        tabs.forEach(item => {
+          const selected = item === tab;
+          item.setAttribute('aria-selected', String(selected));
+          item.tabIndex = selected ? 0 : -1;
+        });
+        panels.forEach(panel => {
+          const selected = panel.id === tab.getAttribute('aria-controls');
+          panel.setAttribute('aria-hidden', String(!selected));
+          panel.inert = !selected;
+        });
+      }
+      panels.forEach((panel, index) => {
+        panel.setAttribute('role', 'tabpanel');
+        panel.setAttribute('aria-labelledby', tabs[index].id);
+      });
+      group.classList.add('enhanced');
+      tablist.hidden = false;
+      selectTab(tabs[0]);
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => selectTab(tab));
+        tab.addEventListener('keydown', event => {
+          let next;
+          if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+          if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
+          if (event.key === 'Home') next = 0;
+          if (event.key === 'End') next = tabs.length - 1;
+          if (next === undefined) return;
+          event.preventDefault();
+          selectTab(tabs[next]);
+          tabs[next].focus();
+        });
+      });
+    });
+    if ('IntersectionObserver' in window) {
+      const links = [...document.querySelectorAll('.nav-links a')];
+      const observer = new IntersectionObserver(entries => {
+        const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (!visible) return;
+        links.forEach(link => {
+          if (link.hash === '#' + visible.target.id) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        });
+      }, { rootMargin: '-110px 0px -55% 0px' });
+      links.forEach(link => observer.observe(document.querySelector(link.hash)));
+    }
+  </script>
+  <script src="../ai-news-dashboard/lucide.min.js"></script>
+  <script src="../project-workspace.js" data-project="zus"></script>
+</body>
+</html>
